@@ -221,22 +221,6 @@ class GameState:
         state.data = self.data.deepCopy()
         return state
 
-    def __eq__( self, other ):
-        """
-        Allows two states to be compared.
-        """
-        return hasattr(other, 'data') and self.data == other.data
-
-    def __hash__( self ):
-        """
-        Allows states to be keys of dictionaries.
-        """
-        return hash( self.data )
-
-    def __str__( self ):
-
-        return str(self.data)
-
     def initialize( self, layout, numGhostAgents=1000 ):
         """
         Creates an initial game state from a layout array (see layout.py).
