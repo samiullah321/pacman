@@ -40,13 +40,13 @@ To play your first game, type 'python pacman.py' from the command line.
 The keys are 'a', 's', 'd', and 'w' to move (or arrow keys).  Have fun!
 """
 from game import GameStateData
-from game import Game
 from game import Directions
 from game import Actions
 from util import nearestPoint
 from util import manhattanDistance
 import util, layout
 import sys, types, time, random, os
+from GameLib import *
 
 ###################################################
 # YOUR INTERFACE TO THE PACMAN WORLD: A GameState #
