@@ -44,13 +44,6 @@ class Layout:
         x, col = pos
         return self.walls[x][col]
 
-    def isVisibleFrom(self, ghostPos, pacPos, pacDirection):
-        row, col = [int(x) for x in pacPos]
-        return ghostPos in self.visibility[row][col][pacDirection]
-
-    def __str__(self):
-        return "\n".join(self.layoutText)
-
     def deepCopy(self):
         return Layout(self.layoutText[:])
 
@@ -90,6 +83,7 @@ class Layout:
         elif layoutChar in  ['1', '2', '3', '4']:
             self.agentPositions.append( (int(layoutChar), (x,y)))
             self.numGhosts += 1
+
 def getLayout(name, back = 2):
     if name.endswith('.lay'):
         layout = tryToLoad('layouts/' + name)

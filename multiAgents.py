@@ -223,7 +223,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         result = _alphaBeta(gameState, 0, -1e20, 1e20)
         return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
 
-        util.raiseNotDefined()
+        ""
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -267,4 +267,4 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         result = _expectMinimax(gameState, 0);
         return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
 
-        util.raiseNotDefined()
+        ""
