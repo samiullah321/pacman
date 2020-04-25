@@ -345,8 +345,6 @@ def readCommand( argv ):
                       metavar = 'TYPE', default='RandomGhost')
     parser.add_option('-k', '--numghosts', type='int', dest='numGhosts',
                       help=default('The maximum number of ghosts to use'), default=4)
-    parser.add_option('-z', '--zoom', type='float', dest='zoom',
-                      help=default('Zoom the size of the graphics window'), default=1.0)
     parser.add_option('-f', '--fixRandomSeed', action='store_true', dest='fixRandomSeed',
                       help='Fixes the random seed to always play the same game', default=False)
     parser.add_option('-r', '--recordActions', action='store_true', dest='record',
@@ -402,7 +400,7 @@ def readCommand( argv ):
         args['display'] = textDisplay.PacmanGraphics()
     else:
         import graphicsDisplay
-        args['display'] = graphicsDisplay.PacmanGraphics(options.zoom, frameTime = options.frameTime)
+        args['display'] = graphicsDisplay.PacmanGraphics(frameTime = options.frameTime)
     args['numGames'] = options.numGames
     args['record'] = options.record
     args['timeout'] = options.timeout
