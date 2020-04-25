@@ -9,25 +9,26 @@ class GhostAgent( Agent ):
     def __init__( self, index ):
         self.index = index
 
-    def getAction( self, state ):
-        dist = self.getDistribution(state)
+    def getAction( self, state ): #return an action
+        dist = self.getDistribution(state) #evaluating the probabilities of attacking or fleeing using factors as distance from pacman etc.
         if len(dist) == 0:
             return Directions.STOP
         else:
             return util.chooseFromDistribution( dist )
 
+#GHOST THAT CHOOSES AN ACTION RANDOMLY
 class RandomGhost( GhostAgent ):
-    "A ghost that chooses a legal action uniformly at random."
     def getDistribution( self, state ):
         dist = util.Counter()
         for a in state.getLegalActions( self.index ): dist[a] = 1.0
         dist.normalize()
         return dist
 
+#GHOST THAT CHOOSES AN ACTION SMARTLY
 class DirectionalGhost( GhostAgent ):
-    "A ghost that prefers to rush Pacman, or flee when scared."
     def __init__( self, index, prob_attack=0.8, prob_scaredFlee=0.8 ):
         self.index = index
+         #setting the probabilities for the ghost to flee or attack
         self.prob_attack = prob_attack
         self.prob_scaredFlee = prob_scaredFlee
 
@@ -42,15 +43,15 @@ class DirectionalGhost( GhostAgent ):
         if isScared: speed = 0.5
 
         actionVectors = [Actions.directionToVector( a, speed ) for a in legalActions]
-        newPositions = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors]
-        pacmanPosition = state.getPacmanPosition()
+        newPositions = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors] #ghost positions
+        pacmanPosition = state.getPacmanPosition() #pacman positions
 
         # Select best actions given the state
         distancesToPacman = [manhattanDistance( pos, pacmanPosition ) for pos in newPositions]
-        if isScared:
+        if isScared: #chooose the position with the max distance from pacman and start to flee there
             bestScore = max( distancesToPacman )
             bestProb = self.prob_scaredFlee
-        else:
+        else: #choose the positions with the min distance from pacman and start to attack there
             bestScore = min( distancesToPacman )
             bestProb = self.prob_attack
         bestActions = [action for action, distance in zip( legalActions, distancesToPacman ) if distance == bestScore]

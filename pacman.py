@@ -350,11 +350,6 @@ def readCommand( argv ):
     pacman = pacmanType(**agentOpts) # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
 
-    # Don't display training games
-    if 'numTrain' in agentOpts:
-        options.numQuiet = int(agentOpts['numTrain'])
-        options.numIgnore = int(agentOpts['numTrain'])
-
     # Choose a ghost agent
     ghostType = loadAgent(options.ghost, noKeyboard)
     args['ghosts'] = [ghostType( i+1 ) for i in range( options.numGhosts )]
