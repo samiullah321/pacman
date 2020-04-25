@@ -10,7 +10,6 @@ WALL_COLOR = formatColor(64/255.0, 224/255.0, 208/255.0)
 INFO_PANE_COLOR = formatColor(.4,.4,0)
 SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
-PACMAN_CAPTURE_OUTLINE_WIDTH = 4
 
 #Settings for Ghost
 GHOST_COLORS = []
@@ -100,13 +99,12 @@ class InfoPane:
                 changeText(self.ghostDistanceText[i], d)
 
 class PacmanGraphics: #general graphics for pacman
-    def __init__(self, zoom=1.0, frameTime=0.0, capture=False):
+    def __init__(self, zoom=1.0, frameTime=0.0):
         self.have_window = 0
         self.currentGhostImages = {}
         self.pacmanImage = None
         self.zoom = zoom
         self.gridSize = DEFAULT_GRID_SIZE * zoom
-        self.capture = capture
         self.frameTime = frameTime
 
     def checkNullDisplay(self):
@@ -210,16 +208,12 @@ class PacmanGraphics: #general graphics for pacman
         outlineColor = PACMAN_COLOR
         fillColor = PACMAN_COLOR
 
-        if self.capture:
-            outlineColor = TEAM_COLORS[index % 2]
-            fillColor = GHOST_COLORS[index]
-            width = PACMAN_CAPTURE_OUTLINE_WIDTH
-
         return [circle(screen_point, PACMAN_SCALE * self.gridSize,
                        fillColor = fillColor, outlineColor = outlineColor,
                        endpoints = endpoints,
                        width = width)]
 
+    #used for rotating pacman according to direction
     def getEndpoints(self, direction, position=(0, 0)):
         x, y = position
         pos = x - int(x) + y - int(y)
@@ -236,6 +230,7 @@ class PacmanGraphics: #general graphics for pacman
             endpoints = (0 + delta, 0 - delta)
         return endpoints
 
+    #for moving the pacman
     def movePacman(self, position, direction, image):
         screenPosition = self.to_screen(position)
         endpoints = self.getEndpoints( direction, position )
@@ -243,6 +238,7 @@ class PacmanGraphics: #general graphics for pacman
         moveCircle(image[0], screenPosition, r, endpoints)
         refresh()
 
+    #animation of pacman when moving from cell to cell
     def animatePacman(self, pacman, prevPacman, image):
         if self.frameTime < 0:
             print('Press any key to step forward, "q" to play')
@@ -263,12 +259,14 @@ class PacmanGraphics: #general graphics for pacman
             self.movePacman(self.getPosition(pacman), self.getDirection(pacman), image)
         refresh()
 
+    #retreiving the ghost color
     def getGhostColor(self, ghost, ghostIndex):
         if ghost.scaredTimer > 0:
             return SCARED_COLOR
         else:
             return GHOST_COLORS[ghostIndex]
 
+    #drawing the ghost
     def drawGhost(self, ghost, agentIndex):
         pos = self.getPosition(ghost)
         dir = self.getDirection(ghost)
@@ -296,12 +294,11 @@ class PacmanGraphics: #general graphics for pacman
         ghostImageParts = []
         ghostImageParts.append(body)
 
-
         return ghostImageParts
 
-
-
+    #moving the ghost
     def moveGhost(self, ghost, ghostIndex, prevGhost, ghostImageParts):
+        #animation of ghost movement
         old_x, old_y = self.to_screen(self.getPosition(prevGhost))
         new_x, new_y = self.to_screen(self.getPosition(ghost))
         delta = new_x - old_x, new_y - old_y
@@ -311,22 +308,24 @@ class PacmanGraphics: #general graphics for pacman
         refresh()
 
         if ghost.scaredTimer > 0:
-            color = SCARED_COLOR
+            color = SCARED_COLOR #setting the color of scared state
         else:
             color = GHOST_COLORS[ghostIndex]
         edit(ghostImageParts[0], ('fill', color), ('outline', color))
         refresh()
 
+    #get coords on the screen
     def getPosition(self, agentState):
         if agentState.configuration == None: return (-1000, -1000)
         return agentState.getPosition()
 
+    #get action
     def getDirection(self, agentState):
         if agentState.configuration == None: return Directions.STOP
         return agentState.configuration.getDirection()
 
     def finish(self):
-        end_graphics()
+        end_graphics() #utility function for ending the display
 
     def to_screen(self, point):
         ( x, y ) = point
@@ -346,9 +345,6 @@ class PacmanGraphics: #general graphics for pacman
     def drawWalls(self, wallMatrix):
         wallColor = WALL_COLOR
         for xNum, x in enumerate(wallMatrix):
-            if self.capture and (xNum * 2) < wallMatrix.width: wallColor = TEAM_COLORS[0]
-            if self.capture and (xNum * 2) >= wallMatrix.width: wallColor = TEAM_COLORS[0]
-
             for yNum, cell in enumerate(x):
                 if cell: # There's a wall here
                     pos = (xNum, yNum)
@@ -440,8 +436,6 @@ class PacmanGraphics: #general graphics for pacman
         foodImages = []
         color = FOOD_COLOR
         for xNum, x in enumerate(foodMatrix):
-            if self.capture and (xNum * 2) <= foodMatrix.width: color = TEAM_COLORS[0]
-            if self.capture and (xNum * 2) > foodMatrix.width: color = TEAM_COLORS[1]
             imageRow = []
             foodImages.append(imageRow)
             for yNum, cell in enumerate(x):
@@ -517,17 +511,15 @@ class PacmanGraphics: #general graphics for pacman
                 # Fog of war
                 color = [0.0,0.0,0.0]
                 colors = GHOST_VEC_COLORS[1:] # With Pacman
-                if self.capture: colors = GHOST_VEC_COLORS
                 for weight, gcolor in zip(weights, colors):
                     color = [min(1.0, c + 0.95 * g * weight ** .3) for c,g in zip(color, gcolor)]
                 changeColor(image, formatColor(*color))
         refresh()
 
 class FirstPersonPacmanGraphics(PacmanGraphics):
-    def __init__(self, zoom = 1.0, showGhosts = True, capture = False, frameTime=0):
+    def __init__(self, zoom = 1.0, showGhosts = True, frameTime=0):
         PacmanGraphics.__init__(self, zoom, frameTime=frameTime)
         self.showGhosts = showGhosts
-        self.capture = capture
 
     def initialize(self, state, isBlue = False):
 
