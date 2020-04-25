@@ -336,8 +336,6 @@ def readCommand( argv ):
     parser.add_option('-p', '--pacman', dest='pacman',
                       help=default('the agent TYPE in the pacmanAgents module to use'),
                       metavar='TYPE', default='KeyboardAgent')
-    parser.add_option('-t', '--textGraphics', action='store_true', dest='textGraphics',
-                      help='Display output as text only', default=False)
     parser.add_option('-q', '--quietTextGraphics', action='store_true', dest='quietGraphics',
                       help='Generate minimal output and no graphics', default=False)
     parser.add_option('-g', '--ghosts', dest='ghost',
@@ -345,8 +343,6 @@ def readCommand( argv ):
                       metavar = 'TYPE', default='RandomGhost')
     parser.add_option('-k', '--numghosts', type='int', dest='numGhosts',
                       help=default('The maximum number of ghosts to use'), default=4)
-    parser.add_option('-f', '--fixRandomSeed', action='store_true', dest='fixRandomSeed',
-                      help='Fixes the random seed to always play the same game', default=False)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
     parser.add_option('--frameTime', dest='frameTime', type='float',
@@ -359,9 +355,6 @@ def readCommand( argv ):
     if len(otherjunk) != 0:
         raise Exception('Command line input not understood: ' + str(otherjunk))
     args = dict()
-
-    #giving a random seed
-    if options.fixRandomSeed: random.seed(datetime.now())
 
     #setting the layout
     args['layout'] = layout.getLayout( options.layout )
@@ -387,10 +380,6 @@ def readCommand( argv ):
     if options.quietGraphics:
         import textDisplay
         args['display'] = textDisplay.NullGraphics()
-    elif options.textGraphics:
-        import textDisplay
-        textDisplay.SLEEP_TIME = options.frameTime
-        args['display'] = textDisplay.PacmanGraphics()
     else:
         import graphicsDisplay
         args['display'] = graphicsDisplay.PacmanGraphics(frameTime = options.frameTime)

@@ -99,12 +99,11 @@ class InfoPane:
                 changeText(self.ghostDistanceText[i], d)
 
 class PacmanGraphics: #general graphics for pacman
-    def __init__(self, zoom=1.0, frameTime=0.0):
+    def __init__(self, frameTime=0.0):
         self.have_window = 0
         self.currentGhostImages = {}
         self.pacmanImage = None
-        self.zoom = zoom
-        self.gridSize = DEFAULT_GRID_SIZE * zoom
+        self.gridSize = DEFAULT_GRID_SIZE
         self.frameTime = frameTime
 
     def checkNullDisplay(self):
