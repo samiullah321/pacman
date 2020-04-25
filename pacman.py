@@ -136,9 +136,6 @@ COLLISION_TOLERANCE = 0.7 # How close ghosts must be to Pacman to kill
 TIME_PENALTY = 1 # Number of points lost when pacman not eating food
 
 class ClassicGameRules:
-    #functions assisting the normal game rules
-    def __init__(self, timeout=30):
-        self.timeout = timeout
 
     def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
@@ -171,18 +168,6 @@ class ClassicGameRules:
             print("Pacman crashed")
         else:
             print("A ghost crashed")
-
-    def getMaxTotalTime(self, agentIndex):
-        return self.timeout
-
-    def getMaxStartupTime(self, agentIndex):
-        return self.timeout
-
-    def getMoveWarningTime(self, agentIndex):
-        return self.timeout
-
-    def getMoveTimeout(self, agentIndex):
-        return self.timeout
 
     def getMaxTimeWarnings(self, agentIndex):
         return 0
@@ -347,8 +332,6 @@ def readCommand( argv ):
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
     parser.add_option('--frameTime', dest='frameTime', type='float',
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
-    parser.add_option('--timeout', dest='timeout', type='int',
-                      help=default('Maximum length of time an agent can spend computing in a single game'), default=30)
 
     options, otherjunk = parser.parse_args(argv)
     #error command generated
@@ -384,7 +367,6 @@ def readCommand( argv ):
         import graphicsDisplay
         args['display'] = graphicsDisplay.PacmanGraphics(frameTime = options.frameTime)
     args['numGames'] = options.numGames
-    args['timeout'] = options.timeout
 
     return args
 
@@ -411,11 +393,11 @@ def loadAgent(pacman, nographics):
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 
-def runGames( layout, pacman, ghosts, display, numGames, timeout=30 ):
+def runGames( layout, pacman, ghosts, display, numGames):
     import __main__
     __main__.__dict__['_display'] = display
 
-    rules = ClassicGameRules(timeout)
+    rules = ClassicGameRules()
     games = []
 
     for i in range( numGames ):

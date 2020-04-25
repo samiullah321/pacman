@@ -18,7 +18,6 @@ class Game:
         self.moveHistory = []
         self.totalAgentTimes = [0 for agent in agents]
         self.totalAgentTimeWarnings = [0 for agent in agents]
-        self.agentTimeout = False
         import io
         self.agentOutput = [io.StringIO() for agent in agents]
 
