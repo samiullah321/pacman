@@ -12,6 +12,7 @@ SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
 PACMAN_CAPTURE_OUTLINE_WIDTH = 4
 
+#Settings for Ghost
 GHOST_COLORS = []
 GHOST_COLORS.append(formatColor(.9,0,0)) # Red
 GHOST_COLORS.append(formatColor(0,.3,.9)) # Blue
@@ -20,8 +21,10 @@ GHOST_COLORS.append(formatColor(.1,.75,.7)) # Green
 GHOST_COLORS.append(formatColor(1.0,0.6,0.0)) # Yellow
 GHOST_COLORS.append(formatColor(.4,0.13,0.91)) # Purple
 
+#colors of all the ghosts
 TEAM_COLORS = GHOST_COLORS[:2]
 
+#defines the dimensions of the ghost
 GHOST_SHAPE = [
     (0, 1),
     (1, 0),
@@ -33,23 +36,25 @@ SCARED_COLOR = formatColor(1,1,1)
 
 GHOST_VEC_COLORS = list(map(colorToVector, GHOST_COLORS))
 
+#Some attributes of Pacman
 PACMAN_COLOR = formatColor(255.0/255.0,255.0/255.0,61.0/255)
 PACMAN_SCALE = 0.5
 #pacman_speed = 0.25
 
-# Food
+#food config
 FOOD_COLOR = formatColor(0.81,0.7,0.22)
 FOOD_SIZE = 0.1
 
-# Capsule graphics
+#bfood config
 CAPSULE_COLOR = formatColor(0.9,0,0)
 CAPSULE_SIZE = 0.20
 
-# Drawing walls
+#wall config
 WALL_RADIUS = 0.05
 
 class InfoPane:
     def __init__(self, layout, gridSize):
+        #Starting pane attributes
         self.gridSize = gridSize
         self.width = (layout.width) * gridSize
         self.base = (layout.height + 1) * gridSize
@@ -58,10 +63,7 @@ class InfoPane:
         self.textColor = PACMAN_COLOR
         self.drawPane()
 
-    def toScreen(self, pos, y = None):
-        """
-          Translates a point relative from the bottom left of the info pane.
-        """
+    def toScreen(self, pos, y = None): #Maps the positions from layout onto the screen
         if y == None:
             x,y = pos
         else:
@@ -74,7 +76,7 @@ class InfoPane:
     def drawPane(self):
         self.scoreText = text( self.toScreen(0, 0  ), self.textColor, "SCORE:    0", "Times", self.fontSize, "bold")
 
-    def initializeGhostDistances(self, distances):
+    def initializeGhostDistances(self, distances): #initializing ghost onto the screen
         self.ghostDistanceText = []
 
         size = 20
@@ -90,11 +92,6 @@ class InfoPane:
     def updateScore(self, score):
         changeText(self.scoreText, "SCORE: % 4d" % score)
 
-    def setTeam(self, isBlue):
-        text = "RED TEAM"
-        if isBlue: text = "BLUE TEAM"
-        self.teamText = text( self.toScreen(300, 0  ), self.textColor, text, "Times", self.fontSize, "bold")
-
     def updateGhostDistances(self, distances):
         if len(distances) == 0: return
         if 'ghostDistanceText' not in dir(self): self.initializeGhostDistances(distances)
@@ -102,26 +99,7 @@ class InfoPane:
             for i, d in enumerate(distances):
                 changeText(self.ghostDistanceText[i], d)
 
-    def drawGhost(self):
-        pass
-
-    def drawPacman(self):
-        pass
-
-    def drawWarning(self):
-        pass
-
-    def clearIcon(self):
-        pass
-
-    def updateMessage(self, message):
-        pass
-
-    def clearMessage(self):
-        pass
-
-
-class PacmanGraphics:
+class PacmanGraphics: #general graphics for pacman
     def __init__(self, zoom=1.0, frameTime=0.0, capture=False):
         self.have_window = 0
         self.currentGhostImages = {}
@@ -137,8 +115,6 @@ class PacmanGraphics:
     def initialize(self, state, isBlue = False):
         self.isBlue = isBlue
         self.startGraphics(state)
-
-        # self.drawDistributions(state)
         self.distributionImages = None  # Initialized lazily
         self.drawStaticObjects(state)
         self.drawAgentObjects(state)
@@ -146,7 +122,7 @@ class PacmanGraphics:
         # Information
         self.previousState = state
 
-    def startGraphics(self, state):
+    def startGraphics(self, state): #initializing the graphics onto the screen
         self.layout = state.layout
         layout = self.layout
         self.width = layout.width
@@ -155,6 +131,7 @@ class PacmanGraphics:
         self.infoPane = InfoPane(layout, self.gridSize)
         self.currentState = layout
 
+    #drawing the walls onto the screen
     def drawDistributions(self, state):
         walls = state.layout.walls
         dist = []
@@ -170,6 +147,7 @@ class PacmanGraphics:
                 distx.append(block)
         self.distributionImages = dist
 
+    #drawing food and bfood onto the screen
     def drawStaticObjects(self, state):
         layout = self.layout
         self.drawWalls(layout.walls)
@@ -177,6 +155,7 @@ class PacmanGraphics:
         self.capsules = self.drawCapsules(layout.capsules)
         refresh()
 
+    #drawing the pacman, ghost onto the screen
     def drawAgentObjects(self, state):
         self.agentImages = [] # (agentState, image)
         for index, agent in enumerate(state.agentStates):
@@ -188,51 +167,40 @@ class PacmanGraphics:
                 self.agentImages.append( (agent, image) )
         refresh()
 
-    def swapImages(self, agentIndex, newState):
-        """
-          Changes an image from a ghost to a pacman or vis versa (for capture)
-        """
-        prevState, prevImage = self.agentImages[agentIndex]
-        for item in prevImage: remove_from_screen(item)
-        if newState.isPacman:
-            image = self.drawPacman(newState, agentIndex)
-            self.agentImages[agentIndex] = (newState, image )
-        else:
-            image = self.drawGhost(newState, agentIndex)
-            self.agentImages[agentIndex] = (newState, image )
-        refresh()
-
+    #updates currentState to the newState recieved
     def update(self, newState):
+        #updating the agent moved
         agentIndex = newState._agentMoved
         agentState = newState.agentStates[agentIndex]
 
-        if self.agentImages[agentIndex][0].isPacman != agentState.isPacman: self.swapImages(agentIndex, agentState)
         prevState, prevImage = self.agentImages[agentIndex]
         if agentState.isPacman:
-            self.animatePacman(agentState, prevState, prevImage)
+            self.animatePacman(agentState, prevState, prevImage) #moving pacman
         else:
-            self.moveGhost(agentState, agentIndex, prevState, prevImage)
+            self.moveGhost(agentState, agentIndex, prevState, prevImage) #animating or moving the ghost
         self.agentImages[agentIndex] = (agentState, prevImage)
 
         if newState._foodEaten != None:
-            self.removeFood(newState._foodEaten, self.food)
+            self.removeFood(newState._foodEaten, self.food) #if the food is eaten, remove it from its position in new state
         if newState._capsuleEaten != None:
-            self.removeCapsule(newState._capsuleEaten, self.capsules)
+            self.removeCapsule(newState._capsuleEaten, self.capsules) #same as food
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
-            self.infoPane.updateGhostDistances(newState.ghostDistances)
+            self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
 
-    def make_window(self, width, height):
+    def make_window(self, width, height): #initializing the screen
         grid_width = (width-1) * self.gridSize
         grid_height = (height-1) * self.gridSize
         screen_width = 2*self.gridSize + grid_width
         screen_height = 2*self.gridSize + grid_height + INFO_PANE_HEIGHT
 
+        #starting the screen
         begin_graphics(screen_width,
                        screen_height,
                        BACKGROUND_COLOR,
-                       "CS188 Pacman")
+                       "PACMAN MULTI-AGENT SIMULATION")
 
+    #drawing the pacman
     def drawPacman(self, pacman, index):
         position = self.getPosition(pacman)
         screen_point = self.to_screen(position)
