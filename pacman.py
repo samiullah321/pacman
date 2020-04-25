@@ -347,12 +347,8 @@ def readCommand( argv ):
                       help=default('The maximum number of ghosts to use'), default=4)
     parser.add_option('-f', '--fixRandomSeed', action='store_true', dest='fixRandomSeed',
                       help='Fixes the random seed to always play the same game', default=False)
-    parser.add_option('-r', '--recordActions', action='store_true', dest='record',
-                      help='Writes game histories to a file (named by the time they were played)', default=False)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
-    parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
-                      help=default('How many episodes are training (suppresses output)'), default=0)
     parser.add_option('--frameTime', dest='frameTime', type='float',
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
     parser.add_option('--timeout', dest='timeout', type='int',
@@ -375,9 +371,6 @@ def readCommand( argv ):
     noKeyboard = False
     pacmanType = loadAgent(options.pacman, noKeyboard)
     agentOpts = parseAgentArgs(options.agentArgs)
-    if options.numTraining > 0:
-        args['numTraining'] = options.numTraining
-        if 'numTraining' not in agentOpts: agentOpts['numTraining'] = options.numTraining
     pacman = pacmanType(**agentOpts) # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
 
@@ -402,7 +395,6 @@ def readCommand( argv ):
         import graphicsDisplay
         args['display'] = graphicsDisplay.PacmanGraphics(frameTime = options.frameTime)
     args['numGames'] = options.numGames
-    args['record'] = options.record
     args['timeout'] = options.timeout
 
     return args
@@ -430,7 +422,7 @@ def loadAgent(pacman, nographics):
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 
-def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0, timeout=30 ):
+def runGames( layout, pacman, ghosts, display, numGames, timeout=30 ):
     import __main__
     __main__.__dict__['_display'] = display
 
@@ -438,7 +430,7 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
     games = []
 
     for i in range( numGames ):
-        beQuiet = i < numTraining
+        beQuiet = i < 0
         if beQuiet:
                 # Suppress output and graphics
             import textDisplay
@@ -451,15 +443,7 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
         game.run()
         if not beQuiet: games.append(game)
 
-        if record:
-            import time, pickle
-            fname = ('recorded-game-%d' % (i + 1)) +  '-'.join([str(t) for t in time.localtime()[1:6]])
-            f = open(fname, 'w')
-            components = {'layout': layout, 'actions': game.moveHistory}
-            pickle.dump(components, f)
-            f.close()
-
-    if (numGames-numTraining) > 0:
+    if (numGames) > 0:
         scores = [game.state.getScore() for game in games]
         wins = [game.state.isWin() for game in games]
         winRate = wins.count(True)/ float(len(wins))
