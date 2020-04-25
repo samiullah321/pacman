@@ -140,12 +140,12 @@ class ClassicGameRules:
     def __init__(self, timeout=30):
         self.timeout = timeout
 
-    def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False, catchExceptions=False):
+    def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
         agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
         initState = GameState()
         initState.initialize( layout, len(ghostAgents) )
-        game = Game(agents, display, self, catchExceptions=catchExceptions)
+        game = Game(agents, display, self)
         game.state = initState
         self.initialState = initState.deepCopy()
         self.quiet = quiet
@@ -351,16 +351,12 @@ def readCommand( argv ):
                       help='Fixes the random seed to always play the same game', default=False)
     parser.add_option('-r', '--recordActions', action='store_true', dest='record',
                       help='Writes game histories to a file (named by the time they were played)', default=False)
-    parser.add_option('--replay', dest='gameToReplay',
-                      help='A recorded game file (pickle) to replay', default=None)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
     parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
                       help=default('How many episodes are training (suppresses output)'), default=0)
     parser.add_option('--frameTime', dest='frameTime', type='float',
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
-    parser.add_option('-c', '--catchExceptions', action='store_true', dest='catchExceptions',
-                      help='Turns on exception handling and timeouts during games', default=False)
     parser.add_option('--timeout', dest='timeout', type='int',
                       help=default('Maximum length of time an agent can spend computing in a single game'), default=30)
 
@@ -378,7 +374,7 @@ def readCommand( argv ):
     if args['layout'] == None: raise Exception("The layout " + options.layout + " cannot be found") #in case of the layout not being found
 
     # Choose a Pacman agent
-    noKeyboard = options.gameToReplay == None and (options.textGraphics or options.quietGraphics)
+    noKeyboard = False
     pacmanType = loadAgent(options.pacman, noKeyboard)
     agentOpts = parseAgentArgs(options.agentArgs)
     if options.numTraining > 0:
@@ -409,19 +405,7 @@ def readCommand( argv ):
         args['display'] = graphicsDisplay.PacmanGraphics(options.zoom, frameTime = options.frameTime)
     args['numGames'] = options.numGames
     args['record'] = options.record
-    args['catchExceptions'] = options.catchExceptions
     args['timeout'] = options.timeout
-
-    # Special case: recorded games don't use the runGames method or args structure
-    if options.gameToReplay != None:
-        print('Replaying recorded game %s.' % options.gameToReplay)
-        import pickle
-        f = open(options.gameToReplay)
-        try: recorded = pickle.load(f)
-        finally: f.close()
-        recorded['display'] = args['display']
-        replayGame(**recorded)
-        sys.exit(0)
 
     return args
 
@@ -448,25 +432,7 @@ def loadAgent(pacman, nographics):
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 
-def replayGame( layout, actions, display ):
-    import pacmanAgents, ghostAgents
-    rules = ClassicGameRules()
-    agents = [pacmanAgents.GreedyAgent()] + [ghostAgents.RandomGhost(i+1) for i in range(layout.getNumGhosts())]
-    game = rules.newGame( layout, agents[0], agents[1:], display )
-    state = game.state
-    display.initialize(state.data)
-
-    for action in actions:
-            # Execute the action
-        state = state.generateSuccessor( *action )
-        # Change the display
-        display.update( state.data )
-        # Allow for game specific conditions (winning, losing, etc.)
-        rules.process(state, game)
-
-    display.finish()
-
-def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0, catchExceptions=False, timeout=30 ):
+def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0, timeout=30 ):
     import __main__
     __main__.__dict__['_display'] = display
 
@@ -483,7 +449,7 @@ def runGames( layout, pacman, ghosts, display, numGames, record, numTraining = 0
         else:
             gameDisplay = display
             rules.quiet = False
-        game = rules.newGame( layout, pacman, ghosts, gameDisplay, beQuiet, catchExceptions)
+        game = rules.newGame( layout, pacman, ghosts, gameDisplay, beQuiet)
         game.run()
         if not beQuiet: games.append(game)
 
