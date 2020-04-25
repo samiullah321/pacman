@@ -25,7 +25,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         else:
             return GhostRules.getLegalActions( self, agentIndex ) #getting the legal actions for the Ghost
 
-    def generateSuccessor( self, agentIndex, action): #returns the state the agent will take after the specified action (assessing predicted action's score)
+    def generateSuccessor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted gameState)
         #checking that action can be applied or not
         if self.isWin() or self.isLose(): raise Exception('Can\'t generate a successor of a terminal state.')
 
