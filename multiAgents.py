@@ -81,10 +81,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
         # print(num_agent)
         action_score = []  # stores the legal move and their scores
 
-        def _rmStop(List):  # shows the legal moves
+        def remove_stop(List):  # shows the legal moves
             return [x for x in List if x != 'Stop']  # removing the stop action, as the pacman is not allowed to stop
 
-        def _miniMax(s, iteration_count):  # default depth is '2'
+        def miniMax(s, iteration_count):  # default depth is '2'
             # print(iteration_count)
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():  # returning the score in case of agent count exceeding the depth for which the evaluation has to be done.
                 return self.evaluator(s)  # using the evaluationFunnction to return the score
@@ -93,25 +93,25 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
                 # get_legal_moves is returning the legal actions for the agent specified. Index 0 represents Pacman and Index 1 onwards represents Ghosts
 
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent,
                                                a)  # generating the successor  game_state for the action specified
-                    result = min(result, _miniMax(sdot,
+                    result = min(result, miniMax(sdot,
                                                   iteration_count + 1))  # as the agent will minimize, hence choses the result with the minimum benefit
                 return result
             else:  # Pacman Max
                 result = -1e10  # -ve infinity
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent, a)  # same as above
-                    result = max(result, _miniMax(sdot,
+                    result = max(result, miniMax(sdot,
                                                   iteration_count + 1))  # the pacman will try to maximize the result hence will chose the one with the max benefit
                     if iteration_count == 0:
                         action_score.append(result)
                 return result
 
-        result = _miniMax(game_state, 0);  # initialiteration_count is 0
-        # print (_rmStop(game_state.get_legal_moves(0)), action_score)
-        return _rmStop(game_state.get_legal_moves(0))[
+        result = miniMax(game_state, 0);  # initialiteration_count is 0
+        # print (remove_stop(game_state.get_legal_moves(0)), action_score)
+        return remove_stop(game_state.get_legal_moves(0))[
             action_score.index(max(action_score))]  # returning the action having the max score
 
 
@@ -122,27 +122,27 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         num_agent = game_state.get_num_agents()
         action_score = []
 
-        def _rmStop(List):
+        def remove_stop(List):
             return [x for x in List if x != 'Stop']
 
         # introduced two factor, alpha and beta here, in order to prune and not traverse all gamestates
-        def _alphaBeta(s, iteration_count, alpha, beta):
+        def alpha_beta(s, iteration_count, alpha, beta):
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():
                 return self.evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
                 result = 1e10
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = min(result, _alphaBeta(sdot, iteration_count + 1, alpha, beta))
+                    result = min(result, alpha_beta(sdot, iteration_count + 1, alpha, beta))
                     beta = min(beta, result)  # beta holds the minimum of the path travered till the root
                     if beta < alpha:  # Pruning. If beta is lesser than alpha, then we need not to traverse the other state
                         break
                 return result
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = max(result, _alphaBeta(sdot, iteration_count + 1, alpha, beta))
+                    result = max(result, alpha_beta(sdot, iteration_count + 1, alpha, beta))
                     alpha = max(alpha, result)  # alpha holds the maxmimum of the path travered till the root
                     if iteration_count == 0:
                         action_score.append(result)
@@ -150,8 +150,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                         break
                 return result
 
-        result = _alphaBeta(game_state, 0, -1e20, 1e20)  # alpha and beta are set to -ve and +ve infinity as shown
-        return _rmStop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
+        result = alpha_beta(game_state, 0, -1e20, 1e20)  # alpha and beta are set to -ve and +ve infinity as shown
+        return remove_stop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -161,7 +161,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         num_agent = game_state.get_num_agents()
         action_score = []
 
-        def _rmStop(List):
+        def remove_stop(List):
             return [x for x in List if x != 'Stop']
 
         def _expectMinimax(s, iteration_count):
@@ -169,7 +169,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return self.evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
                 successorScore = []
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent, a)
                     result = _expectMinimax(sdot, iteration_count + 1)
                     successorScore.append(result)
@@ -178,7 +178,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return averageScore
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.get_legal_moves(iteration_count % num_agent)):
+                for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     sdot = s.produce_successor(iteration_count % num_agent, a)
                     result = max(result, _expectMinimax(sdot, iteration_count + 1))
                     if iteration_count == 0:
@@ -186,4 +186,4 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return result
 
         result = _expectMinimax(game_state, 0);
-        return _rmStop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
+        return remove_stop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
