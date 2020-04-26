@@ -177,7 +177,7 @@ def circle(coord, r, outlineColor, fillColor, endpoints=None, style='pieslice', 
     return _canvas.create_arc(x0, y0, x1, y1, outline=outlineColor, fill=fillColor,
                               extent=e[1] - e[0], start=e[0], style=style, width=width)
 
-def image(coord, file="../../blueghost.gif"):
+def image(coord, file=""):
     x, y = coord
     # img = PhotoImage(file=file)
     return _canvas.create_image(x, y, image = tkinter.PhotoImage(file=file), anchor = tkinter.NW)
@@ -359,20 +359,6 @@ def writePostscript(filename):
                      y='0.c',
                      x='0.c'))
     psfile.close()
-
-ghost_shape = [
-    (0, - 0.5),
-    (0.25, - 0.75),
-    (0.5, - 0.5),
-    (0.75, - 0.75),
-    (0.75, 0.5),
-    (0.5, 0.75),
-    (- 0.5, 0.75),
-    (- 0.75, 0.5),
-    (- 0.75, - 0.75),
-    (- 0.5, - 0.5),
-    (- 0.25, - 0.75)
-  ]
 
 if __name__ == '__main__':
     begin_graphics()

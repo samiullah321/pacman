@@ -3,13 +3,13 @@ import math, time
 from game import Directions
 
 #Settings for the display
-DEFAULT_GRID_SIZE = 30.0
-INFO_PANE_HEIGHT = 35
-BACKGROUND_COLOR = format_color(0,0,0)
-WALL_COLOR = format_color(64/255.0, 224/255.0, 208/255.0)
-INFO_PANE_COLOR = format_color(.4,.4,0)
-SCORE_COLOR = format_color(.9, .9, .9)
-PACMAN_OUTLINE_WIDTH = 2
+grdi_size = 30.0
+info_height = 35
+background_color = format_color(0,0,0)
+wall_color = format_color(64/255.0, 224/255.0, 208/255.0)
+info_color = format_color(.4,.4,0)
+score_color = format_color(.9, .9, .9)
+pac_outline = 2
 
 #Settings for Ghost
 GHOST_COLORS = []
@@ -57,7 +57,7 @@ class InfoPane:
         self.gridSize = gridSize
         self.width = (layout.width) * gridSize
         self.base = (layout.height + 1) * gridSize
-        self.height = INFO_PANE_HEIGHT
+        self.height = info_height
         self.fontSize = 24
         self.textColor = PACMAN_COLOR
         self.drawPane()
@@ -103,7 +103,7 @@ class PacmanGraphics: #general graphics for pacman
         self.have_window = 0
         self.currentGhostImages = {}
         self.pacmanImage = None
-        self.gridSize = DEFAULT_GRID_SIZE
+        self.gridSize = grdi_size
         self.frameTime = frameTime
 
     def checkNullDisplay(self):
@@ -139,7 +139,7 @@ class PacmanGraphics: #general graphics for pacman
                 ( screen_x, screen_y ) = self.to_screen( (x, y) )
                 block = square( (screen_x, screen_y),
                                 0.5 * self.gridSize,
-                                color = BACKGROUND_COLOR,
+                                color = background_color,
                                 filled = 1, behind=2)
                 distx.append(block)
         self.distributionImages = dist
@@ -189,12 +189,12 @@ class PacmanGraphics: #general graphics for pacman
         grid_width = (width-1) * self.gridSize
         grid_height = (height-1) * self.gridSize
         screen_width = 2*self.gridSize + grid_width
-        screen_height = 2*self.gridSize + grid_height + INFO_PANE_HEIGHT
+        screen_height = 2*self.gridSize + grid_height + info_height
 
         #starting the screen
         begin_graphics(screen_width,
                        screen_height,
-                       BACKGROUND_COLOR,
+                       background_color,
                        "PACMAN MULTI-AGENT SIMULATION")
 
     #drawing the pacman
@@ -203,7 +203,7 @@ class PacmanGraphics: #general graphics for pacman
         screen_point = self.to_screen(position)
         endpoints = self.getEndpoints(self.getDirection(pacman))
 
-        width = PACMAN_OUTLINE_WIDTH
+        width = pac_outline
         outlineColor = PACMAN_COLOR
         fillColor = PACMAN_COLOR
 
@@ -335,7 +335,7 @@ class PacmanGraphics: #general graphics for pacman
 
     #drawing the walls from the wallMatrix
     def drawWalls(self, wallMatrix):
-        wallColor = WALL_COLOR
+        wallColor = wall_color
         for xNum, x in enumerate(wallMatrix):
             for yNum, cell in enumerate(x):
                 if cell: # There's a wall here
