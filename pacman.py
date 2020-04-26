@@ -58,7 +58,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     def getLegalPacmanActions( self ):
         return self.get_legal_moves( 0 )
 
-    def generatePacmanSuccessor( self, action ):
+    def produce_pac_successor( self, action ):
         return self.generateSuccessor( 0, action ) #applying the action on the pacman
 
     def getPacmanState( self ):

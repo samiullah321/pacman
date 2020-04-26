@@ -27,33 +27,33 @@ class ReflexAgent(Agent):
         # returns a score,the higher the score from evaluator the better
         # information taken into consideration from current state: remaining coin(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
-        successorGameState = currentGameState.generatePacmanSuccessor(action)
-        new_coord = successorGameState.get_pacman_coord()  # taking the pacman position after moving
-        new_coin = successorGameState.get_coin()  # taking the remaining coin
+        next_game_state = currentGameState.produce_pac_successor(action)
+        new_coord = next_game_state.get_pacman_coord()  # taking the pacman position after moving
+        new_coin = next_game_state.get_coin()  # taking the remaining coin
         # taking the remaining scaredtimes of the ghosts
-        newGhostStates = successorGameState.getGhostStates()
+        newGhostStates = next_game_state.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         # REFLEX AGENT CODE
         coinPos = new_coin.asList()
         coinCount = len(coinPos)  # number of coin available
-        closestDistance = 1e6  # initially set to infinite
+        nearest_distance = 1e6  # initially set to infinite
         for i in range(coinCount):
             distance = manhattanDistance(coinPos[i], new_coord) + coinCount * 100
-            if distance < closestDistance:  # find the closest available coin
-                closestDistance = distance
+            if distance < nearest_distance:  # find the closest available coin
+                nearest_distance = distance
                 closestcoin = coinPos
         if coinCount == 0:
-            closestDistance = 0
-        score = -closestDistance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
+            nearest_distance = 0
+        score = -nearest_distance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
 
         for i in range(len(newGhostStates)):
             # getting the positions of each ghost and checking whether it has eaten pacman or not
-            ghostPos = successorGameState.getGhostPosition(i + 1)
+            ghostPos = next_game_state.getGhostPosition(i + 1)
             if manhattanDistance(new_coord, ghostPos) <= 1:  # if pacman dies
                 score -= 1e6  # the score when the pacman dies
 
-        return score  # successorGameState.getScore()
+        return score  # next_game_state.getScore()
 
 
 def scoreevaluator(currentGameState):
