@@ -7,22 +7,20 @@ except:
 class Game:
 
     # manages the control flow, requesting actions from agents.
-    def __init__( self, agents, display, rules, startingIndex=0, muteAgents=False):
-        self.agentCrashed = False
+    def __init__( self, agents, display, rules, s_index=0, mute_agent=False):
+        self.agent_crash = False
         self.agents = agents
         self.display = display
         self.rules = rules
-        self.startingIndex = startingIndex
-        self.gameOver = False
-        self.muteAgents = muteAgents
-        self.moveHistory = []
-        self.totalAgentTimes = [0 for agent in agents]
-        self.totalAgentTimeWarnings = [0 for agent in agents]
+        self.s_index = s_index
+        self.game_finish = False
+        self.mute_agent = mute_agent
+        self.move_history = []
         import io
-        self.agentOutput = [io.StringIO() for agent in agents]
+        self.agent_out = [io.StringIO() for agent in agents]
 
     def get_progress(self): #Checking whether the game is over or not
-        if self.gameOver:
+        if self.game_finish:
             return 1.0
         else:
             return self.rules.get_progress(self)
@@ -30,28 +28,28 @@ class Game:
     def _agentCrash( self, agent_index, quiet=False):
         "Helper method for handling agent crashes"
         if not quiet: traceback.print_exc()
-        self.gameOver = True
-        self.agentCrashed = True
+        self.game_finish = True
+        self.agent_crash = True
         self.rules.agent_crash(self, agent_index)
 
-    OLD_STDOUT = None
-    OLD_STDERR = None
+    ostd_out = None
+    ostd_err = None
 
     def mute(self, agent_index):
-        if not self.muteAgents: return
-        global OLD_STDOUT, OLD_STDERR
+        if not self.mute_agent: return
+        global ostd_out, ostd_err
         import io
-        OLD_STDOUT = sys.stdout
-        OLD_STDERR = sys.stderr
-        sys.stdout = self.agentOutput[agent_index]
-        sys.stderr = self.agentOutput[agent_index]
+        ostd_out = sys.stdout
+        ostd_err = sys.stderr
+        sys.stdout = self.agent_out[agent_index]
+        sys.stderr = self.agent_out[agent_index]
 
     def unmute(self):
-        if not self.muteAgents: return
-        global OLD_STDOUT, OLD_STDERR
+        if not self.mute_agent: return
+        global ostd_out, ostd_err
         # Revert stdout/stderr to originals
-        sys.stdout = OLD_STDOUT
-        sys.stderr = OLD_STDERR
+        sys.stdout = ostd_out
+        sys.stderr = ostd_err
 
 
     def run( self ):
@@ -79,10 +77,10 @@ class Game:
                 ## TODO: could this exceed the total time
                 self.unmute()
 
-        agent_index = self.startingIndex
+        agent_index = self.s_index
         numAgents = len( self.agents )
 
-        while not self.gameOver:
+        while not self.game_finish:
             # Fetch the next agent
             agent = self.agents[agent_index]
             move_time = 0
@@ -102,7 +100,7 @@ class Game:
             self.unmute()
 
             # Execute the action
-            self.moveHistory.append( (agent_index, action) )
+            self.move_history.append( (agent_index, action) )
             self.state = self.state.produce_successor( agent_index, action )
 
             # Change the display

@@ -140,11 +140,11 @@ class classic_rule:
 
     def win( self, state, game ): #printing win
         if not self.quiet: print("Pacman emerges victorious! Score: %d" % state.data.score)
-        game.gameOver = True
+        game.game_finish = True
 
     def lose( self, state, game ): # printing loss
         if not self.quiet: print("Pacman died! Score: %d" % state.data.score)
-        game.gameOver = True
+        game.game_finish = True
 
     def get_progress(self, game): #returning how much coin eaten from the start
         return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
