@@ -26,23 +26,23 @@ class RandomGhost( GhostAgent ):
 
 #GHOST THAT CHOOSES AN ACTION SMARTLY
 class DirectionalGhost( GhostAgent ):
-    def __init__( self, index, prob_attack=0.8, prob_scaredFlee=0.8 ):
+    def __init__( self, index, prob_attack=0.8, prob_scared=0.8 ):
         self.index = index
          #setting the probabilities for the ghost to flee or attack
         self.prob_attack = prob_attack
-        self.prob_scaredFlee = prob_scaredFlee
+        self.prob_scared = prob_scared
 
     def get_probability_distribution ( self, state ):
         # Read variables from state
-        ghostState = state.getGhostState( self.index )
-        legalActions = state.get_legal_moves( self.index )
+        ghost_state = state.get_ghost_state( self.index )
+        legal_move = state.get_legal_moves( self.index )
         pos = state.get_ghost_coord( self.index )
-        isScared = ghostState.scaredTimer > 0
+        isScared = ghost_state.scaredTimer > 0
 
         speed = 1
         if isScared: speed = 0.5
 
-        actionVectors = [Actions.directionToVector( a, speed ) for a in legalActions]
+        actionVectors = [Actions.directionToVector( a, speed ) for a in legal_move]
         newPositions = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors] #ghost positions
         pacmanPosition = state.get_pacman_coord() #pacman positions
 
@@ -50,15 +50,15 @@ class DirectionalGhost( GhostAgent ):
         distancesToPacman = [manhattanDistance( pos, pacmanPosition ) for pos in newPositions]
         if isScared: #chooose the position with the max distance from pacman and start to flee there
             max_score = max( distancesToPacman )
-            bestProb = self.prob_scaredFlee
+            bestProb = self.prob_scared
         else: #choose the positions with the min distance from pacman and start to attack there
             max_score = min( distancesToPacman )
             bestProb = self.prob_attack
-        bestActions = [action for action, distance in zip( legalActions, distancesToPacman ) if distance == max_score]
+        bestActions = [action for action, distance in zip( legal_move, distancesToPacman ) if distance == max_score]
 
         # Construct distribution
         dist = util.Counter()
         for a in bestActions: dist[a] = bestProb / len(bestActions)
-        for a in legalActions: dist[a] += ( 1-bestProb ) / len(legalActions)
+        for a in legal_move: dist[a] += ( 1-bestProb ) / len(legal_move)
         dist.normalize()
         return dist
