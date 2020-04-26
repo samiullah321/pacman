@@ -20,7 +20,7 @@ class GhostAgent( Agent ):
 class RandomGhost( GhostAgent ):
     def getDistribution( self, state ):
         dist = util.Counter()
-        for a in state.getLegalActions( self.index ): dist[a] = 1.0
+        for a in state.get_legal_moves( self.index ): dist[a] = 1.0
         dist.normalize()
         return dist
 
@@ -35,7 +35,7 @@ class DirectionalGhost( GhostAgent ):
     def getDistribution( self, state ):
         # Read variables from state
         ghostState = state.getGhostState( self.index )
-        legalActions = state.getLegalActions( self.index )
+        legalActions = state.get_legal_moves( self.index )
         pos = state.getGhostPosition( self.index )
         isScared = ghostState.scaredTimer > 0
 

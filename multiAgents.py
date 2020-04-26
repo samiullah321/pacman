@@ -10,7 +10,7 @@ class ReflexAgent(Agent):
     # A reflex agent chooses action at each phase by using the evaluation function given below
     def getAction(self, gameState):
         # Collect legal moves and successor states
-        legalMoves = gameState.getLegalActions()
+        legalMoves = gameState.get_legal_moves()
 
         scores = [self.evaluator(gameState, action) for action in
                   legalMoves]  # Choose the best action amongs the list of possible moves
@@ -91,9 +91,9 @@ class MinimaxAgent(MultiAgentSearchAgent):
             if iterCount % numAgent != 0:  # Ghost min (e.g 0,5,10 % 5 would be 0 which the index for the Pacman)
                 result = 1e10  # +ve infinity
 
-                # getLegalActions is returning the legal actions for the agent specified. Index 0 represents Pacman and Index 1 onwards represents Ghosts
+                # get_legal_moves is returning the legal actions for the agent specified. Index 0 represents Pacman and Index 1 onwards represents Ghosts
 
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent,
                                                a)  # generating the successor  gameState for the action specified
                     result = min(result, _miniMax(sdot,
@@ -101,7 +101,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return result
             else:  # Pacman Max
                 result = -1e10  # -ve infinity
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)  # same as above
                     result = max(result, _miniMax(sdot,
                                                   iterCount + 1))  # the pacman will try to maximize the result hence will chose the one with the max benefit
@@ -110,8 +110,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 return result
 
         result = _miniMax(gameState, 0);  # initialiterCount is 0
-        # print (_rmStop(gameState.getLegalActions(0)), ActionScore)
-        return _rmStop(gameState.getLegalActions(0))[
+        # print (_rmStop(gameState.get_legal_moves(0)), ActionScore)
+        return _rmStop(gameState.get_legal_moves(0))[
             ActionScore.index(max(ActionScore))]  # returning the action having the max score
 
 
@@ -131,7 +131,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 return self.evaluator(s)
             if iterCount % numAgent != 0:  # Ghost min
                 result = 1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
                     result = min(result, _alphaBeta(sdot, iterCount + 1, alpha, beta))
                     beta = min(beta, result)  # beta holds the minimum of the path travered till the root
@@ -140,7 +140,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 return result
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
                     result = max(result, _alphaBeta(sdot, iterCount + 1, alpha, beta))
                     alpha = max(alpha, result)  # alpha holds the maxmimum of the path travered till the root
@@ -151,7 +151,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 return result
 
         result = _alphaBeta(gameState, 0, -1e20, 1e20)  # alpha and beta are set to -ve and +ve infinity as shown
-        return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
+        return _rmStop(gameState.get_legal_moves(0))[ActionScore.index(max(ActionScore))]
 
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
@@ -169,7 +169,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return self.evaluator(s)
             if iterCount % numAgent != 0:  # Ghost min
                 successorScore = []
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
                     result = _expectMinimax(sdot, iterCount + 1)
                     successorScore.append(result)
@@ -178,7 +178,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return averageScore
             else:  # Pacman Max
                 result = -1e10
-                for a in _rmStop(s.getLegalActions(iterCount % numAgent)):
+                for a in _rmStop(s.get_legal_moves(iterCount % numAgent)):
                     sdot = s.generateSuccessor(iterCount % numAgent, a)
                     result = max(result, _expectMinimax(sdot, iterCount + 1))
                     if iterCount == 0:
@@ -186,4 +186,4 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 return result
 
         result = _expectMinimax(gameState, 0);
-        return _rmStop(gameState.getLegalActions(0))[ActionScore.index(max(ActionScore))]
+        return _rmStop(gameState.get_legal_moves(0))[ActionScore.index(max(ActionScore))]

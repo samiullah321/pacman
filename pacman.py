@@ -14,16 +14,16 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
 
     # Accessor methods
-    explored = set() #keeps track of which states have had getLegalActions called
+    explored = set() #keeps track of which states have had get_legal_moves called
 
-    def getLegalActions( self, agentIndex=0 ): #can help in assessing the actions that will help maximize or mimimize agents chances of winning
+    def get_legal_moves( self, agentIndex=0 ): #can help in assessing the actions that will help maximize or mimimize agents chances of winning
 
         if self.isWin() or self.isLose(): return [] #we can have no legal actions for terminal state
 
         if agentIndex == 0: #if it is pacman then
-            return PacmanRules.getLegalActions( self ) #getting the legal actions for the PACMAN
+            return PacmanRules.get_legal_moves( self ) #getting the legal actions for the PACMAN
         else:
-            return GhostRules.getLegalActions( self, agentIndex ) #getting the legal actions for the Ghost
+            return GhostRules.get_legal_moves( self, agentIndex ) #getting the legal actions for the Ghost
 
     def generateSuccessor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted gameState)
         #checking that action can be applied or not
@@ -56,7 +56,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         return state
 
     def getLegalPacmanActions( self ):
-        return self.getLegalActions( 0 )
+        return self.get_legal_moves( 0 )
 
     def generatePacmanSuccessor( self, action ):
         return self.generateSuccessor( 0, action ) #applying the action on the pacman
@@ -176,12 +176,12 @@ class PacmanRules:
     #functions for the pacman
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
-    def getLegalActions( state ):
+    def get_legal_moves( state ):
         return Actions.getPossibleActions( state.getPacmanState().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
-    getLegalActions = staticmethod( getLegalActions )
+    get_legal_moves = staticmethod( get_legal_moves )
 
     def applyAction( state, action ): # applying the action received on the pacman
-        legal = PacmanRules.getLegalActions( state )
+        legal = PacmanRules.get_legal_moves( state )
         if action not in legal:
             raise Exception("Illegal action " + str(action))
         pacmanState = state.data.agentStates[0]
@@ -218,7 +218,7 @@ class PacmanRules:
 class GhostRules:
     #functions for the ghost interacting with the enviroment
     GHOST_SPEED=1.0 # speed of ghost and pacman is same
-    def getLegalActions( state, ghostIndex ): #getting the LegalActions for the ghost
+    def get_legal_moves( state, ghostIndex ): #getting the LegalActions for the ghost
         conf = state.getGhostState( ghostIndex ).configuration
         possibleActions = Actions.getPossibleActions( conf, state.data.layout.walls )
         reverse = Actions.reverseDirection( conf.direction )
@@ -227,11 +227,11 @@ class GhostRules:
         if reverse in possibleActions and len( possibleActions ) > 1: #if there is any other legal action except reversing the direction then remove reverse (cannot remove until dead end)
             possibleActions.remove( reverse )
         return possibleActions
-    getLegalActions = staticmethod( getLegalActions )
+    get_legal_moves = staticmethod( get_legal_moves )
 
     def applyAction( state, action, ghostIndex): #applying the action by getting the LegalActions possible
 
-        legal = GhostRules.getLegalActions( state, ghostIndex )
+        legal = GhostRules.get_legal_moves( state, ghostIndex )
         if action not in legal:
             raise Exception("Illegal ghost action " + str(action))
 

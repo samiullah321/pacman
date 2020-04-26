@@ -24,7 +24,7 @@ class KeyboardAgent(Agent):
         if keys != []:
             self.keys = keys
 
-        legal = state.getLegalActions(self.index)
+        legal = state.get_legal_moves(self.index)
         move = self.getMove(legal)
 
         if move == Directions.STOP:
