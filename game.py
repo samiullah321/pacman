@@ -227,7 +227,7 @@ class GameStateData: #data pertaining to each state of the game
     def __init__( self, prevState = None ):
         if prevState != None:
             #MAINTAINING THE PREVIOUS STATE IN ORDER TO COMPARE
-            self.food = prevState.food.shallowCopy()
+            self.coin = prevState.coin.shallowCopy()
             self.capsules = prevState.capsules[:]
             self.agentStates = self.copyAgentStates( prevState.agentStates )
             self.layout = prevState.layout #previous maze layout
@@ -235,8 +235,8 @@ class GameStateData: #data pertaining to each state of the game
             self.score = prevState.score
 
         #MAINTAINING STATES FOR THE AGENT
-        self._foodEaten = None
-        self._foodAdded = None
+        self._coinEaten = None
+        self._coinAdded = None
         self._capsuleEaten = None
         self._agentMoved = None #checking if the agent has moved from previous position
         self._lose = False #game lost
@@ -245,11 +245,11 @@ class GameStateData: #data pertaining to each state of the game
 
     def deepCopy( self ): #DEEP COPYING
         state = GameStateData( self )
-        state.food = self.food.deepCopy()
+        state.coin = self.coin.deepCopy()
         state.layout = self.layout.deepCopy()
         state._agentMoved = self._agentMoved
-        state._foodEaten = self._foodEaten
-        state._foodAdded = self._foodAdded
+        state._coinEaten = self._coinEaten
+        state._coinAdded = self._coinAdded
         state._capsuleEaten = self._capsuleEaten
         return state
 
@@ -261,7 +261,7 @@ class GameStateData: #data pertaining to each state of the game
 
     def initialize( self, layout, numGhostAgents ):
         #creating the GameState from the layout (INITIAL STATE)
-        self.food = layout.food.copy()
+        self.coin = layout.coin.copy()
         #self.capsules = []
         self.capsules = layout.capsules[:]
         self.layout = layout

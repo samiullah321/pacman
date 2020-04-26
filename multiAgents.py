@@ -25,27 +25,27 @@ class ReflexAgent(Agent):
     def evaluator(self, currentGameState, action):  # This evaluation function is only for the Reflex agent
 
         # returns a score,the higher the score from evaluator the better
-        # information taken into consideration from current state: remaining food(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
+        # information taken into consideration from current state: remaining coin(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
         successorGameState = currentGameState.generatePacmanSuccessor(action)
         new_coord = successorGameState.get_pacman_coord()  # taking the pacman position after moving
-        new_coin = successorGameState.get_coin()  # taking the remaining food
+        new_coin = successorGameState.get_coin()  # taking the remaining coin
         # taking the remaining scaredtimes of the ghosts
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         # REFLEX AGENT CODE
-        foodPos = new_coin.asList()
-        foodCount = len(foodPos)  # number of food available
+        coinPos = new_coin.asList()
+        coinCount = len(coinPos)  # number of coin available
         closestDistance = 1e6  # initially set to infinite
-        for i in range(foodCount):
-            distance = manhattanDistance(foodPos[i], new_coord) + foodCount * 100
-            if distance < closestDistance:  # find the closest available food
+        for i in range(coinCount):
+            distance = manhattanDistance(coinPos[i], new_coord) + coinCount * 100
+            if distance < closestDistance:  # find the closest available coin
                 closestDistance = distance
-                closestFood = foodPos
-        if foodCount == 0:
+                closestcoin = coinPos
+        if coinCount == 0:
             closestDistance = 0
-        score = -closestDistance  # the step needed to reach the food are subtracted from the score, predicting the score after pacman tries to eat that food
+        score = -closestDistance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
 
         for i in range(len(newGhostStates)):
             # getting the positions of each ghost and checking whether it has eaten pacman or not

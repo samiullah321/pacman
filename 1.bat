@@ -29,4 +29,4 @@ pause
 
 ::python pacman.py --frameTime 0 -l smallClassic -p ExpectimaxAgent -q -n 30
 
-pause
+::pause

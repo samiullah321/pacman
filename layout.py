@@ -9,13 +9,13 @@ class Layout: #maintains the information regarding the layout
         self.width = len(layoutText[0])
         self.height= len(layoutText)
         self.walls = Grid(self.width, self.height, False)
-        self.food = Grid(self.width, self.height, False)
+        self.coin = Grid(self.width, self.height, False)
         self.capsules = []
         self.agentPositions = []
         self.numGhosts = 0
         self.processLayoutText(layoutText) #taking the layoutText from the file
         self.layoutText = layoutText
-        self.totalFood = len(self.food.asList()) #total number of coins available
+        self.totalcoin = len(self.coin.asList()) #total number of coins available
 
     def getNumGhosts(self):
         return self.numGhosts
@@ -29,7 +29,7 @@ class Layout: #maintains the information regarding the layout
 
     def processLayoutText(self, layoutText):
          # % - Wall
-         # . - Food
+         # . - coin
          # o - Capsule
          # G - Ghost
          # P - Pacman
@@ -46,7 +46,7 @@ class Layout: #maintains the information regarding the layout
         if layoutChar == '%':
             self.walls[x][y] = True
         elif layoutChar == '.':
-            self.food[x][y] = True
+            self.coin[x][y] = True
         elif layoutChar == 'o':
             self.capsules.append((x, y))
         elif layoutChar == 'P':

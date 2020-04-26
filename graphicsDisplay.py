@@ -40,11 +40,11 @@ PACMAN_COLOR = formatColor(255.0/255.0,255.0/255.0,61.0/255)
 PACMAN_SCALE = 0.5
 #pacman_speed = 0.25
 
-#food config
-FOOD_COLOR = formatColor(0.81,0.7,0.22)
-FOOD_SIZE = 0.1
+#coin config
+coin_COLOR = formatColor(0.81,0.7,0.22)
+coin_SIZE = 0.1
 
-#bfood config
+#bcoin config
 CAPSULE_COLOR = formatColor(0.9,0,0)
 CAPSULE_SIZE = 0.20
 
@@ -144,11 +144,11 @@ class PacmanGraphics: #general graphics for pacman
                 distx.append(block)
         self.distributionImages = dist
 
-    #drawing food and bfood onto the screen
+    #drawing coin and bcoin onto the screen
     def drawStaticObjects(self, state):
         layout = self.layout
         self.drawWalls(layout.walls)
-        self.food = self.drawFood(layout.food)
+        self.coin = self.drawcoin(layout.coin)
         self.capsules = self.drawCapsules(layout.capsules)
         refresh()
 
@@ -177,10 +177,10 @@ class PacmanGraphics: #general graphics for pacman
             self.moveGhost(agentState, agentIndex, prevState, prevImage) #animating or moving the ghost
         self.agentImages[agentIndex] = (agentState, prevImage)
 
-        if newState._foodEaten != None:
-            self.removeFood(newState._foodEaten, self.food) #if the food is eaten, remove it from its position in new state
+        if newState._coinEaten != None:
+            self.removecoin(newState._coinEaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState._capsuleEaten != None:
-            self.removeCapsule(newState._capsuleEaten, self.capsules) #same as food
+            self.removeCapsule(newState._capsuleEaten, self.capsules) #same as coin
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
@@ -424,26 +424,26 @@ class PacmanGraphics: #general graphics for pacman
             return False
         return walls[x][y]
 
-    #drawing the food on the layout
-    def drawFood(self, foodMatrix ):
-        foodImages = []
-        color = FOOD_COLOR
-        for xNum, x in enumerate(foodMatrix):
+    #drawing the coin on the layout
+    def drawcoin(self, coinMatrix ):
+        coinImages = []
+        color = coin_COLOR
+        for xNum, x in enumerate(coinMatrix):
             imageRow = []
-            foodImages.append(imageRow)
+            coinImages.append(imageRow)
             for yNum, cell in enumerate(x):
-                if cell: # There's food here
+                if cell: # There's coin here
                     screen = self.to_screen((xNum, yNum ))
                     dot = circle( screen,
-                                  FOOD_SIZE * self.gridSize,
+                                  coin_SIZE * self.gridSize,
                                   outlineColor = color, fillColor = color,
                                   width = 1)
                     imageRow.append(dot)
                 else:
                     imageRow.append(None)
-        return foodImages
+        return coinImages
 
-    #drawing bfood on the layout
+    #drawing bcoin on the layout
     def drawCapsules(self, capsules ):
         capsuleImages = {}
         for capsule in capsules:
@@ -456,12 +456,12 @@ class PacmanGraphics: #general graphics for pacman
             capsuleImages[capsule] = dot
         return capsuleImages
 
-    #removing the food from the layout
-    def removeFood(self, cell, foodImages ):
+    #removing the coin from the layout
+    def removecoin(self, cell, coinImages ):
         x, y = cell
-        remove_from_screen(foodImages[x][y])
+        remove_from_screen(coinImages[x][y])
 
-    #removing the bfood from the layout
+    #removing the bcoin from the layout
     def removeCapsule(self, cell, capsuleImages ):
         x, y = cell
         remove_from_screen(capsuleImages[(x, y)])

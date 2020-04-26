@@ -10,7 +10,7 @@ from datetime import datetime
 
 class GameState: #has accessor methods for accessing variables of GameStateData object
 
-    #specifies the full game state, including the food, capsules, agent configurations and score changes.
+    #specifies the full game state, including the coin, capsules, agent configurations and score changes.
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
 
     # Accessor methods
@@ -93,17 +93,17 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     def getCapsules(self):
         return self.data.capsules #returning the remaining capsule positions
 
-    def getNumFood( self ):
-        return self.data.food.count() #getting the remaining food on the maze
+    def getNumcoin( self ):
+        return self.data.coin.count() #getting the remaining coin on the maze
 
     def get_coin(self):
-        return self.data.food #return a 2d array of boolean indicating presence of food on each location
+        return self.data.coin #return a 2d array of boolean indicating presence of coin on each location
 
     def getWalls(self):
         return self.data.layout.walls #return a 2d array of boolean indicating presence of wall on each location
 
-    def hasFood(self, x, y):
-        return self.data.food[x][y] #checking whether the index specified has the food or not
+    def hascoin(self, x, y):
+        return self.data.coin[x][y] #checking whether the index specified has the coin or not
 
     def hasWall(self, x, y):
         return self.data.layout.walls[x][y] #checking whether the index specified is a wall or not
@@ -133,7 +133,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
 
 SCARED_TIME = 40    # time till which ghosts are scared
 COLLISION_TOLERANCE = 0.7 # How close ghosts must be to Pacman to kill
-TIME_PENALTY = 1 # Number of points lost when pacman not eating food
+TIME_PENALTY = 1 # Number of points lost when pacman not eating coin
 
 class ClassicGameRules:
 
@@ -160,8 +160,8 @@ class ClassicGameRules:
         if not self.quiet: print("Pacman died! Score: %d" % state.data.score)
         game.gameOver = True
 
-    def getProgress(self, game): #returning how much food eaten from the start
-        return float(game.state.getNumFood()) / self.initialState.getNumFood()
+    def getProgress(self, game): #returning how much coin eaten from the start
+        return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
 
     def agentCrash(self, game, agentIndex):
         if agentIndex == 0:
@@ -187,32 +187,32 @@ class PacmanRules:
         pacmanState = state.data.agentStates[0]
         vector = Actions.directionToVector( action, PacmanRules.PACMAN_SPEED ) #updating the pacman config
         pacmanState.configuration = pacmanState.configuration.generateSuccessor( vector )
-        #eating food
+        #eating coin
         next = pacmanState.configuration.getPosition()
         nearest = nearestPoint( next )
-        if manhattanDistance( nearest, next ) <= 0.5 :#remove the food when eaten
+        if manhattanDistance( nearest, next ) <= 0.5 :#remove the coin when eaten
             PacmanRules.consume( nearest, state )
     applyAction = staticmethod( applyAction )
 
     def consume( position, state ):
         x,y = position
-        if state.data.food[x][y]: #consuming the food
+        if state.data.coin[x][y]: #consuming the coin
             state.data.scoreChange += 10 #incrementing the score on consuming
-            state.data.food = state.data.food.copy()
-            state.data.food[x][y] = False #the item is now removed from its position
-            state.data._foodEaten = position
-            #checking whether all the food has been eaten or not
-            numFood = state.getNumFood()
-            if numFood == 0 and not state.data._lose:
+            state.data.coin = state.data.coin.copy()
+            state.data.coin[x][y] = False #the item is now removed from its position
+            state.data._coinEaten = position
+            #checking whether all the coin has been eaten or not
+            numcoin = state.getNumcoin()
+            if numcoin == 0 and not state.data._lose:
                 state.data.scoreChange += 500
                 state.data._win = True
-        #eating the bfood
+        #eating the bcoin
         if( position in state.getCapsules() ): #now all ghost agents are eatable
             state.data.capsules.remove( position )
             state.data._capsuleEaten = position
             #Reset all ghosts' scared timers
             for index in range( 1, len( state.data.agentStates ) ):
-                state.data.agentStates[index].scaredTimer = SCARED_TIME #all the ghosts are now in scared mode once the food has been eaten
+                state.data.agentStates[index].scaredTimer = SCARED_TIME #all the ghosts are now in scared mode once the coin has been eaten
     consume = staticmethod( consume )
 
 class GhostRules:
