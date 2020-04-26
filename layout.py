@@ -15,7 +15,7 @@ class Layout: #maintains the information regarding the layout
         self.ghosts_count = 0
         self.process_layout_text(layout_text) #taking the layout_text from the file
         self.layout_text = layout_text
-        self.totalcoin = len(self.coin.asList()) #total number of coins available
+        self.totalcoin = len(self.coin.as_list()) #total number of coins available
 
     def get_ghosts_count(self):
         return self.ghosts_count
@@ -24,7 +24,7 @@ class Layout: #maintains the information regarding the layout
         x, col = coord
         return self.walls[x][col]
 
-    def deepCopy(self):
+    def deep_copy(self):
         return Layout(self.layout_text[:])
 
     def process_layout_text(self, layout_text):

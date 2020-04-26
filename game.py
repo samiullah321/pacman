@@ -33,7 +33,7 @@ class Directions:
                left: right,
                STOP: STOP}
 
-class Configuration:
+class config:
 
 #takes in the initial position of the Pacman and its initial direction as the argument
     def __init__(self, coord, direction):
@@ -56,33 +56,33 @@ class Configuration:
 
         x, y= self.coord
         dx, dy = vector
-        direction = Actions.vectorToDirection(vector)
+        direction = Actions.vec_to_dir(vector)
         if direction == Directions.STOP:
             direction = self.direction # There is no stop direction
-        return Configuration((x + dx, y+dy), direction)
+        return config((x + dx, y+dy), direction)
 
 class AgentState:
 
-    #agent_states hold the state of an agent (configuration, speed, scared, etc).
-    def __init__( self, startConfiguration, is_pac ):
-        self.start = startConfiguration
-        self.configuration = startConfiguration
+    #agent_states hold the state of an agent (config, speed, scared, etc).
+    def __init__( self, startconfig, is_pac ):
+        self.start = startconfig
+        self.config = startconfig
         self.is_pac = is_pac #is the agent Pacman or ghost?
         self.scared_timer = 0 #time until the ghost can be eaten
 
     def copy( self ):
         state = AgentState( self.start, self.is_pac )
-        state.configuration = self.configuration
+        state.config = self.config
         state.scared_timer = self.scared_timer #time until which the agent would be eatable
         return state
 
     #UTILITY FUNCTIONS
     def get_coord(self):
-        if self.configuration == None: return None
-        return self.configuration.get_coord()
+        if self.config == None: return None
+        return self.config.get_coord()
 
     def get_dir(self):
-        return self.configuration.get_dir()
+        return self.config.get_dir()
 
 class Grid:
 
@@ -94,20 +94,20 @@ class Grid:
         self.height = height
         self.data = [[initialValue for y in range(height)] for x in range(width)] #initializing array for the maze
         if bitRepresentation:
-            self._unpackBits(bitRepresentation)
+            self.unpack_bits(bitRepresentation)
 
     def __getitem__(self, i):
         return self.data[i]
 
-    def copy(self): #returns a copy of the grid (deepcopy)
+    def copy(self): #returns a copy of the grid (deep_copy)
         g = Grid(self.width, self.height)
         g.data = [x[:] for x in self.data]
         return g
 
-    def deepCopy(self):
+    def deep_copy(self):
         return self.copy()
 
-    def shallowCopy(self): #pointers to the grid passed
+    def shallow_copy(self): #pointers to the grid passed
         g = Grid(self.width, self.height)
         g.data = self.data
         return g
@@ -115,7 +115,7 @@ class Grid:
     def count(self, item =True ): #returns number of items in the data
         return sum([x.count(item) for x in self.data])
 
-    def asList(self, key = True): #return the Grid as a list
+    def as_list(self, key = True): #return the Grid as a list
         list = []
         for x in range(self.width):
             for y in range(self.height):
@@ -127,32 +127,27 @@ class Grid:
         y = index % self.height
         return x, y
 
-    def _unpackBits(self, bits):
+    def unpack_bits(self, bits):
         cell = 0
         for packed in bits:
-            for bit in self._unpackInt(packed, self.CELLS_PER_INT):
+            for bit in self.unpack_int(packed, self.CELLS_PER_INT):
                 if cell == self.width * self.height: break
                 x, y = self.cell_index_to_coord(cell)
                 self[x][y] = bit
                 cell += 1
 
-    def _unpackInt(self, packed, size):
-        bools = []
+    def unpack_int(self, packed, size):
+        flag = []
         if packed < 0: raise ValueError("must be a positive integer")
         for i in range(size):
             n = 2 ** (self.CELLS_PER_INT - i - 1)
             if packed >= n:
-                bools.append(True)
+                flag.append(True)
                 packed -= n
             else:
-                bools.append(False)
-        return bools
+                flag.append(False)
+        return flag
 
-def reconstituteGrid(bitRep):
-    if type(bitRep) is not type((1,2)):
-        return bitRep
-    width, height = bitRep[:2]
-    return Grid(width, height, bitRepresentation= bitRep[2:])
 
 ####################################
 # Parts you shouldn't have to read #
@@ -166,7 +161,7 @@ class Actions:
                    Directions.left:  (-1, 0),
                    Directions.STOP:  (0, 0)}
 
-    _directionsAsList = list(_directions.items())
+    directions_as_list = list(_directions.items())
 
     TOLERANCE = .001 #for transition of pacman between the grids
 
@@ -182,7 +177,7 @@ class Actions:
         return action
     reverse_dir = staticmethod(reverse_dir)
 
-    def vectorToDirection(vector):
+    def vec_to_dir(vector):
         dx, dy = vector
         if dy > 0:
             return Directions.up
@@ -193,7 +188,7 @@ class Actions:
         if dx > 0:
             return Directions.right
         return Directions.STOP
-    vectorToDirection = staticmethod(vectorToDirection)
+    vec_to_dir = staticmethod(vec_to_dir)
 
    #returning the direction as a vector, incorporated with the speed
     def direction_from_vector(direction, speed = 1.0):
@@ -211,7 +206,7 @@ class Actions:
         if (abs(x - x_int) + abs(y - y_int)  > Actions.TOLERANCE):
             return [config.get_dir()]
 
-        for dir, vec in Actions._directionsAsList:
+        for dir, vec in Actions.directions_as_list:
             dx, dy = vec
             next_y = y_int + dy
             next_x = x_int + dx
@@ -227,9 +222,9 @@ class game_state_data: #data pertaining to each state of the game
     def __init__( self, prevState = None ):
         if prevState != None:
             #MAINTAINING THE PREVIOUS STATE IN ORDER TO COMPARE
-            self.coin = prevState.coin.shallowCopy()
+            self.coin = prevState.coin.shallow_copy()
             self.big_coin = prevState.big_coin[:]
-            self.agent_states = self.copyagent_states( prevState.agent_states )
+            self.agent_states = self.copy_agent_states( prevState.agent_states )
             self.layout = prevState.layout #previous maze layout
             self._eaten = prevState._eaten
             self.score = prevState.score
@@ -243,21 +238,21 @@ class game_state_data: #data pertaining to each state of the game
         self.win = False #game won
         self.score_change = 0
 
-    def deepCopy( self ): #DEEP COPYING
+    def deep_copy( self ): #DEEP COPYING
         state = game_state_data( self )
-        state.coin = self.coin.deepCopy()
-        state.layout = self.layout.deepCopy()
+        state.coin = self.coin.deep_copy()
+        state.layout = self.layout.deep_copy()
         state.agent_moved = self.agent_moved
         state.coin_eaten = self.coin_eaten
         state._coinAdded = self._coinAdded
         state.big_food_Eaten = self.big_food_Eaten
         return state
 
-    def copyagent_states( self, agent_states ):
-        copiedStates = []
+    def copy_agent_states( self, agent_states ):
+        copied_states = []
         for agentState in agent_states:
-            copiedStates.append( agentState.copy() )
-        return copiedStates
+            copied_states.append( agentState.copy() )
+        return copied_states
 
     def initialize( self, layout, numghost_agents ):
         #creating the game_state from the layout (INITIAL STATE)
@@ -274,5 +269,5 @@ class game_state_data: #data pertaining to each state of the game
             if not is_pac:
                 if ghosts_count == numghost_agents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agent_states.append( AgentState( Configuration( coord, Directions.STOP), is_pac) )
+            self.agent_states.append( AgentState( config( coord, Directions.STOP), is_pac) )
         self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)

@@ -10,7 +10,7 @@ from datetime import datetime
 
 class game_state: #has accessor methods for accessing variables of game_state_data object
 
-    #specifies the full game state, including the coin, big_coin, agent configurations and score changes.
+    #specifies the full game state, including the coin, big_coin, agent configs and score changes.
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
 
     # Accessor methods
@@ -109,9 +109,9 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         else:
             self.data = game_state_data()
 
-    def deepCopy( self ): #allowing for deep copy of the data attribute of the game_state
+    def deep_copy( self ): #allowing for deep copy of the data attribute of the game_state
         state = game_state( self )
-        state.data = self.data.deepCopy()
+        state.data = self.data.deep_copy()
         return state
 
     def initialize( self, layout, numghost_agents=1000 ):
@@ -130,7 +130,7 @@ class classic_rule:
         initState.initialize( layout, len(ghostAgents) )
         game = Game(agents, display, self)
         game.state = initState
-        self.initialState = initState.deepCopy()
+        self.initialState = initState.deep_copy()
         self.quiet = quiet
         return game
 
@@ -160,7 +160,7 @@ class pac_rules:
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
     def get_legal_moves( state ):
-        return Actions.get_possible_moves( state.get_pac_state().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
+        return Actions.get_possible_moves( state.get_pac_state().config, state.data.layout.walls ) #returns the possible directions for pacman to move
     get_legal_moves = staticmethod( get_legal_moves )
 
     def apply_action( state, action ): # applying the action received on the pacman
@@ -169,9 +169,9 @@ class pac_rules:
             raise Exception("Illegal action " + str(action))
         pacman_state = state.data.agent_states[0]
         vector = Actions.direction_from_vector( action, pac_rules.PACMAN_SPEED ) #updating the pacman config
-        pacman_state.configuration = pacman_state.configuration.produce_successor( vector )
+        pacman_state.config = pacman_state.config.produce_successor( vector )
         #eating coin
-        next = pacman_state.configuration.get_coord()
+        next = pacman_state.config.get_coord()
         nearest = nearest_cord( next )
         if manhattan_dist( nearest, next ) <= 0.5 :#remove the coin when eaten
             pac_rules.consume( nearest, state )
@@ -202,7 +202,7 @@ class ghost_rules:
     #functions for the ghost interacting with the enviroment
     GHOST_SPEED=1.0 # speed of ghost and pacman is same
     def get_legal_moves( state, ghostIndex ): #getting the legal_move for the ghost
-        conf = state.get_ghost_state( ghostIndex ).configuration
+        conf = state.get_ghost_state( ghostIndex ).config
         possible_moves = Actions.get_possible_moves( conf, state.data.layout.walls )
         reverse = Actions.reverse_dir( conf.direction )
         if Directions.STOP in possible_moves:
@@ -222,13 +222,13 @@ class ghost_rules:
         speed = ghost_rules.GHOST_SPEED
         if ghost_state.scared_timer > 0: speed /= 2.0 #decreasing the speed of the ghost in scared state
         vector = Actions.direction_from_vector( action, speed )
-        ghost_state.configuration = ghost_state.configuration.produce_successor( vector ) #applying the action to the ghost_state
+        ghost_state.config = ghost_state.config.produce_successor( vector ) #applying the action to the ghost_state
     apply_action = staticmethod( apply_action )
 
     def dec_timer( ghost_state): #this will decrerement the timer for the ghost being scared
         timer = ghost_state.scared_timer
         if timer == 1:
-            ghost_state.configuration.coord = nearest_cord( ghost_state.configuration.coord )
+            ghost_state.config.coord = nearest_cord( ghost_state.config.coord )
         ghost_state.scared_timer = max( 0, timer - 1 ) #the timer cannot be below zero
     dec_timer = staticmethod( dec_timer )
 
@@ -237,12 +237,12 @@ class ghost_rules:
         if agent_index == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agent_states ) ): #checking pacman has been killed by which ghost hence using a loop to check
                 ghost_state = state.data.agent_states[index]
-                ghost_coordinates = ghost_state.configuration.get_coord()
+                ghost_coordinates = ghost_state.config.get_coord()
                 if ghost_rules.can_kill( pacman_position, ghost_coordinates ):
                     ghost_rules.collide( state, ghost_state, index )
         else:
             ghost_state = state.data.agent_states[agent_index]
-            ghost_coordinates = ghost_state.configuration.get_coord()
+            ghost_coordinates = ghost_state.config.get_coord()
             if ghost_rules.can_kill( pacman_position, ghost_coordinates ):
                 ghost_rules.collide( state, ghost_state, agent_index ) # setting the index of the ghost that killed the pacman
     check_collid = staticmethod( check_collid )
@@ -266,7 +266,7 @@ class ghost_rules:
     can_kill = staticmethod( can_kill )
 
     def put_ghost(state, ghost_state): #placing ghost agents at their proper positions
-        ghost_state.configuration = ghost_state.start
+        ghost_state.config = ghost_state.start
     put_ghost = staticmethod( put_ghost )
 
 #STARTING THE GAME

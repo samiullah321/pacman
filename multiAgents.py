@@ -35,7 +35,7 @@ class reflex_agent(Agent):
         new_ghost_scrared_timer = [ghost_state.scared_timer for ghost_state in new_ghost_states]
 
         # REFLEX AGENT CODE
-        coin_cord = new_coin.asList()
+        coin_cord = new_coin.as_list()
         coinCount = len(coin_cord)  # number of coin available
         nearest_distance = 1e6  # initially set to infinite
         for i in range(coinCount):

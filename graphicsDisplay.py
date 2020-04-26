@@ -291,13 +291,13 @@ class pac_graphic: #general graphics for pacman
 
     #get coords on the screen
     def get_coord(self, agentState):
-        if agentState.configuration == None: return (-1000, -1000)
+        if agentState.config == None: return (-1000, -1000)
         return agentState.get_coord()
 
     #get action
     def get_dir(self, agentState):
-        if agentState.configuration == None: return Directions.STOP
-        return agentState.configuration.get_dir()
+        if agentState.config == None: return Directions.STOP
+        return agentState.config.get_dir()
 
     def finish(self):
         end_graphics() #utility function for ending the display

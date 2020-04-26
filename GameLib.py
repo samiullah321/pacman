@@ -73,7 +73,7 @@ class Game:
                 return
             if ("registerInitialState" in dir(agent)):
                 self.mute(i)
-                agent.registerInitialState(self.state.deepCopy())
+                agent.registerInitialState(self.state.deep_copy())
                 ## TODO: could this exceed the total time
                 self.unmute()
 
@@ -88,10 +88,10 @@ class Game:
             # Generate an observation of the state
             if 'observationFunction' in dir( agent ):
                 self.mute(agent_index)
-                observation = agent.observationFunction(self.state.deepCopy())
+                observation = agent.observationFunction(self.state.deep_copy())
                 self.unmute()
             else:
-                observation = self.state.deepCopy()
+                observation = self.state.deep_copy()
 
             # Solicit an action
             action = None
