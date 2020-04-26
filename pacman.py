@@ -340,7 +340,7 @@ def readCommand( argv ):
     args = dict()
 
     #setting the layout
-    args['layout'] = layout.getLayout( options.layout )
+    args['layout'] = layout.get_layout( options.layout )
     if args['layout'] == None: raise Exception("The layout " + options.layout + " cannot be found") #in case of the layout not being found
 
     # Choose a Pacman agent
@@ -422,7 +422,7 @@ def runGames( layout, pacman, ghosts, display, numGames):
             if len(game.state.getbig_coin())==0:
                 CapCount += 1
 
-        print('The game finished all big_coin', float(CapCount)/float(numGames))
+        print('The game finished all food', float(CapCount)/float(numGames))
         print('Average Score:', sum(scores) / float(len(scores)))
         if(len(AvgWin) != 0):
             print('Average Win Score', float(sum(AvgWin))/float(len(AvgWin)))
