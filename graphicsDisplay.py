@@ -140,11 +140,11 @@ class pac_graphic: #general graphics for pacman
                 self.agent_img.append( (agent, image) )
         refresh()
 
-    #updates c_state to the newState recieved
-    def update(self, newState):
+    #updates c_state to the new_state recieved
+    def update(self, new_state):
         #updating the agent moved
-        agent_index = newState.agent_moved
-        agentState = newState.agent_states[agent_index]
+        agent_index = new_state.agent_moved
+        agentState = new_state.agent_states[agent_index]
 
         prevState, prevImage = self.agent_img[agent_index]
         if agentState.is_pac:
@@ -153,13 +153,13 @@ class pac_graphic: #general graphics for pacman
             self.moveGhost(agentState, agent_index, prevState, prevImage) #animating or moving the ghost
         self.agent_img[agent_index] = (agentState, prevImage)
 
-        if newState.coin_eaten != None:
-            self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
-        if newState.big_food_Eaten != None:
-            self.removeCapsule(newState.big_food_Eaten, self.big_coin) #same as coin
-        self.info_p.update_score(newState.score)
-        if 'ghostDistances' in dir(newState):
-            self.info_p.update_ghost_distances(newState.ghostDistances) #updating the ghost distances here
+        if new_state.coin_eaten != None:
+            self.rem_coin(new_state.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
+        if new_state.big_food_Eaten != None:
+            self.remove_big_food(new_state.big_food_Eaten, self.big_coin) #same as coin
+        self.info_p.update_score(new_state.score)
+        if 'ghostDistances' in dir(new_state):
+            self.info_p.update_ghost_distances(new_state.ghostDistances) #updating the ghost distances here
 
     def make_window(self, width, height): #initializing the screen
         grid_width = (width-1) * self.grid_size
@@ -177,40 +177,40 @@ class pac_graphic: #general graphics for pacman
     def make_pac(self, pacman, index):
         position = self.get_coord(pacman)
         screen_point = self.to_screen(position)
-        endpoints = self.getEndpoints(self.getDirection(pacman))
+        end_coord = self.get_end_coord(self.getDirection(pacman))
 
         width = pac_outline
-        outlineColor = pac_c
-        fillColor = pac_c
+        outline_c = pac_c
+        fill_c = pac_c
 
         return [circle(screen_point, pac_s * self.grid_size,
-                       fillColor = fillColor, outlineColor = outlineColor,
-                       endpoints = endpoints,
+                       fill_c = fill_c, outline_c = outline_c,
+                       end_coord = end_coord,
                        width = width)]
 
     #used for rotating pacman according to direction
-    def getEndpoints(self, direction, position=(0, 0)):
+    def get_end_coord(self, direction, position=(0, 0)):
         x, y = position
         coord = x - int(x) + y - int(y)
         width = 30 + 80 * math.sin(math.pi * coord)
 
         delta = width / 2
         if (direction == 'left'):
-            endpoints = (180 + delta, 180 - delta)
+            end_coord = (180 + delta, 180 - delta)
         elif (direction == 'up'):
-            endpoints = (90 + delta, 90 - delta)
+            end_coord = (90 + delta, 90 - delta)
         elif (direction == 'down'):
-            endpoints = (270 + delta, 270 - delta)
+            end_coord = (270 + delta, 270 - delta)
         else:
-            endpoints = (0 + delta, 0 - delta)
-        return endpoints
+            end_coord = (0 + delta, 0 - delta)
+        return end_coord
 
     #for moving the pacman
     def move_pacman(self, position, direction, image):
         screen_coord = self.to_screen(position)
-        endpoints = self.getEndpoints( direction, position )
+        end_coord = self.get_end_coord( direction, position )
         r = pac_s * self.grid_size
-        moveCircle(image[0], screen_coord, r, endpoints)
+        moveCircle(image[0], screen_coord, r, end_coord)
         refresh()
 
     #animation of pacman when moving from cell to cell
@@ -412,7 +412,7 @@ class pac_graphic: #general graphics for pacman
                     screen = self.to_screen((xNum, yNum ))
                     dot = circle( screen,
                                   coin_s * self.grid_size,
-                                  outlineColor = color, fillColor = color,
+                                  outline_c = color, fill_c = color,
                                   width = 1)
                     imageRow.append(dot)
                 else:
@@ -426,19 +426,19 @@ class pac_graphic: #general graphics for pacman
             ( screen_x, screen_y ) = self.to_screen(capsule)
             dot = circle( (screen_x, screen_y),
                               big_coin_s * self.grid_size,
-                              outlineColor = big_coin_c,
-                              fillColor = big_coin_c,
+                              outline_c = big_coin_c,
+                              fill_c = big_coin_c,
                               width = 1)
             capsuleImages[capsule] = dot
         return capsuleImages
 
     #removing the coin from the layout
-    def removecoin(self, cell, coinImages ):
+    def rem_coin(self, cell, coinImages ):
         x, y = cell
         remove_from_screen(coinImages[x][y])
 
     #removing the bcoin from the layout
-    def removeCapsule(self, cell, capsuleImages ):
+    def remove_big_food(self, cell, capsuleImages ):
         x, y = cell
         remove_from_screen(capsuleImages[(x, y)])
 

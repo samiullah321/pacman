@@ -117,7 +117,7 @@ def wait_for_click():
 
 def draw_background():
     corners = [(0,0), (0, _canvas_ys), (_canvas_xs, _canvas_ys), (_canvas_xs, 0)]
-    polygon(corners, _bg_color, fillColor=_bg_color, filled=True, smoothed=False)
+    polygon(corners, _bg_color, fill_c=_bg_color, filled=True, smoothed=False)
 
 def _destroy_window(event=None):
     sys.exit(0)
@@ -147,14 +147,14 @@ def clear_screen(background=None):
     draw_background()
     _canvas_x, _canvas_y = 0, _canvas_ys
 
-def polygon(coords, outlineColor, fillColor=None, filled=1, smoothed=1, behind=0, width=1):
+def polygon(coords, outline_c, fill_c=None, filled=1, smoothed=1, behind=0, width=1):
     c = []
     for coord in coords:
         c.append(coord[0])
         c.append(coord[1])
-    if fillColor == None: fillColor = outlineColor
-    if filled == 0: fillColor = ""
-    poly = _canvas.create_polygon(c, outline=outlineColor, fill=fillColor, smooth=smoothed, width=width)
+    if fill_c == None: fill_c = outline_c
+    if filled == 0: fill_c = ""
+    poly = _canvas.create_polygon(c, outline=outline_c, fill=fill_c, smooth=smoothed, width=width)
     if behind > 0:
         _canvas.tag_lower(poly, behind) # Higher should be more visible
     return poly
@@ -164,17 +164,17 @@ def square(coord, r, color, filled=1, behind=0):
     coords = [(x - r, y - r), (x + r, y - r), (x + r, y + r), (x - r, y + r)]
     return polygon(coords, color, color, filled, 0, behind=behind)
 
-def circle(coord, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
+def circle(coord, r, outline_c, fill_c, end_coord=None, style='pieslice', width=2):
     x, y = coord
     x0, x1 = x - r - 1, x + r
     y0, y1 = y - r - 1, y + r
-    if endpoints == None:
+    if end_coord == None:
         e = [0, 359]
     else:
-        e = list(endpoints)
+        e = list(end_coord)
     while e[0] > e[1]: e[1] = e[1] + 360
 
-    return _canvas.create_arc(x0, y0, x1, y1, outline=outlineColor, fill=fillColor,
+    return _canvas.create_arc(x0, y0, x1, y1, outline=outline_c, fill=fill_c,
                               extent=e[1] - e[0], start=e[0], style=style, width=width)
 
 def image(coord, file=""):
@@ -186,7 +186,7 @@ def image(coord, file=""):
 def refresh():
     _canvas.update_idletasks()
 
-def moveCircle(id, coord, r, endpoints=None):
+def moveCircle(id, coord, r, end_coord=None):
     global _canvas_x, _canvas_y
 
     x, y = coord
@@ -194,10 +194,10 @@ def moveCircle(id, coord, r, endpoints=None):
 #    y0, y1 = y - r, y + r + 1
     x0, x1 = x - r - 1, x + r
     y0, y1 = y - r - 1, y + r
-    if endpoints == None:
+    if end_coord == None:
         e = [0, 359]
     else:
-        e = list(endpoints)
+        e = list(end_coord)
     while e[0] > e[1]: e[1] = e[1] + 360
 
     edit(id, ('start', e[0]), ('extent', e[1] - e[0]))
@@ -366,5 +366,5 @@ if __name__ == '__main__':
     ghost_dimensions = [(x * 10 + 20, y * 10 + 20) for x, y in ghost_dimensions]
     g = polygon(ghost_dimensions, format_color(1, 1, 1))
     move_to(g, (50, 50))
-    circle((150, 150), 20, format_color(0.7, 0.3, 0.0), endpoints=[15, - 15])
+    circle((150, 150), 20, format_color(0.7, 0.3, 0.0), end_coord=[15, - 15])
     sleep(2)
