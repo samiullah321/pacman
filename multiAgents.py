@@ -10,25 +10,25 @@ class ReflexAgent(Agent):
     # A reflex agent chooses action at each phase by using the evaluation function given below
     def get_move(self, gameState):
         # Collect legal moves and successor states
-        legalMoves = gameState.get_legal_moves()
+        legal_moves = gameState.get_legal_moves()
 
         scores = [self.evaluator(gameState, action) for action in
-                  legalMoves]  # Choose the best action amongs the list of possible moves
+                  legal_moves]  # Choose the best action amongs the list of possible moves
         max_score = max(scores)  # max of the scores array is extracted
         max_score_indexs = [index for index in range(len(scores)) if
                        scores[index] == max_score]  # get indexes of the max_score in the score array
         random_index = random.choice(
             max_score_indexs)  # as there can be multiple max_scores that are the same, hence we chose any one randomly
 
-        return legalMoves[random_index]
+        return legal_moves[random_index]
 
     def evaluator(self, currentGameState, action):  # This evaluation function is only for the Reflex agent
 
         # returns a score,the higher the score from evaluator the better
-        # information taken into consideration from current state: remaining food(newFood), Pacman position after moving (newPos), ScaredTimes of the ghosts
+        # information taken into consideration from current state: remaining food(newFood), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        newPos = successorGameState.getPacmanPosition()  # taking the pacman position after moving
+        new_coord = successorGameState.getPacmanPosition()  # taking the pacman position after moving
         newFood = successorGameState.getFood()  # taking the remaining food
         # taking the remaining scaredtimes of the ghosts
         newGhostStates = successorGameState.getGhostStates()
@@ -39,7 +39,7 @@ class ReflexAgent(Agent):
         foodCount = len(foodPos)  # number of food available
         closestDistance = 1e6  # initially set to infinite
         for i in range(foodCount):
-            distance = manhattanDistance(foodPos[i], newPos) + foodCount * 100
+            distance = manhattanDistance(foodPos[i], new_coord) + foodCount * 100
             if distance < closestDistance:  # find the closest available food
                 closestDistance = distance
                 closestFood = foodPos
@@ -50,7 +50,7 @@ class ReflexAgent(Agent):
         for i in range(len(newGhostStates)):
             # getting the positions of each ghost and checking whether it has eaten pacman or not
             ghostPos = successorGameState.getGhostPosition(i + 1)
-            if manhattanDistance(newPos, ghostPos) <= 1:  # if pacman dies
+            if manhattanDistance(new_coord, ghostPos) <= 1:  # if pacman dies
                 score -= 1e6  # the score when the pacman dies
 
         return score  # successorGameState.getScore()
