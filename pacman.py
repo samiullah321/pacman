@@ -203,13 +203,13 @@ class ghost_rules:
     GHOST_SPEED=1.0 # speed of ghost and pacman is same
     def get_legal_moves( state, ghostIndex ): #getting the legal_move for the ghost
         conf = state.get_ghost_state( ghostIndex ).configuration
-        possibleActions = Actions.get_possible_moves( conf, state.data.layout.walls )
-        reverse = Actions.reverseDirection( conf.direction )
-        if Directions.STOP in possibleActions:
-            possibleActions.remove( Directions.STOP ) #the ghost should not stop
-        if reverse in possibleActions and len( possibleActions ) > 1: #if there is any other legal action except reversing the direction then remove reverse (cannot remove until dead end)
-            possibleActions.remove( reverse )
-        return possibleActions
+        possible_moves = Actions.get_possible_moves( conf, state.data.layout.walls )
+        reverse = Actions.reverse_dir( conf.direction )
+        if Directions.STOP in possible_moves:
+            possible_moves.remove( Directions.STOP ) #the ghost should not stop
+        if reverse in possible_moves and len( possible_moves ) > 1: #if there is any other legal action except reversing the direction then remove reverse (cannot remove until dead end)
+            possible_moves.remove( reverse )
+        return possible_moves
     get_legal_moves = staticmethod( get_legal_moves )
 
     def apply_action( state, action, ghostIndex): #applying the action by getting the legal_move possible
@@ -237,13 +237,13 @@ class ghost_rules:
         if agent_index == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agent_states ) ): #checking pacman has been killed by which ghost hence using a loop to check
                 ghost_state = state.data.agent_states[index]
-                ghostPosition = ghost_state.configuration.get_coord()
-                if ghost_rules.canKill( pacman_position, ghostPosition ):
+                ghost_coordinates = ghost_state.configuration.get_coord()
+                if ghost_rules.can_kill( pacman_position, ghost_coordinates ):
                     ghost_rules.collide( state, ghost_state, index )
         else:
             ghost_state = state.data.agent_states[agent_index]
-            ghostPosition = ghost_state.configuration.get_coord()
-            if ghost_rules.canKill( pacman_position, ghostPosition ):
+            ghost_coordinates = ghost_state.configuration.get_coord()
+            if ghost_rules.can_kill( pacman_position, ghost_coordinates ):
                 ghost_rules.collide( state, ghost_state, agent_index ) # setting the index of the ghost that killed the pacman
     check_collid = staticmethod( check_collid )
 
@@ -260,10 +260,10 @@ class ghost_rules:
                 state.data._lose = True #the game is lost as pacman is eaten
     collide = staticmethod( collide )
 
-    def canKill( pacman_position, ghostPosition ):
+    def can_kill( pacman_position, ghost_coordinates ):
         #ghost and pacman distance is less that than the tolerance defined than its a kill
-        return manhattan_dist( ghostPosition, pacman_position ) <= COLLISION_TOLERANCE
-    canKill = staticmethod( canKill )
+        return manhattan_dist( ghost_coordinates, pacman_position ) <= COLLISION_TOLERANCE
+    can_kill = staticmethod( can_kill )
 
     def placeGhost(state, ghost_state): #placing ghost agents at their proper positions
         ghost_state.configuration = ghost_state.start

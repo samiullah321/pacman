@@ -170,7 +170,7 @@ class Actions:
 
     TOLERANCE = .001 #for transition of pacman between the grids
 
-    def reverseDirection(action):
+    def reverse_dir(action):
         if action == Directions.NORTH:
             return Directions.SOUTH
         if action == Directions.SOUTH:
@@ -180,7 +180,7 @@ class Actions:
         if action == Directions.WEST:
             return Directions.EAST
         return action
-    reverseDirection = staticmethod(reverseDirection)
+    reverse_dir = staticmethod(reverse_dir)
 
     def vectorToDirection(vector):
         dx, dy = vector
