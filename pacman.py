@@ -76,9 +76,9 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
             raise Exception("Invalid index passed to getGhostState")
         return self.data.agentStates[agentIndex]
 
-    def getGhostPosition( self, agentIndex ):
+    def get_ghost_coord( self, agentIndex ):
         if agentIndex == 0:
-            raise Exception("Pacman's index passed to getGhostPosition")
+            raise Exception("Pacman's index passed to get_ghost_coord")
         return self.data.agentStates[agentIndex].getPosition()
 
     def getGhostPositions(self):

@@ -36,7 +36,7 @@ class DirectionalGhost( GhostAgent ):
         # Read variables from state
         ghostState = state.getGhostState( self.index )
         legalActions = state.get_legal_moves( self.index )
-        pos = state.getGhostPosition( self.index )
+        pos = state.get_ghost_coord( self.index )
         isScared = ghostState.scaredTimer > 0
 
         speed = 1
