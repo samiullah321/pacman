@@ -12,16 +12,16 @@ score_color = format_color(.9, .9, .9)
 pac_outline = 2
 
 #Settings for Ghost
-GHOST_COLORS = []
-GHOST_COLORS.append(format_color(.9,0,0)) # Red
-GHOST_COLORS.append(format_color(0,.3,.9)) # Blue
-GHOST_COLORS.append(format_color(.98,.41,.07)) # Orange
-GHOST_COLORS.append(format_color(.1,.75,.7)) # Green
-GHOST_COLORS.append(format_color(1.0,0.6,0.0)) # Yellow
-GHOST_COLORS.append(format_color(.4,0.13,0.91)) # Purple
+ghost_colors = []
+ghost_colors.append(format_color(.9,0,0)) # Red
+ghost_colors.append(format_color(0,.3,.9)) # Blue
+ghost_colors.append(format_color(.98,.41,.07)) # Orange
+ghost_colors.append(format_color(.1,.75,.7)) # Green
+ghost_colors.append(format_color(1.0,0.6,0.0)) # Yellow
+ghost_colors.append(format_color(.4,0.13,0.91)) # Purple
 
 #colors of all the ghosts
-TEAM_COLORS = GHOST_COLORS[:2]
+TEAM_COLORS = ghost_colors[:2]
 
 #defines the dimensions of the ghost
 GHOST_SHAPE = [
@@ -33,7 +33,7 @@ GHOST_SHAPE = [
 GHOST_SIZE = 0.65
 SCARED_COLOR = format_color(1,1,1)
 
-GHOST_VEC_COLORS = list(map(color_to_vector, GHOST_COLORS))
+GHOST_VEC_COLORS = list(map(color_to_vector, ghost_colors))
 
 #Some attributes of Pacman
 PACMAN_COLOR = format_color(255.0/255.0,255.0/255.0,61.0/255)
@@ -85,7 +85,7 @@ class InfoPane:
             size = 10
 
         for i, d in enumerate(distances):
-            t = text( self.toScreen(self.width/2 + self.width/8 * i, 0), GHOST_COLORS[i+1], d, "Times", size, "bold")
+            t = text( self.toScreen(self.width/2 + self.width/8 * i, 0), ghost_colors[i+1], d, "Times", size, "bold")
             self.ghostDistanceText.append(t)
 
     def updateScore(self, score):
@@ -263,7 +263,7 @@ class PacmanGraphics: #general graphics for pacman
         if ghost.scared_timer > 0:
             return SCARED_COLOR
         else:
-            return GHOST_COLORS[ghostIndex]
+            return ghost_colors[ghostIndex]
 
     #drawing the ghost
     def drawGhost(self, ghost, agent_index):
@@ -309,7 +309,7 @@ class PacmanGraphics: #general graphics for pacman
         if ghost.scared_timer > 0:
             color = SCARED_COLOR #setting the color of scared state
         else:
-            color = GHOST_COLORS[ghostIndex]
+            color = ghost_colors[ghostIndex]
         edit(ghostImageParts[0], ('fill', color), ('outline', color))
         refresh()
 

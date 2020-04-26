@@ -363,8 +363,8 @@ def writePostscript(filename):
 if __name__ == '__main__':
     begin_graphics()
     clear_screen()
-    ghost_shape = [(x * 10 + 20, y * 10 + 20) for x, y in ghost_shape]
-    g = polygon(ghost_shape, format_color(1, 1, 1))
+    ghost_dimensions = [(x * 10 + 20, y * 10 + 20) for x, y in ghost_dimensions]
+    g = polygon(ghost_dimensions, format_color(1, 1, 1))
     move_to(g, (50, 50))
     circle((150, 150), 20, format_color(0.7, 0.3, 0.0), endpoints=[15, - 15])
     sleep(2)
