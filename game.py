@@ -228,7 +228,7 @@ class game_state_data: #data pertaining to each state of the game
         if prevState != None:
             #MAINTAINING THE PREVIOUS STATE IN ORDER TO COMPARE
             self.coin = prevState.coin.shallowCopy()
-            self.big_food = prevState.big_food[:]
+            self.big_coin = prevState.big_coin[:]
             self.agentStates = self.copyAgentStates( prevState.agentStates )
             self.layout = prevState.layout #previous maze layout
             self._eaten = prevState._eaten
@@ -262,8 +262,8 @@ class game_state_data: #data pertaining to each state of the game
     def initialize( self, layout, numGhostAgents ):
         #creating the game_state from the layout (INITIAL STATE)
         self.coin = layout.coin.copy()
-        #self.big_food = []
-        self.big_food = layout.big_food[:]
+        #self.big_coin = []
+        self.big_coin = layout.big_coin[:]
         self.layout = layout
         self.score = 0
         self.scoreChange = 0

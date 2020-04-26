@@ -149,7 +149,7 @@ class PacmanGraphics: #general graphics for pacman
         layout = self.layout
         self.drawWalls(layout.walls)
         self.coin = self.drawcoin(layout.coin)
-        self.big_food = self.drawbig_food(layout.big_food)
+        self.big_coin = self.drawbig_coin(layout.big_coin)
         refresh()
 
     #drawing the pacman, ghost onto the screen
@@ -180,7 +180,7 @@ class PacmanGraphics: #general graphics for pacman
         if newState._coinEaten != None:
             self.removecoin(newState._coinEaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState._capsuleEaten != None:
-            self.removeCapsule(newState._capsuleEaten, self.big_food) #same as coin
+            self.removeCapsule(newState._capsuleEaten, self.big_coin) #same as coin
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
@@ -343,81 +343,81 @@ class PacmanGraphics: #general graphics for pacman
                     screen = self.to_screen(pos)
 
                     # draw each quadrant of the square based on adjacent walls
-                    wIsWall = self.isWall(xNum-1, yNum, wallMatrix)
-                    eIsWall = self.isWall(xNum+1, yNum, wallMatrix)
-                    nIsWall = self.isWall(xNum, yNum+1, wallMatrix)
-                    sIsWall = self.isWall(xNum, yNum-1, wallMatrix)
-                    nwIsWall = self.isWall(xNum-1, yNum+1, wallMatrix)
-                    swIsWall = self.isWall(xNum-1, yNum-1, wallMatrix)
-                    neIsWall = self.isWall(xNum+1, yNum+1, wallMatrix)
-                    seIsWall = self.isWall(xNum+1, yNum-1, wallMatrix)
+                    wis_wall = self.is_wall(xNum-1, yNum, wallMatrix)
+                    eis_wall = self.is_wall(xNum+1, yNum, wallMatrix)
+                    nis_wall = self.is_wall(xNum, yNum+1, wallMatrix)
+                    sis_wall = self.is_wall(xNum, yNum-1, wallMatrix)
+                    nwis_wall = self.is_wall(xNum-1, yNum+1, wallMatrix)
+                    swis_wall = self.is_wall(xNum-1, yNum-1, wallMatrix)
+                    neis_wall = self.is_wall(xNum+1, yNum+1, wallMatrix)
+                    seis_wall = self.is_wall(xNum+1, yNum-1, wallMatrix)
 
                     # NE quadrant
-                    if (not nIsWall) and (not eIsWall):
+                    if (not nis_wall) and (not eis_wall):
                         # inner circle
                         circle(screen, WALL_RADIUS * self.gridSize, wallColor, wallColor, (0,91), 'arc')
-                    if (nIsWall) and (not eIsWall):
+                    if (nis_wall) and (not eis_wall):
                         # vertical line
                         line(add(screen, (self.gridSize*WALL_RADIUS, 0)), add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(-0.5)-1)), wallColor)
-                    if (not nIsWall) and (eIsWall):
+                    if (not nis_wall) and (eis_wall):
                         # horizontal line
                         line(add(screen, (0, self.gridSize*(-1)*WALL_RADIUS)), add(screen, (self.gridSize*0.5+1, self.gridSize*(-1)*WALL_RADIUS)), wallColor)
-                    if (nIsWall) and (eIsWall) and (not neIsWall):
+                    if (nis_wall) and (eis_wall) and (not neis_wall):
                         # outer circle
                         circle(add(screen, (self.gridSize*2*WALL_RADIUS, self.gridSize*(-2)*WALL_RADIUS)), WALL_RADIUS * self.gridSize-1, wallColor, wallColor, (180,271), 'arc')
                         line(add(screen, (self.gridSize*2*WALL_RADIUS-1, self.gridSize*(-1)*WALL_RADIUS)), add(screen, (self.gridSize*0.5+1, self.gridSize*(-1)*WALL_RADIUS)), wallColor)
                         line(add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(-2)*WALL_RADIUS+1)), add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(-0.5))), wallColor)
 
                     # NW quadrant
-                    if (not nIsWall) and (not wIsWall):
+                    if (not nis_wall) and (not wis_wall):
                         # inner circle
                         circle(screen, WALL_RADIUS * self.gridSize, wallColor, wallColor, (90,181), 'arc')
-                    if (nIsWall) and (not wIsWall):
+                    if (nis_wall) and (not wis_wall):
                         # vertical line
                         line(add(screen, (self.gridSize*(-1)*WALL_RADIUS, 0)), add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(-0.5)-1)), wallColor)
-                    if (not nIsWall) and (wIsWall):
+                    if (not nis_wall) and (wis_wall):
                         # horizontal line
                         line(add(screen, (0, self.gridSize*(-1)*WALL_RADIUS)), add(screen, (self.gridSize*(-0.5)-1, self.gridSize*(-1)*WALL_RADIUS)), wallColor)
-                    if (nIsWall) and (wIsWall) and (not nwIsWall):
+                    if (nis_wall) and (wis_wall) and (not nwis_wall):
                         # outer circle
                         circle(add(screen, (self.gridSize*(-2)*WALL_RADIUS, self.gridSize*(-2)*WALL_RADIUS)), WALL_RADIUS * self.gridSize-1, wallColor, wallColor, (270,361), 'arc')
                         line(add(screen, (self.gridSize*(-2)*WALL_RADIUS+1, self.gridSize*(-1)*WALL_RADIUS)), add(screen, (self.gridSize*(-0.5), self.gridSize*(-1)*WALL_RADIUS)), wallColor)
                         line(add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(-2)*WALL_RADIUS+1)), add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(-0.5))), wallColor)
 
                     # SE quadrant
-                    if (not sIsWall) and (not eIsWall):
+                    if (not sis_wall) and (not eis_wall):
                         # inner circle
                         circle(screen, WALL_RADIUS * self.gridSize, wallColor, wallColor, (270,361), 'arc')
-                    if (sIsWall) and (not eIsWall):
+                    if (sis_wall) and (not eis_wall):
                         # vertical line
                         line(add(screen, (self.gridSize*WALL_RADIUS, 0)), add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(0.5)+1)), wallColor)
-                    if (not sIsWall) and (eIsWall):
+                    if (not sis_wall) and (eis_wall):
                         # horizontal line
                         line(add(screen, (0, self.gridSize*(1)*WALL_RADIUS)), add(screen, (self.gridSize*0.5+1, self.gridSize*(1)*WALL_RADIUS)), wallColor)
-                    if (sIsWall) and (eIsWall) and (not seIsWall):
+                    if (sis_wall) and (eis_wall) and (not seis_wall):
                         # outer circle
                         circle(add(screen, (self.gridSize*2*WALL_RADIUS, self.gridSize*(2)*WALL_RADIUS)), WALL_RADIUS * self.gridSize-1, wallColor, wallColor, (90,181), 'arc')
                         line(add(screen, (self.gridSize*2*WALL_RADIUS-1, self.gridSize*(1)*WALL_RADIUS)), add(screen, (self.gridSize*0.5, self.gridSize*(1)*WALL_RADIUS)), wallColor)
                         line(add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(2)*WALL_RADIUS-1)), add(screen, (self.gridSize*WALL_RADIUS, self.gridSize*(0.5))), wallColor)
 
                     # SW quadrant
-                    if (not sIsWall) and (not wIsWall):
+                    if (not sis_wall) and (not wis_wall):
                         # inner circle
                         circle(screen, WALL_RADIUS * self.gridSize, wallColor, wallColor, (180,271), 'arc')
-                    if (sIsWall) and (not wIsWall):
+                    if (sis_wall) and (not wis_wall):
                         # vertical line
                         line(add(screen, (self.gridSize*(-1)*WALL_RADIUS, 0)), add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(0.5)+1)), wallColor)
-                    if (not sIsWall) and (wIsWall):
+                    if (not sis_wall) and (wis_wall):
                         # horizontal line
                         line(add(screen, (0, self.gridSize*(1)*WALL_RADIUS)), add(screen, (self.gridSize*(-0.5)-1, self.gridSize*(1)*WALL_RADIUS)), wallColor)
-                    if (sIsWall) and (wIsWall) and (not swIsWall):
+                    if (sis_wall) and (wis_wall) and (not swis_wall):
                         # outer circle
                         circle(add(screen, (self.gridSize*(-2)*WALL_RADIUS, self.gridSize*(2)*WALL_RADIUS)), WALL_RADIUS * self.gridSize-1, wallColor, wallColor, (0,91), 'arc')
                         line(add(screen, (self.gridSize*(-2)*WALL_RADIUS+1, self.gridSize*(1)*WALL_RADIUS)), add(screen, (self.gridSize*(-0.5), self.gridSize*(1)*WALL_RADIUS)), wallColor)
                         line(add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(2)*WALL_RADIUS-1)), add(screen, (self.gridSize*(-1)*WALL_RADIUS, self.gridSize*(0.5))), wallColor)
 
     #checking if the coords given are of walls or not
-    def isWall(self, x, y, walls):
+    def is_wall(self, x, y, walls):
         if x < 0 or y < 0:
             return False
         if x >= walls.width or y >= walls.height:
@@ -444,9 +444,9 @@ class PacmanGraphics: #general graphics for pacman
         return coinImages
 
     #drawing bcoin on the layout
-    def drawbig_food(self, big_food ):
+    def drawbig_coin(self, big_coin ):
         capsuleImages = {}
-        for capsule in big_food:
+        for capsule in big_coin:
             ( screen_x, screen_y ) = self.to_screen(capsule)
             dot = circle( (screen_x, screen_y),
                               CAPSULE_SIZE * self.gridSize,

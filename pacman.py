@@ -10,7 +10,7 @@ from datetime import datetime
 
 class game_state: #has accessor methods for accessing variables of game_state_data object
 
-    #specifies the full game state, including the coin, big_food, agent configurations and score changes.
+    #specifies the full game state, including the coin, big_coin, agent configurations and score changes.
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
 
     # Accessor methods
@@ -90,8 +90,8 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def getScore( self ):
         return float(self.data.score)
 
-    def getbig_food(self):
-        return self.data.big_food #returning the remaining capsule positions
+    def getbig_coin(self):
+        return self.data.big_coin #returning the remaining capsule positions
 
     def getNumcoin( self ):
         return self.data.coin.count() #getting the remaining coin on the maze
@@ -139,7 +139,7 @@ class ClassicGameRules:
 
     def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
-        agents = [pacmanAgent] + ghostAgents[:layout.getghosts_count()]
+        agents = [pacmanAgent] + ghostAgents[:layout.get_ghosts_count()]
         initState = game_state()
         initState.initialize( layout, len(ghostAgents) )
         game = Game(agents, display, self)
@@ -207,8 +207,8 @@ class PacmanRules:
                 state.data.scoreChange += 500
                 state.data._win = True
         #eating the bcoin
-        if( position in state.getbig_food() ): #now all ghost agents are eatable
-            state.data.big_food.remove( position )
+        if( position in state.getbig_coin() ): #now all ghost agents are eatable
+            state.data.big_coin.remove( position )
             state.data._capsuleEaten = position
             #Reset all ghosts' scared timers
             for index in range( 1, len( state.data.agentStates ) ):
@@ -419,10 +419,10 @@ def runGames( layout, pacman, ghosts, display, numGames):
         for game in games:
             if game.state.pac_won():
                 AvgWin.append(game.state.getScore())
-            if len(game.state.getbig_food())==0:
+            if len(game.state.getbig_coin())==0:
                 CapCount += 1
 
-        print('The game finished all big_food', float(CapCount)/float(numGames))
+        print('The game finished all big_coin', float(CapCount)/float(numGames))
         print('Average Score:', sum(scores) / float(len(scores)))
         if(len(AvgWin) != 0):
             print('Average Win Score', float(sum(AvgWin))/float(len(AvgWin)))

@@ -5,29 +5,29 @@ import random
 from functools import reduce
 
 class Layout: #maintains the information regarding the layout
-    def __init__(self, layoutText):
-        self.width = len(layoutText[0])
-        self.height= len(layoutText)
+    def __init__(self, layout_text):
+        self.width = len(layout_text[0])
+        self.height= len(layout_text)
         self.walls = Grid(self.width, self.height, False)
         self.coin = Grid(self.width, self.height, False)
-        self.big_food = []
+        self.big_coin = []
         self.agent_coord = []
         self.ghosts_count = 0
-        self.processLayoutText(layoutText) #taking the layoutText from the file
-        self.layoutText = layoutText
+        self.processlayout_text(layout_text) #taking the layout_text from the file
+        self.layout_text = layout_text
         self.totalcoin = len(self.coin.asList()) #total number of coins available
 
-    def getghosts_count(self):
+    def get_ghosts_count(self):
         return self.ghosts_count
 
-    def isWall(self, pos):
+    def is_wall(self, pos):
         x, col = pos
         return self.walls[x][col]
 
     def deepCopy(self):
-        return Layout(self.layoutText[:])
+        return Layout(self.layout_text[:])
 
-    def processLayoutText(self, layoutText):
+    def processlayout_text(self, layout_text):
          # % - Wall
          # . - coin
          # o - Capsule
@@ -36,7 +36,7 @@ class Layout: #maintains the information regarding the layout
         maxY = self.height - 1
         for y in range(self.height):
             for x in range(self.width):
-                layoutChar = layoutText[maxY - y][x]
+                layoutChar = layout_text[maxY - y][x]
                 self.processLayoutChar(x, y, layoutChar)
         self.agent_coord.sort()
         self.agent_coord = [ ( i == 0, pos) for i, pos in self.agent_coord]
@@ -48,7 +48,7 @@ class Layout: #maintains the information regarding the layout
         elif layoutChar == '.':
             self.coin[x][y] = True
         elif layoutChar == 'o':
-            self.big_food.append((x, y))
+            self.big_coin.append((x, y))
         elif layoutChar == 'P':
             self.agent_coord.append( (0, (x, y) ) )
         elif layoutChar in ['G']:
