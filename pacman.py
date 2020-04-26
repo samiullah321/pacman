@@ -65,7 +65,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         #returns the current state of Pacman (pos, direction)
         return self.data.agentStates[0].copy()
 
-    def getPacmanPosition( self ):
+    def get_pacman_coord( self ):
         return self.data.agentStates[0].getPosition() #return the pacman's current position
 
     def getGhostStates( self ):
@@ -96,7 +96,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     def getNumFood( self ):
         return self.data.food.count() #getting the remaining food on the maze
 
-    def getFood(self):
+    def get_coin(self):
         return self.data.food #return a 2d array of boolean indicating presence of food on each location
 
     def getWalls(self):
@@ -250,7 +250,7 @@ class GhostRules:
     decrementTimer = staticmethod( decrementTimer )
 
     def checkDeath( state, agentIndex): #checking whether the pacman and the ghost has collided or not
-        pacmanPosition = state.getPacmanPosition()
+        pacmanPosition = state.get_pacman_coord()
         if agentIndex == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agentStates ) ): #checking pacman has been killed by which ghost hence using a loop to check
                 ghostState = state.data.agentStates[index]

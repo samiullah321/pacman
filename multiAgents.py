@@ -25,17 +25,17 @@ class ReflexAgent(Agent):
     def evaluator(self, currentGameState, action):  # This evaluation function is only for the Reflex agent
 
         # returns a score,the higher the score from evaluator the better
-        # information taken into consideration from current state: remaining food(newFood), Pacman position after moving (new_coord), ScaredTimes of the ghosts
+        # information taken into consideration from current state: remaining food(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
         successorGameState = currentGameState.generatePacmanSuccessor(action)
-        new_coord = successorGameState.getPacmanPosition()  # taking the pacman position after moving
-        newFood = successorGameState.getFood()  # taking the remaining food
+        new_coord = successorGameState.get_pacman_coord()  # taking the pacman position after moving
+        new_coin = successorGameState.get_coin()  # taking the remaining food
         # taking the remaining scaredtimes of the ghosts
         newGhostStates = successorGameState.getGhostStates()
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
 
         # REFLEX AGENT CODE
-        foodPos = newFood.asList()
+        foodPos = new_coin.asList()
         foodCount = len(foodPos)  # number of food available
         closestDistance = 1e6  # initially set to infinite
         for i in range(foodCount):
