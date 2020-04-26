@@ -10,15 +10,15 @@ class GhostAgent( Agent ):
         self.index = index
 
     def get_move( self, state ): #return an action
-        dist = self.getDistribution(state) #evaluating the probabilities of attacking or fleeing using factors as distance from pacman etc.
+        dist = self.get_probability_distribution (state) #evaluating the probabilities of attacking or fleeing using factors as distance from pacman etc.
         if len(dist) == 0:
             return Directions.STOP
         else:
-            return util.chooseFromDistribution( dist )
+            return util.select_from_probability_distribution( dist )
 
 #GHOST THAT CHOOSES AN ACTION RANDOMLY
 class RandomGhost( GhostAgent ):
-    def getDistribution( self, state ):
+    def get_probability_distribution ( self, state ):
         dist = util.Counter()
         for a in state.get_legal_moves( self.index ): dist[a] = 1.0
         dist.normalize()
@@ -32,7 +32,7 @@ class DirectionalGhost( GhostAgent ):
         self.prob_attack = prob_attack
         self.prob_scaredFlee = prob_scaredFlee
 
-    def getDistribution( self, state ):
+    def get_probability_distribution ( self, state ):
         # Read variables from state
         ghostState = state.getGhostState( self.index )
         legalActions = state.get_legal_moves( self.index )

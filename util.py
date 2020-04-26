@@ -60,7 +60,7 @@ def sample(distribution, values = None):
         total += distribution[i]
     return values[i]
 
-def chooseFromDistribution( distribution ):
+def select_from_probability_distribution( distribution ):
     #samples a counter or list of counters
     if type(distribution) == dict or type(distribution) == Counter:
         return sample(distribution)

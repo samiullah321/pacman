@@ -73,8 +73,8 @@ def get_layout(name, back = 2): #retrieving the layout from the directory
         os.chdir(curdir)
     return layout
 
-def load_layout(fullname):
-    if(not os.path.exists(fullname)): return None
-    f = open(fullname)
+def load_layout(layout_name):
+    if(not os.path.exists(layout_name)): return None
+    f = open(layout_name)
     try: return Layout([line.strip() for line in f])
     finally: f.close()
