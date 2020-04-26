@@ -27,24 +27,24 @@ class Game:
         else:
             return self.rules.getProgress(self)
 
-    def _agentCrash( self, agentIndex, quiet=False):
+    def _agentCrash( self, agent_index, quiet=False):
         "Helper method for handling agent crashes"
         if not quiet: traceback.print_exc()
         self.gameOver = True
         self.agentCrashed = True
-        self.rules.agentCrash(self, agentIndex)
+        self.rules.agentCrash(self, agent_index)
 
     OLD_STDOUT = None
     OLD_STDERR = None
 
-    def mute(self, agentIndex):
+    def mute(self, agent_index):
         if not self.muteAgents: return
         global OLD_STDOUT, OLD_STDERR
         import io
         OLD_STDOUT = sys.stdout
         OLD_STDERR = sys.stderr
-        sys.stdout = self.agentOutput[agentIndex]
-        sys.stderr = self.agentOutput[agentIndex]
+        sys.stdout = self.agentOutput[agent_index]
+        sys.stderr = self.agentOutput[agent_index]
 
     def unmute(self):
         if not self.muteAgents: return
@@ -79,17 +79,17 @@ class Game:
                 ## TODO: could this exceed the total time
                 self.unmute()
 
-        agentIndex = self.startingIndex
+        agent_index = self.startingIndex
         numAgents = len( self.agents )
 
         while not self.gameOver:
             # Fetch the next agent
-            agent = self.agents[agentIndex]
+            agent = self.agents[agent_index]
             move_time = 0
             skip_action = False
             # Generate an observation of the state
             if 'observationFunction' in dir( agent ):
-                self.mute(agentIndex)
+                self.mute(agent_index)
                 observation = agent.observationFunction(self.state.deepCopy())
                 self.unmute()
             else:
@@ -97,39 +97,39 @@ class Game:
 
             # Solicit an action
             action = None
-            self.mute(agentIndex)
+            self.mute(agent_index)
             action = agent.get_move(observation)
             self.unmute()
 
             # Execute the action
-            self.moveHistory.append( (agentIndex, action) )
-            self.state = self.state.produce_successor( agentIndex, action )
+            self.moveHistory.append( (agent_index, action) )
+            self.state = self.state.produce_successor( agent_index, action )
 
             # Change the display
             self.display.update( self.state.data )
-            ###idx = agentIndex - agentIndex % 2 + 1
+            ###idx = agent_index - agent_index % 2 + 1
             ###self.display.update( self.state.makeObservation(idx).data )
 
             # Allow for game specific conditions (winning, losing, etc.)
             self.rules.process(self.state, self)
             # Track progress
-            if agentIndex == numAgents + 1: self.numMoves += 1
+            if agent_index == numAgents + 1: self.numMoves += 1
             # Next agent
-            agentIndex = ( agentIndex + 1 ) % numAgents
+            agent_index = ( agent_index + 1 ) % numAgents
 
             if _BOINC_ENABLED:
                 boinc.set_fraction_done(self.getProgress())
 
         # inform a learning agent of the game result
-        for agentIndex, agent in enumerate(self.agents):
+        for agent_index, agent in enumerate(self.agents):
             if "final" in dir( agent ) :
                 try:
-                    self.mute(agentIndex)
+                    self.mute(agent_index)
                     agent.final( self.state )
                     self.unmute()
                 except Exception as data:
                     if not False: raise
-                    self._agentCrash(agentIndex)
+                    self._agentCrash(agent_index)
                     self.unmute()
                     return
         self.display.finish()

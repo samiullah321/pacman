@@ -1,4 +1,4 @@
-from util import manhattanDistance
+from util import manhattan_dist
 from game import Grid
 import os
 import random

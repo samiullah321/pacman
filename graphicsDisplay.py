@@ -155,7 +155,7 @@ class PacmanGraphics: #general graphics for pacman
     #drawing the pacman, ghost onto the screen
     def drawAgentObjects(self, state):
         self.agentImages = [] # (agentState, image)
-        for index, agent in enumerate(state.agentStates):
+        for index, agent in enumerate(state.agent_states):
             if agent.isPacman:
                 image = self.drawPacman(agent, index)
                 self.agentImages.append( (agent, image) )
@@ -167,15 +167,15 @@ class PacmanGraphics: #general graphics for pacman
     #updates currentState to the newState recieved
     def update(self, newState):
         #updating the agent moved
-        agentIndex = newState._agentMoved
-        agentState = newState.agentStates[agentIndex]
+        agent_index = newState._agentMoved
+        agentState = newState.agent_states[agent_index]
 
-        prevState, prevImage = self.agentImages[agentIndex]
+        prevState, prevImage = self.agentImages[agent_index]
         if agentState.isPacman:
-            self.animatePacman(agentState, prevState, prevImage) #moving pacman
+            self.animate_pacman_movement(agentState, prevState, prevImage) #moving pacman
         else:
-            self.moveGhost(agentState, agentIndex, prevState, prevImage) #animating or moving the ghost
-        self.agentImages[agentIndex] = (agentState, prevImage)
+            self.moveGhost(agentState, agent_index, prevState, prevImage) #animating or moving the ghost
+        self.agentImages[agent_index] = (agentState, prevImage)
 
         if newState._coinEaten != None:
             self.removecoin(newState._coinEaten, self.coin) #if the coin is eaten, remove it from its position in new state
@@ -238,7 +238,7 @@ class PacmanGraphics: #general graphics for pacman
         refresh()
 
     #animation of pacman when moving from cell to cell
-    def animatePacman(self, pacman, prevPacman, image):
+    def animate_pacman_movement(self, pacman, prevPacman, image):
         if self.frameTime < 0:
             print('Press any key to step forward, "q" to play')
             keys = wait_for_keys()
@@ -259,14 +259,14 @@ class PacmanGraphics: #general graphics for pacman
         refresh()
 
     #retreiving the ghost color
-    def getGhostColor(self, ghost, ghostIndex):
+    def get_ghost_color(self, ghost, ghostIndex):
         if ghost.scaredTimer > 0:
             return SCARED_COLOR
         else:
             return GHOST_COLORS[ghostIndex]
 
     #drawing the ghost
-    def drawGhost(self, ghost, agentIndex):
+    def drawGhost(self, ghost, agent_index):
         coord = self.get_coord(ghost)
         dir = self.getDirection(ghost)
         (screen_x, screen_y) = (self.to_screen(coord) )
@@ -274,7 +274,7 @@ class PacmanGraphics: #general graphics for pacman
         for (x, y) in GHOST_SHAPE:
             coords.append((x*self.gridSize*GHOST_SIZE + screen_x, y*self.gridSize*GHOST_SIZE + screen_y))
 
-        colour = self.getGhostColor(ghost, agentIndex)
+        colour = self.get_ghost_color(ghost, agent_index)
         body = polygon(coords, colour, filled = 1)
         WHITE = formatColor(1.0, 1.0, 1.0)
         BLACK = formatColor(0.0, 0.0, 0.0)

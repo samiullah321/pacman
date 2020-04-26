@@ -63,7 +63,7 @@ class Configuration:
 
 class AgentState:
 
-    #AgentStates hold the state of an agent (configuration, speed, scared, etc).
+    #agent_states hold the state of an agent (configuration, speed, scared, etc).
     def __init__( self, startConfiguration, isPacman ):
         self.start = startConfiguration
         self.configuration = startConfiguration
@@ -196,10 +196,10 @@ class Actions:
     vectorToDirection = staticmethod(vectorToDirection)
 
    #returning the direction as a vector, incorporated with the speed
-    def directionToVector(direction, speed = 1.0):
+    def direction_from_vector(direction, speed = 1.0):
         dx, dy =  Actions._directions[direction]
         return (dx * speed, dy * speed)
-    directionToVector = staticmethod(directionToVector)
+    direction_from_vector = staticmethod(direction_from_vector)
 
     #config is the current game_state of an agent
     def get_possible_moves(config, walls):
@@ -229,7 +229,7 @@ class game_state_data: #data pertaining to each state of the game
             #MAINTAINING THE PREVIOUS STATE IN ORDER TO COMPARE
             self.coin = prevState.coin.shallowCopy()
             self.big_coin = prevState.big_coin[:]
-            self.agentStates = self.copyAgentStates( prevState.agentStates )
+            self.agent_states = self.copyagent_states( prevState.agent_states )
             self.layout = prevState.layout #previous maze layout
             self._eaten = prevState._eaten
             self.score = prevState.score
@@ -253,9 +253,9 @@ class game_state_data: #data pertaining to each state of the game
         state._capsuleEaten = self._capsuleEaten
         return state
 
-    def copyAgentStates( self, agentStates ):
+    def copyagent_states( self, agent_states ):
         copiedStates = []
-        for agentState in agentStates:
+        for agentState in agent_states:
             copiedStates.append( agentState.copy() )
         return copiedStates
 
@@ -268,11 +268,11 @@ class game_state_data: #data pertaining to each state of the game
         self.score = 0
         self.scoreChange = 0
 
-        self.agentStates = []
+        self.agent_states = []
         ghosts_count = 0
         for isPacman, coord in layout.agent_coord:
             if not isPacman:
                 if ghosts_count == numGhostAgents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agentStates.append( AgentState( Configuration( coord, Directions.STOP), isPacman) )
-        self._eaten = [False for a in self.agentStates] #Checking that agent is eaten or not (as pacman can eat the agents)
+            self.agent_states.append( AgentState( Configuration( coord, Directions.STOP), isPacman) )
+        self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)

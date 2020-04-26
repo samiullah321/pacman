@@ -2,7 +2,7 @@ from game import Agent
 from game import Actions
 from game import Directions
 import random
-from util import manhattanDistance
+from util import manhattan_dist
 import util
 
 class GhostAgent( Agent ):
@@ -42,23 +42,23 @@ class DirectionalGhost( GhostAgent ):
         speed = 1
         if is_scared: speed = 0.5
 
-        action_vectors = [Actions.directionToVector( a, speed ) for a in legal_move]
+        action_vectors = [Actions.direction_from_vector( a, speed ) for a in legal_move]
         new_coords = [( coord[0]+a[0], coord[1]+a[1] ) for a in action_vectors] #ghost positions
         pacman_position = state.get_pacman_coord() #pacman positions
 
         # Select best actions given the state
-        distances_from_pacman = [manhattanDistance( coord, pacman_position ) for coord in new_coords]
+        distances_from_pacman = [manhattan_dist( coord, pacman_position ) for coord in new_coords]
         if is_scared: #chooose the position with the max distance from pacman and start to flee there
             max_score = max( distances_from_pacman )
-            bestProb = self.prob_scared
+            best_probablilty = self.prob_scared
         else: #choose the positions with the min distance from pacman and start to attack there
             max_score = min( distances_from_pacman )
-            bestProb = self.prob_attack
-        bestActions = [action for action, distance in zip( legal_move, distances_from_pacman ) if distance == max_score]
+            best_probablilty = self.prob_attack
+        best_actions = [action for action, distance in zip( legal_move, distances_from_pacman ) if distance == max_score]
 
         # Construct distribution
         dist = util.Counter()
-        for a in bestActions: dist[a] = bestProb / len(bestActions)
-        for a in legal_move: dist[a] += ( 1-bestProb ) / len(legal_move)
+        for a in best_actions: dist[a] = best_probablilty / len(best_actions)
+        for a in legal_move: dist[a] += ( 1-best_probablilty ) / len(legal_move)
         dist.normalize()
         return dist
