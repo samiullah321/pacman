@@ -256,11 +256,11 @@ def remap_arrows(event):
     # TURN ARROW PRESSES INTO LETTERS (SHOULD BE IN KEYBOARD AGENT)
     if event.char in ['a', 's', 'd', 'w']:
         return
-    if event.keycode in [37, 101]: # LEFT ARROW (win / x)
+    if event.keycode in [37, 101]: # left_dir ARROW (win / x)
         event.char = 'a'
     if event.keycode in [38, 99]: # UP ARROW
         event.char = 'w'
-    if event.keycode in [39, 102]: # RIGHT ARROW
+    if event.keycode in [39, 102]: # right_dir ARROW
         event.char = 'd'
     if event.keycode in [40, 104]: # DOWN ARROW
         event.char = 's'

@@ -26,7 +26,6 @@ class Game:
             return self.rules.get_progress(self)
 
     def _agentCrash( self, agent_index, no_display=False):
-        "Helper method for handling agent crashes"
         if not no_display: traceback.print_exc()
         self.game_finish = True
         self.agent_crash = True

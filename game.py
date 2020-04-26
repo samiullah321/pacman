@@ -18,20 +18,9 @@ class Directions:
     STOP = 'Stop'
 
     #In case, pacman is going in a certain direction, its poles relative to it are defined below:
-
-    LEFT =       {up: left,
-                   down: right,
-                   right:  up,
-                   left:  down,
-                   STOP:  STOP}
-
-    RIGHT =      dict([(y,x) for x, y in list(LEFT.items())]) #right is the reverse of left
-
-    REVERSE = {up: down,
-               down: up,
-               right: left,
-               left: right,
-               STOP: STOP}
+    left_dir = {up: left, down: right, right:  up, left:  down, STOP:  STOP}
+    right_dir =      dict([(y,x) for x, y in list(left_dir.items())]) #right is the reverse of left
+    reverse_dir = {up: down, down: up, right: left, left: right, STOP: STOP}
 
 class config:
 
