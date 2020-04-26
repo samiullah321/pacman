@@ -49,12 +49,12 @@ class DirectionalGhost( GhostAgent ):
         # Select best actions given the state
         distancesToPacman = [manhattanDistance( pos, pacmanPosition ) for pos in newPositions]
         if isScared: #chooose the position with the max distance from pacman and start to flee there
-            bestScore = max( distancesToPacman )
+            max_score = max( distancesToPacman )
             bestProb = self.prob_scaredFlee
         else: #choose the positions with the min distance from pacman and start to attack there
-            bestScore = min( distancesToPacman )
+            max_score = min( distancesToPacman )
             bestProb = self.prob_attack
-        bestActions = [action for action, distance in zip( legalActions, distancesToPacman ) if distance == bestScore]
+        bestActions = [action for action, distance in zip( legalActions, distancesToPacman ) if distance == max_score]
 
         # Construct distribution
         dist = util.Counter()

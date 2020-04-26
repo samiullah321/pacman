@@ -14,11 +14,11 @@ class ReflexAgent(Agent):
 
         scores = [self.evaluator(gameState, action) for action in
                   legalMoves]  # Choose the best action amongs the list of possible moves
-        bestScore = max(scores)  # max of the scores array is extracted
+        max_score = max(scores)  # max of the scores array is extracted
         bestIndices = [index for index in range(len(scores)) if
-                       scores[index] == bestScore]  # get indexes of the bestScore in the score array
+                       scores[index] == max_score]  # get indexes of the max_score in the score array
         chosenIndex = random.choice(
-            bestIndices)  # as there can be multiple bestscores that are the same, hence we chose any one randomly
+            bestIndices)  # as there can be multiple max_scores that are the same, hence we chose any one randomly
 
         return legalMoves[chosenIndex]
 
