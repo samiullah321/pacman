@@ -43,11 +43,11 @@ class DirectionalGhost( GhostAgent ):
         if isScared: speed = 0.5
 
         actionVectors = [Actions.directionToVector( a, speed ) for a in legal_move]
-        newPositions = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors] #ghost positions
-        pacmanPosition = state.get_pacman_coord() #pacman positions
+        new_coords = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors] #ghost positions
+        pacman_position = state.get_pacman_coord() #pacman positions
 
         # Select best actions given the state
-        distancesToPacman = [manhattanDistance( pos, pacmanPosition ) for pos in newPositions]
+        distancesToPacman = [manhattanDistance( pos, pacman_position ) for pos in new_coords]
         if isScared: #chooose the position with the max distance from pacman and start to flee there
             max_score = max( distancesToPacman )
             bestProb = self.prob_scared

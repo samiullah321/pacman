@@ -250,17 +250,17 @@ class GhostRules:
     decrementTimer = staticmethod( decrementTimer )
 
     def checkDeath( state, agentIndex): #checking whether the pacman and the ghost has collided or not
-        pacmanPosition = state.get_pacman_coord()
+        pacman_position = state.get_pacman_coord()
         if agentIndex == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agentStates ) ): #checking pacman has been killed by which ghost hence using a loop to check
                 ghost_state = state.data.agentStates[index]
                 ghostPosition = ghost_state.configuration.get_coord()
-                if GhostRules.canKill( pacmanPosition, ghostPosition ):
+                if GhostRules.canKill( pacman_position, ghostPosition ):
                     GhostRules.collide( state, ghost_state, index )
         else:
             ghost_state = state.data.agentStates[agentIndex]
             ghostPosition = ghost_state.configuration.get_coord()
-            if GhostRules.canKill( pacmanPosition, ghostPosition ):
+            if GhostRules.canKill( pacman_position, ghostPosition ):
                 GhostRules.collide( state, ghost_state, agentIndex ) # setting the index of the ghost that killed the pacman
     checkDeath = staticmethod( checkDeath )
 
@@ -277,9 +277,9 @@ class GhostRules:
                 state.data._lose = True #the game is lost as pacman is eaten
     collide = staticmethod( collide )
 
-    def canKill( pacmanPosition, ghostPosition ):
+    def canKill( pacman_position, ghostPosition ):
         #ghost and pacman distance is less that than the tolerance defined than its a kill
-        return manhattanDistance( ghostPosition, pacmanPosition ) <= COLLISION_TOLERANCE
+        return manhattanDistance( ghostPosition, pacman_position ) <= COLLISION_TOLERANCE
     canKill = staticmethod( canKill )
 
     def placeGhost(state, ghost_state): #placing ghost agents at their proper positions

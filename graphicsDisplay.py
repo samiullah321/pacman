@@ -231,10 +231,10 @@ class PacmanGraphics: #general graphics for pacman
 
     #for moving the pacman
     def movePacman(self, position, direction, image):
-        screenPosition = self.to_screen(position)
+        screen_coord = self.to_screen(position)
         endpoints = self.getEndpoints( direction, position )
         r = PACMAN_SCALE * self.gridSize
-        moveCircle(image[0], screenPosition, r, endpoints)
+        moveCircle(image[0], screen_coord, r, endpoints)
         refresh()
 
     #animation of pacman when moving from cell to cell

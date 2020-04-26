@@ -35,14 +35,14 @@ class ReflexAgent(Agent):
         new_ghost_scrared_timer = [ghost_state.scaredTimer for ghost_state in new_ghost_states]
 
         # REFLEX AGENT CODE
-        coinPos = new_coin.asList()
-        coinCount = len(coinPos)  # number of coin available
+        coin_cord = new_coin.asList()
+        coinCount = len(coin_cord)  # number of coin available
         nearest_distance = 1e6  # initially set to infinite
         for i in range(coinCount):
-            distance = manhattanDistance(coinPos[i], new_coord) + coinCount * 100
+            distance = manhattanDistance(coin_cord[i], new_coord) + coinCount * 100
             if distance < nearest_distance:  # find the closest available coin
                 nearest_distance = distance
-                closestcoin = coinPos
+                closestcoin = coin_cord
         if coinCount == 0:
             nearest_distance = 0
         score = -nearest_distance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
