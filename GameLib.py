@@ -25,9 +25,9 @@ class Game:
         else:
             return self.rules.get_progress(self)
 
-    def _agentCrash( self, agent_index, quiet=False):
+    def _agentCrash( self, agent_index, no_display=False):
         "Helper method for handling agent crashes"
-        if not quiet: traceback.print_exc()
+        if not no_display: traceback.print_exc()
         self.game_finish = True
         self.agent_crash = True
         self.rules.agent_crash(self, agent_index)
@@ -69,7 +69,7 @@ class Game:
                 # the other team wins
                 print("Agent %d failed to load" % i, file=sys.stderr)
                 self.unmute()
-                self._agentCrash(i, quiet=True)
+                self._agentCrash(i, no_display=True)
                 return
             if ("registerInitialState" in dir(agent)):
                 self.mute(i)

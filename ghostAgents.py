@@ -2,7 +2,7 @@ from game import Agent
 from game import Actions
 from game import Directions
 import random
-from util import manhattan_dist
+from util import coords_distance
 import util
 
 class ghost_agent( Agent ):
@@ -47,7 +47,7 @@ class directional_ghost( ghost_agent ):
         pacman_position = state.get_pacman_coord() #pacman positions
 
         # Select best actions given the state
-        distances_from_pacman = [manhattan_dist( coord, pacman_position ) for coord in new_coords]
+        distances_from_pacman = [coords_distance( coord, pacman_position ) for coord in new_coords]
         if is_scared: #chooose the position with the max distance from pacman and start to flee there
             max_score = max( distances_from_pacman )
             best_probablilty = self.prob_scared

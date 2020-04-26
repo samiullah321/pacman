@@ -2,11 +2,15 @@ from game import game_state_data
 from game import Directions
 from game import Actions
 from util import nearest_cord
-from util import manhattan_dist
+from util import coords_distance
 import util, layout
 import sys, types, time, random, os
+import textDisplay
+import graphicsDisplay
 from GameLib import *
 from datetime import datetime
+from optparse import OptionParser
+import __main__
 
 class game_state: #has accessor methods for accessing variables of game_state_data object
 
@@ -40,7 +44,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
 
         #penalty being incurred per unit time
         if agent_index == 0:
-            state.data.score_change += -TIME_PENALTY # decreasing score on wasting time
+            state.data.score_change += -PENALTY # decreasing score on wasting time
         else:
             ghost_rules.dec_timer( state.data.agent_states[agent_index] ) #the timer for the ghost's scared state to finish
 
@@ -55,6 +59,14 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         game_state.explored.add(state)
         return state
 
+    def get_coin(self):
+        return self.data.coin #return a 2d array of boolean indicating presence of coin on each location
+
+    def pac_lost( self ):
+        return self.data._lose
+
+    def pac_won( self ):
+        return self.data.win
 
     def produce_pac_successor( self, action ):
         return self.produce_successor( 0, action ) #applying the action on the pacman
@@ -79,26 +91,17 @@ class game_state: #has accessor methods for accessing variables of game_state_da
             raise Exception("Pacman's index passed to get_ghost_coord")
         return self.data.agent_states[agent_index].get_coord()
 
-    def get_num_agents( self ):
-        return len( self.data.agent_states )
-
     def get_score( self ):
         return float(self.data.score)
 
     def get_big_coin(self):
         return self.data.big_coin #returning the remaining bigcoin positions
 
+    def get_num_agents( self ):
+        return len( self.data.agent_states )
+
     def remaining_coin( self ):
         return self.data.coin.count() #getting the remaining coin on the maze
-
-    def get_coin(self):
-        return self.data.coin #return a 2d array of boolean indicating presence of coin on each location
-
-    def pac_lost( self ):
-        return self.data._lose
-
-    def pac_won( self ):
-        return self.data.win
 
     def __init__( self, prevState = None ):
         """
@@ -117,13 +120,13 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def initialize( self, layout, numghost_agents=1000 ):
         self.data.initialize(layout, numghost_agents) #used to create the initial layout of the maze
 
-SCARED_TIME = 40    # time till which ghosts are scared
-COLLISION_TOLERANCE = 0.7 # How close ghosts must be to Pacman to kill
-TIME_PENALTY = 1 # Number of points lost when pacman not eating coin
+SCARED = 40    # time till which ghosts are scared
+KILL_DISTANCE = 0.7 # How close ghosts must be to Pacman to kill
+PENALTY = 1 # Number of points lost when pacman not eating coin
 
 class classic_rule:
 
-    def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
+    def newGame( self, layout, pacmanAgent, ghostAgents, display, no_display = False):
         #taking all the state values for the new game
         agents = [pacmanAgent] + ghostAgents[:layout.get_ghosts_count()]
         initState = game_state()
@@ -131,7 +134,7 @@ class classic_rule:
         game = Game(agents, display, self)
         game.state = initState
         self.initialState = initState.deep_copy()
-        self.quiet = quiet
+        self.no_display = no_display
         return game
 
     def process(self, state, game): #checking whether game state is a win or a loss
@@ -139,11 +142,11 @@ class classic_rule:
         if state.pac_lost(): self.lose(state, game)
 
     def win( self, state, game ): #printing win
-        if not self.quiet: print("Pacman emerges victorious! Score: %d" % state.data.score)
+        if not self.no_display: print("Game won! :D")
         game.game_finish = True
 
     def lose( self, state, game ): # printing loss
-        if not self.quiet: print("Pacman died! Score: %d" % state.data.score)
+        if not self.no_display: print("Game Lost. :(")
         game.game_finish = True
 
     def get_progress(self, game): #returning how much coin eaten from the start
@@ -173,11 +176,11 @@ class pac_rules:
         #eating coin
         next = pacman_state.config.get_coord()
         nearest = nearest_cord( next )
-        if manhattan_dist( nearest, next ) <= 0.5 :#remove the coin when eaten
-            pac_rules.consume( nearest, state )
+        if coords_distance( nearest, next ) <= 0.5 :#remove the coin when eaten
+            pac_rules.eat( nearest, state )
     apply_action = staticmethod( apply_action )
 
-    def consume( position, state ):
+    def eat( position, state ):
         x,y = position
         if state.data.coin[x][y]: #consuming the coin
             state.data.score_change += 10 #incrementing the score on consuming
@@ -195,8 +198,8 @@ class pac_rules:
             state.data.big_food_Eaten = position
             #Reset all ghosts' scared timers
             for index in range( 1, len( state.data.agent_states ) ):
-                state.data.agent_states[index].scared_timer = SCARED_TIME #all the ghosts are now in scared mode once the coin has been eaten
-    consume = staticmethod( consume )
+                state.data.agent_states[index].scared_timer = SCARED #all the ghosts are now in scared mode once the coin has been eaten
+    eat = staticmethod( eat )
 
 class ghost_rules:
     #functions for the ghost interacting with the enviroment
@@ -262,7 +265,7 @@ class ghost_rules:
 
     def can_kill( pacman_position, ghost_coordinates ):
         #ghost and pacman distance is less that than the tolerance defined than its a kill
-        return manhattan_dist( ghost_coordinates, pacman_position ) <= COLLISION_TOLERANCE
+        return coords_distance( ghost_coordinates, pacman_position ) <= KILL_DISTANCE
     can_kill = staticmethod( can_kill )
 
     def put_ghost(state, ghost_state): #placing ghost agents at their proper positions
@@ -286,67 +289,61 @@ def parseAgentArgs(str):
         opts[key] = val
     return opts
 
-def readCommand( argv ):
-    """
-    Processes the command used to run pacman from the command line.
-    """
-    from optparse import OptionParser
+def parse_command( argv ):
     usageStr = ""
 
-    parser = OptionParser(usageStr)
+    p = OptionParser(usageStr)
 
     #ADDING THE PARSING OPTIONS
-    parser.add_option('-n', '--numGames', dest='numGames', type='int',
+    p.add_option('-n', '--numGames', dest='numGames', type='int',
                       help=default('the number of GAMES to play'), metavar='GAMES', default=1)
-    parser.add_option('-l', '--layout', dest='layout',
+    p.add_option('-k', '--ghosts_count', type='int', dest='ghosts_count',
+                      help=default('The maximum number of ghosts to use'), default=4)
+    p.add_option('--frame_t', dest='frame_t', type='float',
+                      help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
+    p.add_option('-l', '--layout', dest='layout',
                       help=default('the LAYOUT_FILE from which to load the map layout'),
                       metavar='LAYOUT_FILE', default='mediumClassic')
-    parser.add_option('-p', '--pacman', dest='pacman',
+    p.add_option('-p', '--pacman', dest='pacman',
                       help=default('the agent TYPE in the pacmanAgents module to use'),
                       metavar='TYPE', default='keyboard_agent')
-    parser.add_option('-q', '--quietTextGraphics', action='store_true', dest='quietGraphics',
+    p.add_option('-q', '--no_displayTextGraphics', action='store_true', dest='no_displayGraphics',
                       help='Generate minimal output and no graphics', default=False)
-    parser.add_option('-g', '--ghosts', dest='ghost',
+    p.add_option('-g', '--ghosts', dest='ghost',
                       help=default('the ghost agent TYPE in the ghostAgents module to use'),
                       metavar = 'TYPE', default='random_ghost')
-    parser.add_option('-k', '--ghosts_count', type='int', dest='ghosts_count',
-                      help=default('The maximum number of ghosts to use'), default=4)
-    parser.add_option('-a','--agentArgs',dest='agentArgs',
+    p.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
-    parser.add_option('--frame_t', dest='frame_t', type='float',
-                      help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
 
-    options, otherjunk = parser.parse_args(argv)
+    options, otherjunk = p.parse_args(argv)
     #error command generated
     if len(otherjunk) != 0:
         raise Exception('Command line input not understood: ' + str(otherjunk))
-    args = dict()
+    arguments = dict()
 
     #setting the layout
-    args['layout'] = layout.get_layout( options.layout )
-    if args['layout'] == None: raise Exception("The layout " + options.layout + " cannot be found") #in case of the layout not being found
+    arguments['layout'] = layout.get_layout( options.layout )
+    if arguments['layout'] == None: raise Exception("The layout " + options.layout + " cannot be found") #in case of the layout not being found
 
     # Choose a Pacman agent
     noKeyboard = False
     pacmanType = load_agent(options.pacman, noKeyboard)
     agentOpts = parseAgentArgs(options.agentArgs)
     pacman = pacmanType(**agentOpts) # Instantiate Pacman with agentArgs
-    args['pacman'] = pacman
+    arguments['pacman'] = pacman
 
     # Choose a ghost agent
     ghostType = load_agent(options.ghost, noKeyboard)
-    args['ghosts'] = [ghostType( i+1 ) for i in range( options.ghosts_count )]
+    arguments['ghosts'] = [ghostType( i+1 ) for i in range( options.ghosts_count )]
 
     # Choose a display format
-    if options.quietGraphics:
-        import textDisplay
-        args['display'] = textDisplay.null_graphic()
+    if options.no_displayGraphics:
+        arguments['display'] = textDisplay.null_graphic()
     else:
-        import graphicsDisplay
-        args['display'] = graphicsDisplay.pac_graphic(frame_t = options.frame_t)
-    args['numGames'] = options.numGames
+        arguments['display'] = graphicsDisplay.pac_graphic(frame_t = options.frame_t)
+    arguments['numGames'] = options.numGames
 
-    return args
+    return arguments
 
 def load_agent(pacman, nographics):
     # Looks through all pythonPath Directories for the right module,
@@ -371,8 +368,7 @@ def load_agent(pacman, nographics):
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 
-def runGames( layout, pacman, ghosts, display, numGames):
-    import __main__
+def initiate_pacman( layout, pacman, ghosts, display, numGames):
     __main__.__dict__['_display'] = display
 
     rules = classic_rule()
@@ -382,12 +378,11 @@ def runGames( layout, pacman, ghosts, display, numGames):
         beQuiet = i < 0
         if beQuiet:
                 # Suppress output and graphics
-            import textDisplay
             gameDisplay = textDisplay.null_graphic()
-            rules.quiet = True
+            rules.no_display = True
         else:
             gameDisplay = display
-            rules.quiet = False
+            rules.no_display = False
         game = rules.newGame( layout, pacman, ghosts, gameDisplay, beQuiet)
         game.run()
         if not beQuiet: games.append(game)
@@ -405,19 +400,18 @@ def runGames( layout, pacman, ghosts, display, numGames):
             if len(game.state.get_big_coin())==0:
                 CapCount += 1
 
-        print('The game finished all food', float(CapCount)/float(numGames))
+        print('Score:       ', ', '.join([str(score) for score in scores]))
+        print('Winning rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate*100))
+        print('Record:       ', ', '.join([ ['Game Lost', 'Game Won'][int(w)] for w in wins]))
         print('Average Score:', sum(scores) / float(len(scores)))
         if(len(AvgWin) != 0):
             print('Average Win Score', float(sum(AvgWin))/float(len(AvgWin)))
         else:
             print('No games won!')
-        print('Scores:       ', ', '.join([str(score) for score in scores]))
-        print('Win Rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate))
-        print('Record:       ', ', '.join([ ['Loss', 'Win'][int(w)] for w in wins]))
 
     return games
 
 if __name__ == '__main__':
-    args = readCommand( sys.argv[1:] ) # Get game components based on input
-    runGames( **args )
+    arguments = parse_command( sys.argv[1:] ) # Get game components based on input
+    initiate_pacman( **arguments )
     pass

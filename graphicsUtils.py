@@ -203,8 +203,8 @@ def move_circle(id, coord, r, end_coord=None):
     edit(id, ('start', e[0]), ('extent', e[1] - e[0]))
     move_to(id, x0, y0)
 
-def edit(id, *args):
-    _canvas.itemconfigure(id, **dict(args))
+def edit(id, *arguments):
+    _canvas.itemconfigure(id, **dict(arguments))
 
 def text(coord, color, contents, font='Helvetica', size=12, style='normal', anchor="nw"):
     global _canvas_x, _canvas_y

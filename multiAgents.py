@@ -1,4 +1,4 @@
-from util import manhattan_dist
+from util import coords_distance
 from game import Directions
 import random, util
 
@@ -39,7 +39,7 @@ class reflex_agent(Agent):
         coinCount = len(coin_cord)  # number of coin available
         nearest_distance = 1e6  # initially set to infinite
         for i in range(coinCount):
-            distance = manhattan_dist(coin_cord[i], new_coord) + coinCount * 100
+            distance = coords_distance(coin_cord[i], new_coord) + coinCount * 100
             if distance < nearest_distance:  # find the closest available coin
                 nearest_distance = distance
                 closestcoin = coin_cord
@@ -50,7 +50,7 @@ class reflex_agent(Agent):
         for i in range(len(new_ghost_states)):
             # getting the positions of each ghost and checking whether it has eaten pacman or not
             ghost_coord = next_game_state.get_ghost_coord(i + 1)
-            if manhattan_dist(new_coord, ghost_coord) <= 1:  # if pacman dies
+            if coords_distance(new_coord, ghost_coord) <= 1:  # if pacman dies
                 score -= 1e6  # the score when the pacman dies
 
         return score  # next_game_state.get_score()

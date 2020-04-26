@@ -3,8 +3,8 @@ import inspect
 import heapq, random
 import io
 
-def manhattan_dist( xy1, xy2 ):
-    #using manhattan_dist for computing distance between two points
+def coords_distance( xy1, xy2 ):
+    #using coords_distance for computing distance between two points
     return abs( xy1[0] - xy2[0] ) + abs( xy1[1] - xy2[1] )
 
 class Counter(dict):
