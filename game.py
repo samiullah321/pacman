@@ -235,7 +235,7 @@ class game_state_data: #data pertaining to each state of the game
             self.score = prevState.score
 
         #MAINTAINING STATES FOR THE AGENT
-        self._coinEaten = None
+        self.coin_eaten = None
         self._coinAdded = None
         self._capsuleEaten = None
         self._agentMoved = None #checking if the agent has moved from previous position
@@ -248,7 +248,7 @@ class game_state_data: #data pertaining to each state of the game
         state.coin = self.coin.deepCopy()
         state.layout = self.layout.deepCopy()
         state._agentMoved = self._agentMoved
-        state._coinEaten = self._coinEaten
+        state.coin_eaten = self.coin_eaten
         state._coinAdded = self._coinAdded
         state._capsuleEaten = self._capsuleEaten
         return state

@@ -177,8 +177,8 @@ class PacmanGraphics: #general graphics for pacman
             self.moveGhost(agentState, agent_index, prevState, prevImage) #animating or moving the ghost
         self.agentImages[agent_index] = (agentState, prevImage)
 
-        if newState._coinEaten != None:
-            self.removecoin(newState._coinEaten, self.coin) #if the coin is eaten, remove it from its position in new state
+        if newState.coin_eaten != None:
+            self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState._capsuleEaten != None:
             self.removeCapsule(newState._capsuleEaten, self.big_coin) #same as coin
         self.infoPane.updateScore(newState.score)
