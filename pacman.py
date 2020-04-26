@@ -66,7 +66,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return self.data.agentStates[0].copy()
 
     def get_pacman_coord( self ):
-        return self.data.agentStates[0].getPosition() #return the pacman's current position
+        return self.data.agentStates[0].get_coord() #return the pacman's current position
 
     def get_ghost_states( self ):
         return self.data.agentStates[1:] #getting the states for all the ghosts
@@ -79,10 +79,10 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def get_ghost_coord( self, agentIndex ):
         if agentIndex == 0:
             raise Exception("Pacman's index passed to get_ghost_coord")
-        return self.data.agentStates[agentIndex].getPosition()
+        return self.data.agentStates[agentIndex].get_coord()
 
     def getGhostPositions(self):
-        return [s.getPosition() for s in self.get_ghost_states()]
+        return [s.get_coord() for s in self.get_ghost_states()]
 
     def get_num_agents( self ):
         return len( self.data.agentStates )
@@ -177,7 +177,7 @@ class PacmanRules:
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
     def get_legal_moves( state ):
-        return Actions.getPossibleActions( state.getPacmanState().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
+        return Actions.get_possible_moves( state.getPacmanState().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
     get_legal_moves = staticmethod( get_legal_moves )
 
     def applyAction( state, action ): # applying the action received on the pacman
@@ -188,7 +188,7 @@ class PacmanRules:
         vector = Actions.directionToVector( action, PacmanRules.PACMAN_SPEED ) #updating the pacman config
         pacmanState.configuration = pacmanState.configuration.produce_successor( vector )
         #eating coin
-        next = pacmanState.configuration.getPosition()
+        next = pacmanState.configuration.get_coord()
         nearest = nearestPoint( next )
         if manhattanDistance( nearest, next ) <= 0.5 :#remove the coin when eaten
             PacmanRules.consume( nearest, state )
@@ -220,7 +220,7 @@ class GhostRules:
     GHOST_SPEED=1.0 # speed of ghost and pacman is same
     def get_legal_moves( state, ghostIndex ): #getting the legal_move for the ghost
         conf = state.get_ghost_state( ghostIndex ).configuration
-        possibleActions = Actions.getPossibleActions( conf, state.data.layout.walls )
+        possibleActions = Actions.get_possible_moves( conf, state.data.layout.walls )
         reverse = Actions.reverseDirection( conf.direction )
         if Directions.STOP in possibleActions:
             possibleActions.remove( Directions.STOP ) #the ghost should not stop
@@ -254,12 +254,12 @@ class GhostRules:
         if agentIndex == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agentStates ) ): #checking pacman has been killed by which ghost hence using a loop to check
                 ghost_state = state.data.agentStates[index]
-                ghostPosition = ghost_state.configuration.getPosition()
+                ghostPosition = ghost_state.configuration.get_coord()
                 if GhostRules.canKill( pacmanPosition, ghostPosition ):
                     GhostRules.collide( state, ghost_state, index )
         else:
             ghost_state = state.data.agentStates[agentIndex]
-            ghostPosition = ghost_state.configuration.getPosition()
+            ghostPosition = ghost_state.configuration.get_coord()
             if GhostRules.canKill( pacmanPosition, ghostPosition ):
                 GhostRules.collide( state, ghost_state, agentIndex ) # setting the index of the ghost that killed the pacman
     checkDeath = staticmethod( checkDeath )

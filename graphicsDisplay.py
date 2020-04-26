@@ -199,7 +199,7 @@ class PacmanGraphics: #general graphics for pacman
 
     #drawing the pacman
     def drawPacman(self, pacman, index):
-        position = self.getPosition(pacman)
+        position = self.get_coord(pacman)
         screen_point = self.to_screen(position)
         endpoints = self.getEndpoints(self.getDirection(pacman))
 
@@ -246,8 +246,8 @@ class PacmanGraphics: #general graphics for pacman
                 self.frameTime = 0.1
         if self.frameTime > 0.01 or self.frameTime < 0:
             start = time.time()
-            fx, fy = self.getPosition(pacman)
-            px, py = self.getPosition(pacman)
+            fx, fy = self.get_coord(pacman)
+            px, py = self.get_coord(pacman)
             frames = 4.0
             for i in range(1,int(frames) + 1):
                 pos = px*i/frames + fx*(frames-i)/frames, py*i/frames + fy*(frames-i)/frames
@@ -255,7 +255,7 @@ class PacmanGraphics: #general graphics for pacman
                 refresh()
                 sleep(abs(self.frameTime) / frames)
         else:
-            self.movePacman(self.getPosition(pacman), self.getDirection(pacman), image)
+            self.movePacman(self.get_coord(pacman), self.getDirection(pacman), image)
         refresh()
 
     #retreiving the ghost color
@@ -267,7 +267,7 @@ class PacmanGraphics: #general graphics for pacman
 
     #drawing the ghost
     def drawGhost(self, ghost, agentIndex):
-        pos = self.getPosition(ghost)
+        pos = self.get_coord(ghost)
         dir = self.getDirection(ghost)
         (screen_x, screen_y) = (self.to_screen(pos) )
         coords = []
@@ -298,8 +298,8 @@ class PacmanGraphics: #general graphics for pacman
     #moving the ghost
     def moveGhost(self, ghost, ghostIndex, prevGhost, ghostImageParts):
         #animation of ghost movement
-        old_x, old_y = self.to_screen(self.getPosition(prevGhost))
-        new_x, new_y = self.to_screen(self.getPosition(ghost))
+        old_x, old_y = self.to_screen(self.get_coord(prevGhost))
+        new_x, new_y = self.to_screen(self.get_coord(ghost))
         delta = new_x - old_x, new_y - old_y
 
         for ghostImagePart in ghostImageParts:
@@ -314,9 +314,9 @@ class PacmanGraphics: #general graphics for pacman
         refresh()
 
     #get coords on the screen
-    def getPosition(self, agentState):
+    def get_coord(self, agentState):
         if agentState.configuration == None: return (-1000, -1000)
-        return agentState.getPosition()
+        return agentState.get_coord()
 
     #get action
     def getDirection(self, agentState):

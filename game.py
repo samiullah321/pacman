@@ -41,7 +41,7 @@ class Configuration:
         self.direction = direction #direction of movement
 
     #UTILITY FUNCTIONS
-    def getPosition(self):
+    def get_coord(self):
         return (self.pos)
 
     def getDirection(self):
@@ -77,9 +77,9 @@ class AgentState:
         return state
 
     #UTILITY FUNCTIONS
-    def getPosition(self):
+    def get_coord(self):
         if self.configuration == None: return None
-        return self.configuration.getPosition()
+        return self.configuration.get_coord()
 
     def getDirection(self):
         return self.configuration.getDirection()
@@ -122,7 +122,7 @@ class Grid:
                 if self[x][y] == key: list.append( (x,y) )
         return list
 
-    def _cellIndexToPosition(self, index):
+    def cell_index_to_coord(self, index):
         x = index / self.height
         y = index % self.height
         return x, y
@@ -132,7 +132,7 @@ class Grid:
         for packed in bits:
             for bit in self._unpackInt(packed, self.CELLS_PER_INT):
                 if cell == self.width * self.height: break
-                x, y = self._cellIndexToPosition(cell)
+                x, y = self.cell_index_to_coord(cell)
                 self[x][y] = bit
                 cell += 1
 
@@ -202,7 +202,7 @@ class Actions:
     directionToVector = staticmethod(directionToVector)
 
     #config is the current game_state of an agent
-    def getPossibleActions(config, walls):
+    def get_possible_moves(config, walls):
         possible = [] #initialized empty
         x, y = config.pos #gets the current pos of Pacman
         x_int, y_int = int(x + 0.5), int(y + 0.5)
@@ -220,7 +220,7 @@ class Actions:
 
         return possible
 
-    getPossibleActions = staticmethod(getPossibleActions)
+    get_possible_moves = staticmethod(get_possible_moves)
 
 class game_state_data: #data pertaining to each state of the game
 
