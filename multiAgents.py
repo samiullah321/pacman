@@ -8,7 +8,7 @@ from game import Agent
 class ReflexAgent(Agent):
 
     # A reflex agent chooses action at each phase by using the evaluation function given below
-    def getAction(self, gameState):
+    def get_move(self, gameState):
         # Collect legal moves and successor states
         legalMoves = gameState.get_legal_moves()
 
@@ -72,7 +72,7 @@ class MultiAgentSearchAgent(Agent):
 
 class MinimaxAgent(MultiAgentSearchAgent):
     # MINIMAX AGENT
-    def getAction(self, gameState):
+    def get_move(self, gameState):
         # makes use of current GameState to return the proper action, given the depth and the evaluation function to be used.
         # all the agents have been tested without an evaluation function to see how they compare against the reflex agent
 
@@ -117,7 +117,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     # ALPHA BETA AGENT
-    def getAction(self, gameState):
+    def get_move(self, gameState):
         # Main Code
         numAgent = gameState.getNumAgents()
         ActionScore = []
@@ -156,7 +156,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     # EXPECTIMAX AGENT
-    def getAction(self, gameState):
+    def get_move(self, gameState):
         # Main Code
         numAgent = gameState.getNumAgents()
         ActionScore = []

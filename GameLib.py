@@ -98,7 +98,7 @@ class Game:
             # Solicit an action
             action = None
             self.mute(agentIndex)
-            action = agent.getAction(observation)
+            action = agent.get_move(observation)
             self.unmute()
 
             # Execute the action

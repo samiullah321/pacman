@@ -17,7 +17,7 @@ class KeyboardAgent(Agent):
         self.index = index
         self.keys = []
 
-    def getAction( self, state):
+    def get_move( self, state):
         from graphicsUtils import keys_waiting
         from graphicsUtils import keys_pressed
         keys = keys_waiting() + keys_pressed()

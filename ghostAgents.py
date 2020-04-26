@@ -9,7 +9,7 @@ class GhostAgent( Agent ):
     def __init__( self, index ):
         self.index = index
 
-    def getAction( self, state ): #return an action
+    def get_move( self, state ): #return an action
         dist = self.getDistribution(state) #evaluating the probabilities of attacking or fleeing using factors as distance from pacman etc.
         if len(dist) == 0:
             return Directions.STOP
