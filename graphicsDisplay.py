@@ -104,8 +104,8 @@ class pac_graphic: #general graphics for pacman
         self.isBlue = isBlue
         self.start_graphic(state)
         self.distributionImages = None  # Initialized lazily
-        self.drawStaticObjects(state)
-        self.drawAgentObjects(state)
+        self.make_static_obj(state)
+        self.make_agent_obj(state)
 
         # Information
         self.previousState = state
@@ -120,25 +120,24 @@ class pac_graphic: #general graphics for pacman
         self.c_state = layout
 
 
-
     #drawing coin and bcoin onto the screen
-    def drawStaticObjects(self, state):
+    def make_static_obj(self, state):
         layout = self.layout
-        self.drawWalls(layout.walls)
-        self.coin = self.drawcoin(layout.coin)
-        self.big_coin = self.drawbig_coin(layout.big_coin)
+        self.make_wall(layout.walls)
+        self.coin = self.make_coin(layout.coin)
+        self.big_coin = self.make_big_coin(layout.big_coin)
         refresh()
 
     #drawing the pacman, ghost onto the screen
-    def drawAgentObjects(self, state):
-        self.agentImages = [] # (agentState, image)
+    def make_agent_obj(self, state):
+        self.agent_img = [] # (agentState, image)
         for index, agent in enumerate(state.agent_states):
-            if agent.isPacman:
-                image = self.drawPacman(agent, index)
-                self.agentImages.append( (agent, image) )
+            if agent.is_pac:
+                image = self.make_pac(agent, index)
+                self.agent_img.append( (agent, image) )
             else:
-                image = self.drawGhost(agent, index)
-                self.agentImages.append( (agent, image) )
+                image = self.make_ghost(agent, index)
+                self.agent_img.append( (agent, image) )
         refresh()
 
     #updates c_state to the newState recieved
@@ -147,12 +146,12 @@ class pac_graphic: #general graphics for pacman
         agent_index = newState.agent_moved
         agentState = newState.agent_states[agent_index]
 
-        prevState, prevImage = self.agentImages[agent_index]
-        if agentState.isPacman:
+        prevState, prevImage = self.agent_img[agent_index]
+        if agentState.is_pac:
             self.animate_pacman_movement(agentState, prevState, prevImage) #moving pacman
         else:
             self.moveGhost(agentState, agent_index, prevState, prevImage) #animating or moving the ghost
-        self.agentImages[agent_index] = (agentState, prevImage)
+        self.agent_img[agent_index] = (agentState, prevImage)
 
         if newState.coin_eaten != None:
             self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
@@ -175,7 +174,7 @@ class pac_graphic: #general graphics for pacman
                        "PACMAN MULTI-AGENT SIMULATION")
 
     #drawing the pacman
-    def drawPacman(self, pacman, index):
+    def make_pac(self, pacman, index):
         position = self.get_coord(pacman)
         screen_point = self.to_screen(position)
         endpoints = self.getEndpoints(self.getDirection(pacman))
@@ -243,7 +242,7 @@ class pac_graphic: #general graphics for pacman
             return ghost_c[ghostIndex]
 
     #drawing the ghost
-    def drawGhost(self, ghost, agent_index):
+    def make_ghost(self, ghost, agent_index):
         coord = self.get_coord(ghost)
         dir = self.getDirection(ghost)
         (screen_x, screen_y) = (self.to_screen(coord) )
@@ -311,7 +310,7 @@ class pac_graphic: #general graphics for pacman
         return ( x, y )
 
     #drawing the walls from the wallMatrix
-    def drawWalls(self, wallMatrix):
+    def make_wall(self, wallMatrix):
         wallColor = wall_c
         for xNum, x in enumerate(wallMatrix):
             for yNum, cell in enumerate(x):
@@ -402,7 +401,7 @@ class pac_graphic: #general graphics for pacman
         return walls[x][y]
 
     #drawing the coin on the layout
-    def drawcoin(self, coinMatrix ):
+    def make_coin(self, coinMatrix ):
         coinImages = []
         color = coin_c
         for xNum, x in enumerate(coinMatrix):
@@ -421,7 +420,7 @@ class pac_graphic: #general graphics for pacman
         return coinImages
 
     #drawing bcoin on the layout
-    def drawbig_coin(self, big_coin ):
+    def make_big_coin(self, big_coin ):
         capsuleImages = {}
         for capsule in big_coin:
             ( screen_x, screen_y ) = self.to_screen(capsule)

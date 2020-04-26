@@ -64,14 +64,14 @@ class Configuration:
 class AgentState:
 
     #agent_states hold the state of an agent (configuration, speed, scared, etc).
-    def __init__( self, startConfiguration, isPacman ):
+    def __init__( self, startConfiguration, is_pac ):
         self.start = startConfiguration
         self.configuration = startConfiguration
-        self.isPacman = isPacman #is the agent Pacman or ghost?
+        self.is_pac = is_pac #is the agent Pacman or ghost?
         self.scared_timer = 0 #time until the ghost can be eaten
 
     def copy( self ):
-        state = AgentState( self.start, self.isPacman )
+        state = AgentState( self.start, self.is_pac )
         state.configuration = self.configuration
         state.scared_timer = self.scared_timer #time until which the agent would be eatable
         return state
@@ -270,9 +270,9 @@ class game_state_data: #data pertaining to each state of the game
 
         self.agent_states = []
         ghosts_count = 0
-        for isPacman, coord in layout.agent_coord:
-            if not isPacman:
+        for is_pac, coord in layout.agent_coord:
+            if not is_pac:
                 if ghosts_count == numGhostAgents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agent_states.append( AgentState( Configuration( coord, Directions.STOP), isPacman) )
+            self.agent_states.append( AgentState( Configuration( coord, Directions.STOP), is_pac) )
         self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)
