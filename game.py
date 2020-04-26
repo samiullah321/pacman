@@ -238,16 +238,16 @@ class game_state_data: #data pertaining to each state of the game
         self.coin_eaten = None
         self._coinAdded = None
         self._capsuleEaten = None
-        self._agentMoved = None #checking if the agent has moved from previous position
+        self.agent_moved = None #checking if the agent has moved from previous position
         self._lose = False #game lost
         self._win = False #game won
-        self.scoreChange = 0
+        self.score_change = 0
 
     def deepCopy( self ): #DEEP COPYING
         state = game_state_data( self )
         state.coin = self.coin.deepCopy()
         state.layout = self.layout.deepCopy()
-        state._agentMoved = self._agentMoved
+        state.agent_moved = self.agent_moved
         state.coin_eaten = self.coin_eaten
         state._coinAdded = self._coinAdded
         state._capsuleEaten = self._capsuleEaten
@@ -266,7 +266,7 @@ class game_state_data: #data pertaining to each state of the game
         self.big_coin = layout.big_coin[:]
         self.layout = layout
         self.score = 0
-        self.scoreChange = 0
+        self.score_change = 0
 
         self.agent_states = []
         ghosts_count = 0

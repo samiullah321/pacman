@@ -40,16 +40,16 @@ class game_state: #has accessor methods for accessing variables of game_state_da
 
         #penalty being incurred per unit time
         if agent_index == 0:
-            state.data.scoreChange += -TIME_PENALTY # decreasing score on wasting time
+            state.data.score_change += -TIME_PENALTY # decreasing score on wasting time
         else:
-            ghost_rules.decrementTimer( state.data.agent_states[agent_index] ) #the timer for the ghost's scared state to finish
+            ghost_rules.dec_timer( state.data.agent_states[agent_index] ) #the timer for the ghost's scared state to finish
 
         #checking whehter
-        ghost_rules.checkDeath( state, agent_index ) #checks pacman's death
+        ghost_rules.check_collid( state, agent_index ) #checks pacman's death
 
         #setting which agent has moved and the score state
-        state.data._agentMoved = agent_index
-        state.data.score += state.data.scoreChange
+        state.data.agent_moved = agent_index
+        state.data.score += state.data.score_change
         #adding the state to already explored state
         game_state.explored.add(self)
         game_state.explored.add(state)
@@ -194,14 +194,14 @@ class pac_rules:
     def consume( position, state ):
         x,y = position
         if state.data.coin[x][y]: #consuming the coin
-            state.data.scoreChange += 10 #incrementing the score on consuming
+            state.data.score_change += 10 #incrementing the score on consuming
             state.data.coin = state.data.coin.copy()
             state.data.coin[x][y] = False #the item is now removed from its position
             state.data.coin_eaten = position
             #checking whether all the coin has been eaten or not
             numcoin = state.getNumcoin()
             if numcoin == 0 and not state.data._lose:
-                state.data.scoreChange += 500
+                state.data.score_change += 500
                 state.data._win = True
         #eating the bcoin
         if( position in state.getbig_coin() ): #now all ghost agents are eatable
@@ -239,14 +239,14 @@ class ghost_rules:
         ghost_state.configuration = ghost_state.configuration.produce_successor( vector ) #applying the action to the ghost_state
     apply_action = staticmethod( apply_action )
 
-    def decrementTimer( ghost_state): #this will decrerement the timer for the ghost being scared
+    def dec_timer( ghost_state): #this will decrerement the timer for the ghost being scared
         timer = ghost_state.scaredTimer
         if timer == 1:
             ghost_state.configuration.coord = nearestPoint( ghost_state.configuration.coord )
         ghost_state.scaredTimer = max( 0, timer - 1 ) #the timer cannot be below zero
-    decrementTimer = staticmethod( decrementTimer )
+    dec_timer = staticmethod( dec_timer )
 
-    def checkDeath( state, agent_index): #checking whether the pacman and the ghost has collided or not
+    def check_collid( state, agent_index): #checking whether the pacman and the ghost has collided or not
         pacman_position = state.get_pacman_coord()
         if agent_index == 0: # Pacman just moved; Anyone can kill him
             for index in range( 1, len( state.data.agent_states ) ): #checking pacman has been killed by which ghost hence using a loop to check
@@ -259,18 +259,18 @@ class ghost_rules:
             ghostPosition = ghost_state.configuration.get_coord()
             if ghost_rules.canKill( pacman_position, ghostPosition ):
                 ghost_rules.collide( state, ghost_state, agent_index ) # setting the index of the ghost that killed the pacman
-    checkDeath = staticmethod( checkDeath )
+    check_collid = staticmethod( check_collid )
 
     def collide( state, ghost_state, agent_index): #sets the state on collision of pacman and the ghost
         if ghost_state.scaredTimer > 0: #if the ghost is scared and still collides
-            state.data.scoreChange += 200
+            state.data.score_change += 200
             ghost_rules.placeGhost(state, ghost_state)
             ghost_state.scaredTimer = 0
             # Added for first-person
             state.data._eaten[agent_index] = True # the agent is now eaten
         else:
             if not state.data._win:
-                state.data.scoreChange -= 500
+                state.data.score_change -= 500
                 state.data._lose = True #the game is lost as pacman is eaten
     collide = staticmethod( collide )
 

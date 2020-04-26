@@ -167,7 +167,7 @@ class PacmanGraphics: #general graphics for pacman
     #updates currentState to the newState recieved
     def update(self, newState):
         #updating the agent moved
-        agent_index = newState._agentMoved
+        agent_index = newState.agent_moved
         agentState = newState.agent_states[agent_index]
 
         prevState, prevImage = self.agentImages[agent_index]
