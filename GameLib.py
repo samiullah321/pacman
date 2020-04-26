@@ -53,9 +53,6 @@ class Game:
 
 
     def run( self ):
-        """
-        Main control loop for game play.
-        """
         self.display.initialize(self.state.data)
         self.numMoves = 0
 

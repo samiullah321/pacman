@@ -12,6 +12,40 @@ from datetime import datetime
 from optparse import OptionParser
 import __main__
 
+class classic_rule:
+
+    def newGame( self, layout, pacmanAgent, ghostAgents, display, no_display = False):
+        #taking all the state values for the new game
+        agents = [pacmanAgent] + ghostAgents[:layout.get_ghosts_count()]
+        initState = game_state()
+        initState.initialize( layout, len(ghostAgents) )
+        game = Game(agents, display, self)
+        game.state = initState
+        self.initialState = initState.deep_copy()
+        self.no_display = no_display
+        return game
+
+    def process(self, state, game): #checking whether game state is a win or a loss
+        if state.pac_won(): self.win(state, game)
+        if state.pac_lost(): self.lose(state, game)
+
+    def win( self, state, game ): #printing win
+        if not self.no_display: print("Game won.  Score: ", state.data.score)
+        game.game_finish = True
+
+    def lose( self, state, game ): # printing loss
+        if not self.no_display: print("Game Lost. Score:", state.data.score)
+        game.game_finish = True
+
+    def get_progress(self, game): #returning how much coin eaten from the start
+        return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
+
+    def agent_crash(self, game, agent_index):
+        if agent_index == 0:
+            print("Pacman crashed")
+        else:
+            print("A ghost crashed")
+
 class game_state: #has accessor methods for accessing variables of game_state_data object
 
     #specifies the full game state, including the coin, big_coin, agent configs and score changes.
@@ -104,9 +138,6 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return self.data.coin.count() #getting the remaining coin on the maze
 
     def __init__( self, prevState = None ):
-        """
-        Generates a new state by copying information from its predecessor.
-        """
         if prevState != None: # Initial state
             self.data = game_state_data(prevState.data)
         else:
@@ -124,39 +155,6 @@ SCARED = 40    # time till which ghosts are scared
 KILL_DISTANCE = 0.7 # How close ghosts must be to Pacman to kill
 PENALTY = 1 # Number of points lost when pacman not eating coin
 
-class classic_rule:
-
-    def newGame( self, layout, pacmanAgent, ghostAgents, display, no_display = False):
-        #taking all the state values for the new game
-        agents = [pacmanAgent] + ghostAgents[:layout.get_ghosts_count()]
-        initState = game_state()
-        initState.initialize( layout, len(ghostAgents) )
-        game = Game(agents, display, self)
-        game.state = initState
-        self.initialState = initState.deep_copy()
-        self.no_display = no_display
-        return game
-
-    def process(self, state, game): #checking whether game state is a win or a loss
-        if state.pac_won(): self.win(state, game)
-        if state.pac_lost(): self.lose(state, game)
-
-    def win( self, state, game ): #printing win
-        if not self.no_display: print("Game won! :D")
-        game.game_finish = True
-
-    def lose( self, state, game ): # printing loss
-        if not self.no_display: print("Game Lost. :(")
-        game.game_finish = True
-
-    def get_progress(self, game): #returning how much coin eaten from the start
-        return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
-
-    def agent_crash(self, game, agent_index):
-        if agent_index == 0:
-            print("Pacman crashed")
-        else:
-            print("A ghost crashed")
 
 class pac_rules:
     #functions for the pacman
@@ -277,7 +275,7 @@ class ghost_rules:
 def default(str):
     return str + ' [Default: %default]'
 
-def parseAgentArgs(str):
+def parse_agent_arguments(str):
     if str == None: return {}
     pieces = str.split(',')
     opts = {}
@@ -328,7 +326,7 @@ def parse_command( argv ):
     # Choose a Pacman agent
     noKeyboard = False
     pacmanType = load_agent(options.pacman, noKeyboard)
-    agentOpts = parseAgentArgs(options.agentArgs)
+    agentOpts = parse_agent_arguments(options.agentArgs)
     pacman = pacmanType(**agentOpts) # Instantiate Pacman with agentArgs
     arguments['pacman'] = pacman
 
@@ -345,8 +343,8 @@ def parse_command( argv ):
 
     return arguments
 
+#utility function used for loading module in which agent is defined
 def load_agent(pacman, nographics):
-    # Looks through all pythonPath Directories for the right module,
     pythonPathStr = os.path.expandvars("$PYTHONPATH")
     if pythonPathStr.find(';') == -1:
         pythonPathDirs = pythonPathStr.split(':')
@@ -392,22 +390,15 @@ def initiate_pacman( layout, pacman, ghosts, display, numGames):
         wins = [game.state.pac_won() for game in games]
         winRate = wins.count(True)/ float(len(wins))
 
-        AvgWin = []
+        average_wins = []
         CapCount = 0
         for game in games:
             if game.state.pac_won():
-                AvgWin.append(game.state.get_score())
+                average_wins.append(game.state.get_score())
             if len(game.state.get_big_coin())==0:
                 CapCount += 1
-
-        print('Score:       ', ', '.join([str(score) for score in scores]))
-        print('Winning rate:      %d/%d (%.2f)' % (wins.count(True), len(wins), winRate*100))
-        print('Record:       ', ', '.join([ ['Game Lost', 'Game Won'][int(w)] for w in wins]))
+        print('%d games won out of %d ---> Win Rate: %.2f' % (wins.count(True), len(wins), winRate*100))
         print('Average Score:', sum(scores) / float(len(scores)))
-        if(len(AvgWin) != 0):
-            print('Average Win Score', float(sum(AvgWin))/float(len(AvgWin)))
-        else:
-            print('No games won!')
 
     return games
 
