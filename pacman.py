@@ -114,14 +114,14 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         state.data = self.data.deepCopy()
         return state
 
-    def initialize( self, layout, numGhostAgents=1000 ):
-        self.data.initialize(layout, numGhostAgents) #used to create the initial layout of the maze
+    def initialize( self, layout, numghost_agents=1000 ):
+        self.data.initialize(layout, numghost_agents) #used to create the initial layout of the maze
 
 SCARED_TIME = 40    # time till which ghosts are scared
 COLLISION_TOLERANCE = 0.7 # How close ghosts must be to Pacman to kill
 TIME_PENALTY = 1 # Number of points lost when pacman not eating coin
 
-class ClassicGameRules:
+class classic_rule:
 
     def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
@@ -303,12 +303,12 @@ def readCommand( argv ):
                       metavar='LAYOUT_FILE', default='mediumClassic')
     parser.add_option('-p', '--pacman', dest='pacman',
                       help=default('the agent TYPE in the pacmanAgents module to use'),
-                      metavar='TYPE', default='KeyboardAgent')
+                      metavar='TYPE', default='keyboard_agent')
     parser.add_option('-q', '--quietTextGraphics', action='store_true', dest='quietGraphics',
                       help='Generate minimal output and no graphics', default=False)
     parser.add_option('-g', '--ghosts', dest='ghost',
                       help=default('the ghost agent TYPE in the ghostAgents module to use'),
-                      metavar = 'TYPE', default='RandomGhost')
+                      metavar = 'TYPE', default='random_ghost')
     parser.add_option('-k', '--ghosts_count', type='int', dest='ghosts_count',
                       help=default('The maximum number of ghosts to use'), default=4)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
@@ -340,7 +340,7 @@ def readCommand( argv ):
     # Choose a display format
     if options.quietGraphics:
         import textDisplay
-        args['display'] = textDisplay.NullGraphics()
+        args['display'] = textDisplay.null_graphic()
     else:
         import graphicsDisplay
         args['display'] = graphicsDisplay.pac_graphic(frame_t = options.frame_t)
@@ -375,7 +375,7 @@ def runGames( layout, pacman, ghosts, display, numGames):
     import __main__
     __main__.__dict__['_display'] = display
 
-    rules = ClassicGameRules()
+    rules = classic_rule()
     games = []
 
     for i in range( numGames ):
@@ -383,7 +383,7 @@ def runGames( layout, pacman, ghosts, display, numGames):
         if beQuiet:
                 # Suppress output and graphics
             import textDisplay
-            gameDisplay = textDisplay.NullGraphics()
+            gameDisplay = textDisplay.null_graphic()
             rules.quiet = True
         else:
             gameDisplay = display

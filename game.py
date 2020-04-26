@@ -259,7 +259,7 @@ class game_state_data: #data pertaining to each state of the game
             copiedStates.append( agentState.copy() )
         return copiedStates
 
-    def initialize( self, layout, numGhostAgents ):
+    def initialize( self, layout, numghost_agents ):
         #creating the game_state from the layout (INITIAL STATE)
         self.coin = layout.coin.copy()
         #self.big_coin = []
@@ -272,7 +272,7 @@ class game_state_data: #data pertaining to each state of the game
         ghosts_count = 0
         for is_pac, coord in layout.agent_coord:
             if not is_pac:
-                if ghosts_count == numGhostAgents: continue # Max ghosts reached already
+                if ghosts_count == numghost_agents: continue # Max ghosts reached already
                 else: ghosts_count += 1
             self.agent_states.append( AgentState( Configuration( coord, Directions.STOP), is_pac) )
         self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)

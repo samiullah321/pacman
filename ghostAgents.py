@@ -5,7 +5,7 @@ import random
 from util import manhattan_dist
 import util
 
-class GhostAgent( Agent ):
+class ghost_agent( Agent ):
     def __init__( self, index ):
         self.index = index
 
@@ -17,7 +17,7 @@ class GhostAgent( Agent ):
             return util.select_from_probability_distribution( dist )
 
 #GHOST THAT CHOOSES AN ACTION RANDOMLY
-class RandomGhost( GhostAgent ):
+class random_ghost( ghost_agent ):
     def get_probability_distribution ( self, state ):
         dist = util.Counter()
         for a in state.get_legal_moves( self.index ): dist[a] = 1.0
@@ -25,7 +25,7 @@ class RandomGhost( GhostAgent ):
         return dist
 
 #GHOST THAT CHOOSES AN ACTION SMARTLY
-class DirectionalGhost( GhostAgent ):
+class directional_ghost( ghost_agent ):
     def __init__( self, index, prob_attack=0.8, prob_scared=0.8 ):
         self.index = index
          #setting the probabilities for the ghost to flee or attack

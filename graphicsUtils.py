@@ -217,8 +217,6 @@ def change_text(id, newText, font=None, size=12, style='normal'):
     if font != None:
         _canvas.itemconfigure(id, font=(font, '-%d' % size, style))
 
-def changeColor(id, newColor):
-    _canvas.itemconfigure(id, fill=newColor)
 
 def line(here, there, color=format_color(0, 0, 0), width=2):
     x0, y0 = here[0], here[1]
@@ -352,13 +350,6 @@ def move_by(object, x, y=None,
     if lift:
         _canvas.tag_raise(object)
 
-def writePostscript(filename):
-    "Writes the current canvas to a postscript file."
-    psfile = file(filename, 'w')
-    psfile.write(_canvas.postscript(pageanchor='sw',
-                     y='0.c',
-                     x='0.c'))
-    psfile.close()
 
 if __name__ == '__main__':
     begin_graphics()

@@ -3,7 +3,7 @@ from game import Directions
 import random
 
 #Keys for the controlling the pacman by the user
-class KeyboardAgent(Agent):
+class keyboard_agent(Agent):
     # NOTE: Arrow keys also work.
     left_key  = 'a'
     right_key  = 'd'

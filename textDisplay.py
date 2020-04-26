@@ -1,13 +1,9 @@
 import time
 import pacman
 
-DRAW_EVERY = 1
-SLEEP_TIME = 0 # This can be overwritten by __init__
-DISPLAY_MOVES = False
-QUIET = False # Supresses output
 
 #for suppressing the display
-class NullGraphics:
+class null_graphic:
     def initialize(self, state, isBlue = False):
         pass
 
@@ -19,9 +15,6 @@ class NullGraphics:
 
     def draw(self, state):
         print(state)
-
-    def updateDistributions(self, dist):
-        pass
 
     def finish(self):
         pass

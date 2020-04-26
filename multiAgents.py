@@ -5,7 +5,7 @@ import random, util
 from game import Agent
 
 
-class ReflexAgent(Agent):
+class reflex_agent(Agent):
 
     # A reflex agent chooses action at each phase by using the evaluation function given below
     def get_move(self, game_state):
@@ -61,8 +61,8 @@ def score_evaluator(current_game_state):
     return current_game_state.get_score()
 
 
-class MultiAgentSearchAgent(Agent):
-    # Some variables and methods that are publically available to all Minimax, AlphaBetaAgent, and ExpectimaxAgent
+class mutli_agent_search(Agent):
+    # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
     def __init__(self, evalFn='score_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
         self.evaluator = util.lookup(evalFn, globals())
@@ -70,7 +70,7 @@ class MultiAgentSearchAgent(Agent):
             depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
 
 
-class MinimaxAgent(MultiAgentSearchAgent):
+class minimax_agent(mutli_agent_search):
     # MINIMAX AGENT
     def get_move(self, game_state):
         # makes use of current game_state to return the proper action, given the depth and the evaluation function to be used.
@@ -115,7 +115,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
             action_score.index(max(action_score))]  # returning the action having the max score
 
 
-class AlphaBetaAgent(MultiAgentSearchAgent):
+class alpha_beta_agent(mutli_agent_search):
     # ALPHA BETA AGENT
     def get_move(self, game_state):
         # Main Code
@@ -154,7 +154,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         return remove_stop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
 
 
-class ExpectimaxAgent(MultiAgentSearchAgent):
+class expecti_max_agent(mutli_agent_search):
     # EXPECTIMAX AGENT
     def get_move(self, game_state):
         # Main Code
