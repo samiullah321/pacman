@@ -53,12 +53,12 @@ class ReflexAgent(Agent):
             if manhattan_dist(new_coord, ghost_coord) <= 1:  # if pacman dies
                 score -= 1e6  # the score when the pacman dies
 
-        return score  # next_game_state.getScore()
+        return score  # next_game_state.get_score()
 
 
 def score_evaluator(current_game_state):
     # returns the score of the current game_state
-    return current_game_state.getScore()
+    return current_game_state.get_score()
 
 
 class MultiAgentSearchAgent(Agent):

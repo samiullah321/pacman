@@ -55,8 +55,6 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         game_state.explored.add(state)
         return state
 
-    def getLegalPacmanActions( self ):
-        return self.get_legal_moves( 0 )
 
     def produce_pac_successor( self, action ):
         return self.produce_successor( 0, action ) #applying the action on the pacman
@@ -84,26 +82,17 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def get_num_agents( self ):
         return len( self.data.agent_states )
 
-    def getScore( self ):
+    def get_score( self ):
         return float(self.data.score)
 
-    def getbig_coin(self):
+    def get_big_coin(self):
         return self.data.big_coin #returning the remaining capsule positions
 
-    def getNumcoin( self ):
+    def remaining_coin( self ):
         return self.data.coin.count() #getting the remaining coin on the maze
 
     def get_coin(self):
         return self.data.coin #return a 2d array of boolean indicating presence of coin on each location
-
-    def getWalls(self):
-        return self.data.layout.walls #return a 2d array of boolean indicating presence of wall on each location
-
-    def hascoin(self, x, y):
-        return self.data.coin[x][y] #checking whether the index specified has the coin or not
-
-    def hasWall(self, x, y):
-        return self.data.layout.walls[x][y] #checking whether the index specified is a wall or not
 
     def pac_lost( self ):
         return self.data._lose
@@ -158,7 +147,7 @@ class ClassicGameRules:
         game.gameOver = True
 
     def getProgress(self, game): #returning how much coin eaten from the start
-        return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
+        return float(game.state.remaining_coin()) / self.initialState.remaining_coin()
 
     def agentCrash(self, game, agent_index):
         if agent_index == 0:
@@ -199,12 +188,12 @@ class pac_rules:
             state.data.coin[x][y] = False #the item is now removed from its position
             state.data.coin_eaten = position
             #checking whether all the coin has been eaten or not
-            numcoin = state.getNumcoin()
+            numcoin = state.remaining_coin()
             if numcoin == 0 and not state.data._lose:
                 state.data.score_change += 500
                 state.data._win = True
         #eating the bcoin
-        if( position in state.getbig_coin() ): #now all ghost agents are eatable
+        if( position in state.get_big_coin() ): #now all ghost agents are eatable
             state.data.big_coin.remove( position )
             state.data._capsuleEaten = position
             #Reset all ghosts' scared timers
@@ -407,7 +396,7 @@ def runGames( layout, pacman, ghosts, display, numGames):
         if not beQuiet: games.append(game)
 
     if (numGames) > 0:
-        scores = [game.state.getScore() for game in games]
+        scores = [game.state.get_score() for game in games]
         wins = [game.state.pac_won() for game in games]
         winRate = wins.count(True)/ float(len(wins))
 
@@ -415,8 +404,8 @@ def runGames( layout, pacman, ghosts, display, numGames):
         CapCount = 0
         for game in games:
             if game.state.pac_won():
-                AvgWin.append(game.state.getScore())
-            if len(game.state.getbig_coin())==0:
+                AvgWin.append(game.state.get_score())
+            if len(game.state.get_big_coin())==0:
                 CapCount += 1
 
         print('The game finished all food', float(CapCount)/float(numGames))
