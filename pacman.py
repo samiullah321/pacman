@@ -1,4 +1,4 @@
-from game import GameStateData
+from game import game_state_data
 from game import Directions
 from game import Actions
 from util import nearestPoint
@@ -8,7 +8,7 @@ import sys, types, time, random, os
 from GameLib import *
 from datetime import datetime
 
-class GameState: #has accessor methods for accessing variables of GameStateData object
+class game_state: #has accessor methods for accessing variables of game_state_data object
 
     #specifies the full game state, including the coin, capsules, agent configurations and score changes.
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
@@ -25,15 +25,15 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         else:
             return GhostRules.get_legal_moves( self, agentIndex ) #getting the legal actions for the Ghost
 
-    def generateSuccessor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted gameState)
+    def generateSuccessor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted game_state)
         #checking that action can be applied or not
         if self.isWin() or self.isLose(): raise Exception('Can\'t generate a successor of a terminal state.')
 
         #copying the current state
-        state = GameState(self)
+        state = game_state(self)
 
         if agentIndex == 0: #if the agent is Pacman then...
-            state.data._eaten = [False for i in range(state.getNumAgents())] #maintains which agent has been eaten. In case of pacman, only the ghosts will be set to true if eaten
+            state.data._eaten = [False for i in range(state.get_num_agents())] #maintains which agent has been eaten. In case of pacman, only the ghosts will be set to true if eaten
             PacmanRules.applyAction( state, action ) #apply the action on the pacman
         else:
             GhostRules.applyAction( state, action, agentIndex )
@@ -51,8 +51,8 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         state.data._agentMoved = agentIndex
         state.data.score += state.data.scoreChange
         #adding the state to already explored state
-        GameState.explored.add(self)
-        GameState.explored.add(state)
+        game_state.explored.add(self)
+        game_state.explored.add(state)
         return state
 
     def getLegalPacmanActions( self ):
@@ -72,7 +72,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         return self.data.agentStates[1:] #getting the states for all the ghosts
 
     def getGhostState( self, agentIndex ):
-        if agentIndex == 0 or agentIndex >= self.getNumAgents():
+        if agentIndex == 0 or agentIndex >= self.get_num_agents():
             raise Exception("Invalid index passed to getGhostState")
         return self.data.agentStates[agentIndex]
 
@@ -84,7 +84,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     def getGhostPositions(self):
         return [s.getPosition() for s in self.get_ghost_states()]
 
-    def getNumAgents( self ):
+    def get_num_agents( self ):
         return len( self.data.agentStates )
 
     def getScore( self ):
@@ -119,12 +119,12 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         Generates a new state by copying information from its predecessor.
         """
         if prevState != None: # Initial state
-            self.data = GameStateData(prevState.data)
+            self.data = game_state_data(prevState.data)
         else:
-            self.data = GameStateData()
+            self.data = game_state_data()
 
-    def deepCopy( self ): #allowing for deep copy of the data attribute of the GameState
-        state = GameState( self )
+    def deepCopy( self ): #allowing for deep copy of the data attribute of the game_state
+        state = game_state( self )
         state.data = self.data.deepCopy()
         return state
 
@@ -140,7 +140,7 @@ class ClassicGameRules:
     def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
         agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
-        initState = GameState()
+        initState = game_state()
         initState.initialize( layout, len(ghostAgents) )
         game = Game(agents, display, self)
         game.state = initState

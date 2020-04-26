@@ -201,7 +201,7 @@ class Actions:
         return (dx * speed, dy * speed)
     directionToVector = staticmethod(directionToVector)
 
-    #config is the current gameState of an agent
+    #config is the current game_state of an agent
     def getPossibleActions(config, walls):
         possible = [] #initialized empty
         x, y = config.pos #gets the current pos of Pacman
@@ -222,7 +222,7 @@ class Actions:
 
     getPossibleActions = staticmethod(getPossibleActions)
 
-class GameStateData: #data pertaining to each state of the game
+class game_state_data: #data pertaining to each state of the game
 
     def __init__( self, prevState = None ):
         if prevState != None:
@@ -244,7 +244,7 @@ class GameStateData: #data pertaining to each state of the game
         self.scoreChange = 0
 
     def deepCopy( self ): #DEEP COPYING
-        state = GameStateData( self )
+        state = game_state_data( self )
         state.coin = self.coin.deepCopy()
         state.layout = self.layout.deepCopy()
         state._agentMoved = self._agentMoved
@@ -260,7 +260,7 @@ class GameStateData: #data pertaining to each state of the game
         return copiedStates
 
     def initialize( self, layout, numGhostAgents ):
-        #creating the GameState from the layout (INITIAL STATE)
+        #creating the game_state from the layout (INITIAL STATE)
         self.coin = layout.coin.copy()
         #self.capsules = []
         self.capsules = layout.capsules[:]
