@@ -28,6 +28,6 @@ pause
 python pacman.py --frameTime 0 -p ExpectimaxAgent -l trappedClassic -a depth=3 -q -n 10
 pause
 
-python pacman.py --frameTime 0 -l smallClassic -p ExpectimaxAgent -q -n 30
+::python pacman.py --frameTime 0 -l smallClassic -p ExpectimaxAgent -q -n 30
 
 pause
