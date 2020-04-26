@@ -186,7 +186,7 @@ def image(coord, file=""):
 def refresh():
     _canvas.update_idletasks()
 
-def moveCircle(id, coord, r, end_coord=None):
+def move_circle(id, coord, r, end_coord=None):
     global _canvas_x, _canvas_y
 
     x, y = coord

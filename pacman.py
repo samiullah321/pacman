@@ -86,7 +86,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return float(self.data.score)
 
     def get_big_coin(self):
-        return self.data.big_coin #returning the remaining capsule positions
+        return self.data.big_coin #returning the remaining bigcoin positions
 
     def remaining_coin( self ):
         return self.data.coin.count() #getting the remaining coin on the maze

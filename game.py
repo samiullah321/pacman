@@ -44,7 +44,7 @@ class Configuration:
     def get_coord(self):
         return (self.coord)
 
-    def getDirection(self):
+    def get_dir(self):
         return self.direction
 
     def isInteger(self):
@@ -81,8 +81,8 @@ class AgentState:
         if self.configuration == None: return None
         return self.configuration.get_coord()
 
-    def getDirection(self):
-        return self.configuration.getDirection()
+    def get_dir(self):
+        return self.configuration.get_dir()
 
 class Grid:
 
@@ -209,7 +209,7 @@ class Actions:
 
         # In between grid points, all agents must continue straight
         if (abs(x - x_int) + abs(y - y_int)  > Actions.TOLERANCE):
-            return [config.getDirection()]
+            return [config.get_dir()]
 
         for dir, vec in Actions._directionsAsList:
             dx, dy = vec
