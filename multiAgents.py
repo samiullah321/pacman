@@ -94,16 +94,16 @@ class MinimaxAgent(MultiAgentSearchAgent):
                 # get_legal_moves is returning the legal actions for the agent specified. Index 0 represents Pacman and Index 1 onwards represents Ghosts
 
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent,
+                    successor_data = s.produce_successor(iteration_count % num_agent,
                                                a)  # generating the successor  game_state for the action specified
-                    result = min(result, miniMax(sdot,
+                    result = min(result, miniMax(successor_data,
                                                   iteration_count + 1))  # as the agent will minimize, hence choses the result with the minimum benefit
                 return result
             else:  # Pacman Max
                 result = -1e10  # -ve infinity
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent, a)  # same as above
-                    result = max(result, miniMax(sdot,
+                    successor_data = s.produce_successor(iteration_count % num_agent, a)  # same as above
+                    result = max(result, miniMax(successor_data,
                                                   iteration_count + 1))  # the pacman will try to maximize the result hence will chose the one with the max benefit
                     if iteration_count == 0:
                         action_score.append(result)
@@ -132,8 +132,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             if iteration_count % num_agent != 0:  # Ghost min
                 result = 1e10
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = min(result, alpha_beta(sdot, iteration_count + 1, alpha, beta))
+                    successor_data = s.produce_successor(iteration_count % num_agent, a)
+                    result = min(result, alpha_beta(successor_data, iteration_count + 1, alpha, beta))
                     beta = min(beta, result)  # beta holds the minimum of the path travered till the root
                     if beta < alpha:  # Pruning. If beta is lesser than alpha, then we need not to traverse the other state
                         break
@@ -141,8 +141,8 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             else:  # Pacman Max
                 result = -1e10
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = max(result, alpha_beta(sdot, iteration_count + 1, alpha, beta))
+                    successor_data = s.produce_successor(iteration_count % num_agent, a)
+                    result = max(result, alpha_beta(successor_data, iteration_count + 1, alpha, beta))
                     alpha = max(alpha, result)  # alpha holds the maxmimum of the path travered till the root
                     if iteration_count == 0:
                         action_score.append(result)
@@ -164,26 +164,26 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         def remove_stop(List):
             return [x for x in List if x != 'Stop']
 
-        def _expectMinimax(s, iteration_count):
+        def expect_ninimax(s, iteration_count):
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():
                 return self.evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
-                successorScore = []
+                successor_score = []
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = _expectMinimax(sdot, iteration_count + 1)
-                    successorScore.append(result)
-                averageScore = sum([float(x) / len(successorScore) for x in
-                                    successorScore])  # maintaing the average of the scores instead of the max or min
-                return averageScore
+                    successor_data = s.produce_successor(iteration_count % num_agent, a)
+                    result = expect_ninimax(successor_data, iteration_count + 1)
+                    successor_score.append(result)
+                avg_score = sum([float(x) / len(successor_score) for x in
+                                    successor_score])  # maintaing the average of the scores instead of the max or min
+                return avg_score
             else:  # Pacman Max
                 result = -1e10
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
-                    sdot = s.produce_successor(iteration_count % num_agent, a)
-                    result = max(result, _expectMinimax(sdot, iteration_count + 1))
+                    successor_data = s.produce_successor(iteration_count % num_agent, a)
+                    result = max(result, expect_ninimax(successor_data, iteration_count + 1))
                     if iteration_count == 0:
                         action_score.append(result)
                 return result
 
-        result = _expectMinimax(game_state, 0);
+        result = expect_ninimax(game_state, 0);
         return remove_stop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]
