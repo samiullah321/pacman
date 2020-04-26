@@ -18,10 +18,10 @@ _canvas_col = None      # Current colour (set to black below)
 _canvas_tsize = 12
 _canvas_tserifs = 0
 
-def formatColor(r, g, b):
+def format_color(r, g, b):
     return '#%02x%02x%02x' % (int(r * 255), int(g * 255), int(b * 255))
 
-def colorToVector(color):
+def color_to_vector(color):
     return [int(x, 16) / 256.0 for x in [color[1:3], color[3:5], color[5:7]]]
 
 if _Windows:
@@ -39,7 +39,7 @@ def sleep(secs):
         _root_window.after(int(1000 * secs), _root_window.quit)
         _root_window.mainloop()
 
-def begin_graphics(width=640, height=480, color=formatColor(0, 0, 0), title=None):
+def begin_graphics(width=640, height=480, color=format_color(0, 0, 0), title=None):
 
     global _root_window, _canvas, _canvas_x, _canvas_y, _canvas_xs, _canvas_ys, _bg_color
 
@@ -220,7 +220,7 @@ def changeText(id, newText, font=None, size=12, style='normal'):
 def changeColor(id, newColor):
     _canvas.itemconfigure(id, fill=newColor)
 
-def line(here, there, color=formatColor(0, 0, 0), width=2):
+def line(here, there, color=format_color(0, 0, 0), width=2):
     x0, y0 = here[0], here[1]
     x1, y1 = there[0], there[1]
     return _canvas.create_line(x0, y0, x1, y1, fill=color, width=width)
@@ -378,7 +378,7 @@ if __name__ == '__main__':
     begin_graphics()
     clear_screen()
     ghost_shape = [(x * 10 + 20, y * 10 + 20) for x, y in ghost_shape]
-    g = polygon(ghost_shape, formatColor(1, 1, 1))
+    g = polygon(ghost_shape, format_color(1, 1, 1))
     move_to(g, (50, 50))
-    circle((150, 150), 20, formatColor(0.7, 0.3, 0.0), endpoints=[15, - 15])
+    circle((150, 150), 20, format_color(0.7, 0.3, 0.0), endpoints=[15, - 15])
     sleep(2)

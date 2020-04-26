@@ -11,26 +11,26 @@ class Agent:
 
 class Directions:
     #Strings defined for the direction (POLES)
-    NORTH = 'North'
-    SOUTH = 'South'
-    EAST = 'East'
-    WEST = 'West'
+    up = 'up'
+    down = 'down'
+    right = 'right'
+    left = 'left'
     STOP = 'Stop'
 
     #In case, pacman is going in a certain direction, its poles relative to it are defined below:
 
-    LEFT =       {NORTH: WEST,
-                   SOUTH: EAST,
-                   EAST:  NORTH,
-                   WEST:  SOUTH,
+    LEFT =       {up: left,
+                   down: right,
+                   right:  up,
+                   left:  down,
                    STOP:  STOP}
 
     RIGHT =      dict([(y,x) for x, y in list(LEFT.items())]) #right is the reverse of left
 
-    REVERSE = {NORTH: SOUTH,
-               SOUTH: NORTH,
-               EAST: WEST,
-               WEST: EAST,
+    REVERSE = {up: down,
+               down: up,
+               right: left,
+               left: right,
                STOP: STOP}
 
 class Configuration:
@@ -160,10 +160,10 @@ def reconstituteGrid(bitRep):
 
 class Actions:
     # Directions
-    _directions = {Directions.NORTH: (0, 1),
-                   Directions.SOUTH: (0, -1),
-                   Directions.EAST:  (1, 0),
-                   Directions.WEST:  (-1, 0),
+    _directions = {Directions.up: (0, 1),
+                   Directions.down: (0, -1),
+                   Directions.right:  (1, 0),
+                   Directions.left:  (-1, 0),
                    Directions.STOP:  (0, 0)}
 
     _directionsAsList = list(_directions.items())
@@ -171,27 +171,27 @@ class Actions:
     TOLERANCE = .001 #for transition of pacman between the grids
 
     def reverse_dir(action):
-        if action == Directions.NORTH:
-            return Directions.SOUTH
-        if action == Directions.SOUTH:
-            return Directions.NORTH
-        if action == Directions.EAST:
-            return Directions.WEST
-        if action == Directions.WEST:
-            return Directions.EAST
+        if action == Directions.up:
+            return Directions.down
+        if action == Directions.down:
+            return Directions.up
+        if action == Directions.right:
+            return Directions.left
+        if action == Directions.left:
+            return Directions.right
         return action
     reverse_dir = staticmethod(reverse_dir)
 
     def vectorToDirection(vector):
         dx, dy = vector
         if dy > 0:
-            return Directions.NORTH
+            return Directions.up
         if dy < 0:
-            return Directions.SOUTH
+            return Directions.down
         if dx < 0:
-            return Directions.WEST
+            return Directions.left
         if dx > 0:
-            return Directions.EAST
+            return Directions.right
         return Directions.STOP
     vectorToDirection = staticmethod(vectorToDirection)
 

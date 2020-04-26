@@ -5,20 +5,20 @@ from game import Directions
 #Settings for the display
 DEFAULT_GRID_SIZE = 30.0
 INFO_PANE_HEIGHT = 35
-BACKGROUND_COLOR = formatColor(0,0,0)
-WALL_COLOR = formatColor(64/255.0, 224/255.0, 208/255.0)
-INFO_PANE_COLOR = formatColor(.4,.4,0)
-SCORE_COLOR = formatColor(.9, .9, .9)
+BACKGROUND_COLOR = format_color(0,0,0)
+WALL_COLOR = format_color(64/255.0, 224/255.0, 208/255.0)
+INFO_PANE_COLOR = format_color(.4,.4,0)
+SCORE_COLOR = format_color(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
 
 #Settings for Ghost
 GHOST_COLORS = []
-GHOST_COLORS.append(formatColor(.9,0,0)) # Red
-GHOST_COLORS.append(formatColor(0,.3,.9)) # Blue
-GHOST_COLORS.append(formatColor(.98,.41,.07)) # Orange
-GHOST_COLORS.append(formatColor(.1,.75,.7)) # Green
-GHOST_COLORS.append(formatColor(1.0,0.6,0.0)) # Yellow
-GHOST_COLORS.append(formatColor(.4,0.13,0.91)) # Purple
+GHOST_COLORS.append(format_color(.9,0,0)) # Red
+GHOST_COLORS.append(format_color(0,.3,.9)) # Blue
+GHOST_COLORS.append(format_color(.98,.41,.07)) # Orange
+GHOST_COLORS.append(format_color(.1,.75,.7)) # Green
+GHOST_COLORS.append(format_color(1.0,0.6,0.0)) # Yellow
+GHOST_COLORS.append(format_color(.4,0.13,0.91)) # Purple
 
 #colors of all the ghosts
 TEAM_COLORS = GHOST_COLORS[:2]
@@ -31,21 +31,21 @@ GHOST_SHAPE = [
     (-1, 0),
   ]
 GHOST_SIZE = 0.65
-SCARED_COLOR = formatColor(1,1,1)
+SCARED_COLOR = format_color(1,1,1)
 
-GHOST_VEC_COLORS = list(map(colorToVector, GHOST_COLORS))
+GHOST_VEC_COLORS = list(map(color_to_vector, GHOST_COLORS))
 
 #Some attributes of Pacman
-PACMAN_COLOR = formatColor(255.0/255.0,255.0/255.0,61.0/255)
+PACMAN_COLOR = format_color(255.0/255.0,255.0/255.0,61.0/255)
 PACMAN_SCALE = 0.5
 #pacman_speed = 0.25
 
 #coin config
-coin_COLOR = formatColor(0.81,0.7,0.22)
+coin_COLOR = format_color(0.81,0.7,0.22)
 coin_SIZE = 0.1
 
 #bcoin config
-CAPSULE_COLOR = formatColor(0.9,0,0)
+CAPSULE_COLOR = format_color(0.9,0,0)
 CAPSULE_SIZE = 0.20
 
 #wall config
@@ -219,11 +219,11 @@ class PacmanGraphics: #general graphics for pacman
         width = 30 + 80 * math.sin(math.pi * coord)
 
         delta = width / 2
-        if (direction == 'West'):
+        if (direction == 'left'):
             endpoints = (180 + delta, 180 - delta)
-        elif (direction == 'North'):
+        elif (direction == 'up'):
             endpoints = (90 + delta, 90 - delta)
-        elif (direction == 'South'):
+        elif (direction == 'down'):
             endpoints = (270 + delta, 270 - delta)
         else:
             endpoints = (0 + delta, 0 - delta)
@@ -276,18 +276,18 @@ class PacmanGraphics: #general graphics for pacman
 
         colour = self.get_ghost_color(ghost, agent_index)
         body = polygon(coords, colour, filled = 1)
-        WHITE = formatColor(1.0, 1.0, 1.0)
-        BLACK = formatColor(0.0, 0.0, 0.0)
+        WHITE = format_color(1.0, 1.0, 1.0)
+        BLACK = format_color(0.0, 0.0, 0.0)
 
         dx = 0
         dy = 0
-        if dir == 'North':
+        if dir == 'up':
             dy = -0.2
-        if dir == 'South':
+        if dir == 'down':
             dy = 0.2
-        if dir == 'East':
+        if dir == 'right':
             dx = 0.2
-        if dir == 'West':
+        if dir == 'left':
             dx = -0.2
 
         ghostImageParts = []

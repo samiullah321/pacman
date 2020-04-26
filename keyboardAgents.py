@@ -42,8 +42,8 @@ class KeyboardAgent(Agent):
 
     def getMove(self, legal):
         move = Directions.STOP
-        if   (self.left_key in self.keys or 'Left' in self.keys) and Directions.WEST in legal:  move = Directions.WEST
-        if   (self.right_key in self.keys or 'Right' in self.keys) and Directions.EAST in legal: move = Directions.EAST
-        if   (self.up_key in self.keys or 'Up' in self.keys) and Directions.NORTH in legal:   move = Directions.NORTH
-        if   (self.down_key in self.keys or 'Down' in self.keys) and Directions.SOUTH in legal: move = Directions.SOUTH
+        if   (self.left_key in self.keys or 'Left' in self.keys) and Directions.left in legal:  move = Directions.left
+        if   (self.right_key in self.keys or 'Right' in self.keys) and Directions.right in legal: move = Directions.right
+        if   (self.up_key in self.keys or 'Up' in self.keys) and Directions.up in legal:   move = Directions.up
+        if   (self.down_key in self.keys or 'Down' in self.keys) and Directions.down in legal: move = Directions.down
         return move
