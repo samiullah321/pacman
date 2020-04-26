@@ -36,25 +36,25 @@ class Directions:
 class Configuration:
 
 #takes in the initial position of the Pacman and its initial direction as the argument
-    def __init__(self, pos, direction):
-        self.pos = pos #coords
+    def __init__(self, coord, direction):
+        self.coord = coord #coords
         self.direction = direction #direction of movement
 
     #UTILITY FUNCTIONS
     def get_coord(self):
-        return (self.pos)
+        return (self.coord)
 
     def getDirection(self):
         return self.direction
 
     def isInteger(self):
-        x,y = self.pos
+        x,y = self.coord
         return x == int(x) and y == int(y)
 
     #converts position to direction vector to implement position on the pacman graph
     def produce_successor(self, vector):
 
-        x, y= self.pos
+        x, y= self.coord
         dx, dy = vector
         direction = Actions.vectorToDirection(vector)
         if direction == Directions.STOP:
@@ -204,7 +204,7 @@ class Actions:
     #config is the current game_state of an agent
     def get_possible_moves(config, walls):
         possible = [] #initialized empty
-        x, y = config.pos #gets the current pos of Pacman
+        x, y = config.coord #gets the current coord of Pacman
         x_int, y_int = int(x + 0.5), int(y + 0.5)
 
         # In between grid points, all agents must continue straight
@@ -270,9 +270,9 @@ class game_state_data: #data pertaining to each state of the game
 
         self.agentStates = []
         ghosts_count = 0
-        for isPacman, pos in layout.agent_coord:
+        for isPacman, coord in layout.agent_coord:
             if not isPacman:
                 if ghosts_count == numGhostAgents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agentStates.append( AgentState( Configuration( pos, Directions.STOP), isPacman) )
+            self.agentStates.append( AgentState( Configuration( coord, Directions.STOP), isPacman) )
         self._eaten = [False for a in self.agentStates] #Checking that agent is eaten or not (as pacman can eat the agents)

@@ -36,25 +36,25 @@ class DirectionalGhost( GhostAgent ):
         # Read variables from state
         ghost_state = state.get_ghost_state( self.index )
         legal_move = state.get_legal_moves( self.index )
-        pos = state.get_ghost_coord( self.index )
-        isScared = ghost_state.scaredTimer > 0
+        coord = state.get_ghost_coord( self.index )
+        is_scared = ghost_state.scaredTimer > 0
 
         speed = 1
-        if isScared: speed = 0.5
+        if is_scared: speed = 0.5
 
-        actionVectors = [Actions.directionToVector( a, speed ) for a in legal_move]
-        new_coords = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors] #ghost positions
+        action_vectors = [Actions.directionToVector( a, speed ) for a in legal_move]
+        new_coords = [( coord[0]+a[0], coord[1]+a[1] ) for a in action_vectors] #ghost positions
         pacman_position = state.get_pacman_coord() #pacman positions
 
         # Select best actions given the state
-        distancesToPacman = [manhattanDistance( pos, pacman_position ) for pos in new_coords]
-        if isScared: #chooose the position with the max distance from pacman and start to flee there
-            max_score = max( distancesToPacman )
+        distances_from_pacman = [manhattanDistance( coord, pacman_position ) for coord in new_coords]
+        if is_scared: #chooose the position with the max distance from pacman and start to flee there
+            max_score = max( distances_from_pacman )
             bestProb = self.prob_scared
         else: #choose the positions with the min distance from pacman and start to attack there
-            max_score = min( distancesToPacman )
+            max_score = min( distances_from_pacman )
             bestProb = self.prob_attack
-        bestActions = [action for action, distance in zip( legal_move, distancesToPacman ) if distance == max_score]
+        bestActions = [action for action, distance in zip( legal_move, distances_from_pacman ) if distance == max_score]
 
         # Construct distribution
         dist = util.Counter()

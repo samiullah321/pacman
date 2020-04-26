@@ -159,13 +159,13 @@ def polygon(coords, outlineColor, fillColor=None, filled=1, smoothed=1, behind=0
         _canvas.tag_lower(poly, behind) # Higher should be more visible
     return poly
 
-def square(pos, r, color, filled=1, behind=0):
-    x, y = pos
+def square(coord, r, color, filled=1, behind=0):
+    x, y = coord
     coords = [(x - r, y - r), (x + r, y - r), (x + r, y + r), (x - r, y + r)]
     return polygon(coords, color, color, filled, 0, behind=behind)
 
-def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
-    x, y = pos
+def circle(coord, r, outlineColor, fillColor, endpoints=None, style='pieslice', width=2):
+    x, y = coord
     x0, x1 = x - r - 1, x + r
     y0, y1 = y - r - 1, y + r
     if endpoints == None:
@@ -177,8 +177,8 @@ def circle(pos, r, outlineColor, fillColor, endpoints=None, style='pieslice', wi
     return _canvas.create_arc(x0, y0, x1, y1, outline=outlineColor, fill=fillColor,
                               extent=e[1] - e[0], start=e[0], style=style, width=width)
 
-def image(pos, file="../../blueghost.gif"):
-    x, y = pos
+def image(coord, file="../../blueghost.gif"):
+    x, y = coord
     # img = PhotoImage(file=file)
     return _canvas.create_image(x, y, image = tkinter.PhotoImage(file=file), anchor = tkinter.NW)
 
@@ -186,10 +186,10 @@ def image(pos, file="../../blueghost.gif"):
 def refresh():
     _canvas.update_idletasks()
 
-def moveCircle(id, pos, r, endpoints=None):
+def moveCircle(id, coord, r, endpoints=None):
     global _canvas_x, _canvas_y
 
-    x, y = pos
+    x, y = coord
 #    x0, x1 = x - r, x + r + 1
 #    y0, y1 = y - r, y + r + 1
     x0, x1 = x - r - 1, x + r
@@ -206,9 +206,9 @@ def moveCircle(id, pos, r, endpoints=None):
 def edit(id, *args):
     _canvas.itemconfigure(id, **dict(args))
 
-def text(pos, color, contents, font='Helvetica', size=12, style='normal', anchor="nw"):
+def text(coord, color, contents, font='Helvetica', size=12, style='normal', anchor="nw"):
     global _canvas_x, _canvas_y
-    x, y = pos
+    x, y = coord
     font = (font, str(size), style)
     return _canvas.create_text(x, y, fill=color, text=contents, font=font, anchor=anchor)
 

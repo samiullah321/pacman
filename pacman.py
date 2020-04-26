@@ -61,8 +61,8 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def produce_pac_successor( self, action ):
         return self.produce_successor( 0, action ) #applying the action on the pacman
 
-    def getPacmanState( self ):
-        #returns the current state of Pacman (pos, direction)
+    def get_pac_state( self ):
+        #returns the current state of Pacman (coord, direction)
         return self.data.agentStates[0].copy()
 
     def get_pacman_coord( self ):
@@ -80,9 +80,6 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         if agentIndex == 0:
             raise Exception("Pacman's index passed to get_ghost_coord")
         return self.data.agentStates[agentIndex].get_coord()
-
-    def getGhostPositions(self):
-        return [s.get_coord() for s in self.get_ghost_states()]
 
     def get_num_agents( self ):
         return len( self.data.agentStates )
@@ -177,7 +174,7 @@ class PacmanRules:
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
     def get_legal_moves( state ):
-        return Actions.get_possible_moves( state.getPacmanState().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
+        return Actions.get_possible_moves( state.get_pac_state().configuration, state.data.layout.walls ) #returns the possible directions for pacman to move
     get_legal_moves = staticmethod( get_legal_moves )
 
     def applyAction( state, action ): # applying the action received on the pacman
@@ -245,7 +242,7 @@ class GhostRules:
     def decrementTimer( ghost_state): #this will decrerement the timer for the ghost being scared
         timer = ghost_state.scaredTimer
         if timer == 1:
-            ghost_state.configuration.pos = nearestPoint( ghost_state.configuration.pos )
+            ghost_state.configuration.coord = nearestPoint( ghost_state.configuration.coord )
         ghost_state.scaredTimer = max( 0, timer - 1 ) #the timer cannot be below zero
     decrementTimer = staticmethod( decrementTimer )
 

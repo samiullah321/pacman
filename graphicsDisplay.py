@@ -62,11 +62,11 @@ class InfoPane:
         self.textColor = PACMAN_COLOR
         self.drawPane()
 
-    def toScreen(self, pos, y = None): #Maps the positions from layout onto the screen
+    def toScreen(self, coord, y = None): #Maps the positions from layout onto the screen
         if y == None:
-            x,y = pos
+            x,y = coord
         else:
-            x = pos
+            x = coord
 
         x = self.gridSize + x # Margin
         y = self.base + y
@@ -215,8 +215,8 @@ class PacmanGraphics: #general graphics for pacman
     #used for rotating pacman according to direction
     def getEndpoints(self, direction, position=(0, 0)):
         x, y = position
-        pos = x - int(x) + y - int(y)
-        width = 30 + 80 * math.sin(math.pi * pos)
+        coord = x - int(x) + y - int(y)
+        width = 30 + 80 * math.sin(math.pi * coord)
 
         delta = width / 2
         if (direction == 'West'):
@@ -230,7 +230,7 @@ class PacmanGraphics: #general graphics for pacman
         return endpoints
 
     #for moving the pacman
-    def movePacman(self, position, direction, image):
+    def move_pacman(self, position, direction, image):
         screen_coord = self.to_screen(position)
         endpoints = self.getEndpoints( direction, position )
         r = PACMAN_SCALE * self.gridSize
@@ -250,12 +250,12 @@ class PacmanGraphics: #general graphics for pacman
             px, py = self.get_coord(pacman)
             frames = 4.0
             for i in range(1,int(frames) + 1):
-                pos = px*i/frames + fx*(frames-i)/frames, py*i/frames + fy*(frames-i)/frames
-                self.movePacman(pos, self.getDirection(pacman), image)
+                coord = px*i/frames + fx*(frames-i)/frames, py*i/frames + fy*(frames-i)/frames
+                self.move_pacman(coord, self.getDirection(pacman), image)
                 refresh()
                 sleep(abs(self.frameTime) / frames)
         else:
-            self.movePacman(self.get_coord(pacman), self.getDirection(pacman), image)
+            self.move_pacman(self.get_coord(pacman), self.getDirection(pacman), image)
         refresh()
 
     #retreiving the ghost color
@@ -267,9 +267,9 @@ class PacmanGraphics: #general graphics for pacman
 
     #drawing the ghost
     def drawGhost(self, ghost, agentIndex):
-        pos = self.get_coord(ghost)
+        coord = self.get_coord(ghost)
         dir = self.getDirection(ghost)
-        (screen_x, screen_y) = (self.to_screen(pos) )
+        (screen_x, screen_y) = (self.to_screen(coord) )
         coords = []
         for (x, y) in GHOST_SHAPE:
             coords.append((x*self.gridSize*GHOST_SIZE + screen_x, y*self.gridSize*GHOST_SIZE + screen_y))
@@ -339,8 +339,8 @@ class PacmanGraphics: #general graphics for pacman
         for xNum, x in enumerate(wallMatrix):
             for yNum, cell in enumerate(x):
                 if cell: # There's a wall here
-                    pos = (xNum, yNum)
-                    screen = self.to_screen(pos)
+                    coord = (xNum, yNum)
+                    screen = self.to_screen(coord)
 
                     # draw each quadrant of the square based on adjacent walls
                     wis_wall = self.is_wall(xNum-1, yNum, wallMatrix)

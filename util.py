@@ -70,9 +70,9 @@ def select_from_probability_distribution( distribution ):
         base += prob
         if r <= base: return element
 
-def nearestPoint( pos ):
+def nearestPoint( coord ):
     #finds the nearest grid point to the position given
-    ( current_row, current_col ) = pos
+    ( current_row, current_col ) = coord
 
     grid_row = int( current_row + 0.5 )
     grid_col = int( current_col + 0.5 )

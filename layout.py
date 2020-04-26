@@ -20,8 +20,8 @@ class Layout: #maintains the information regarding the layout
     def get_ghosts_count(self):
         return self.ghosts_count
 
-    def is_wall(self, pos):
-        x, col = pos
+    def is_wall(self, coord):
+        x, col = coord
         return self.walls[x][col]
 
     def deepCopy(self):
@@ -39,7 +39,7 @@ class Layout: #maintains the information regarding the layout
                 layout_char = layout_text[maxY - y][x]
                 self.process_layout_char(x, y, layout_char)
         self.agent_coord.sort()
-        self.agent_coord = [ ( i == 0, pos) for i, pos in self.agent_coord]
+        self.agent_coord = [ ( i == 0, coord) for i, coord in self.agent_coord]
 
     #Processing the charactter from the layout
     def process_layout_char(self, x, y, layout_char):
