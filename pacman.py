@@ -18,16 +18,16 @@ class game_state: #has accessor methods for accessing variables of game_state_da
 
     def get_legal_moves( self, agentIndex=0 ): #can help in assessing the actions that will help maximize or mimimize agents chances of winning
 
-        if self.isWin() or self.isLose(): return [] #we can have no legal actions for terminal state
+        if self.pac_won() or self.pac_lost(): return [] #we can have no legal actions for terminal state
 
         if agentIndex == 0: #if it is pacman then
             return PacmanRules.get_legal_moves( self ) #getting the legal actions for the PACMAN
         else:
             return GhostRules.get_legal_moves( self, agentIndex ) #getting the legal actions for the Ghost
 
-    def generateSuccessor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted game_state)
+    def produce_successor( self, agentIndex, action): #Returns the successor game state after an agent takes an action (predicted game_state)
         #checking that action can be applied or not
-        if self.isWin() or self.isLose(): raise Exception('Can\'t generate a successor of a terminal state.')
+        if self.pac_won() or self.pac_lost(): raise Exception('Can\'t generate a successor of a terminal state.')
 
         #copying the current state
         state = game_state(self)
@@ -59,7 +59,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return self.get_legal_moves( 0 )
 
     def produce_pac_successor( self, action ):
-        return self.generateSuccessor( 0, action ) #applying the action on the pacman
+        return self.produce_successor( 0, action ) #applying the action on the pacman
 
     def getPacmanState( self ):
         #returns the current state of Pacman (pos, direction)
@@ -108,10 +108,10 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def hasWall(self, x, y):
         return self.data.layout.walls[x][y] #checking whether the index specified is a wall or not
 
-    def isLose( self ):
+    def pac_lost( self ):
         return self.data._lose
 
-    def isWin( self ):
+    def pac_won( self ):
         return self.data._win
 
     def __init__( self, prevState = None ):
@@ -149,8 +149,8 @@ class ClassicGameRules:
         return game
 
     def process(self, state, game): #checking whether game state is a win or a loss
-        if state.isWin(): self.win(state, game)
-        if state.isLose(): self.lose(state, game)
+        if state.pac_won(): self.win(state, game)
+        if state.pac_lost(): self.lose(state, game)
 
     def win( self, state, game ): #printing win
         if not self.quiet: print("Pacman emerges victorious! Score: %d" % state.data.score)
@@ -186,7 +186,7 @@ class PacmanRules:
             raise Exception("Illegal action " + str(action))
         pacmanState = state.data.agentStates[0]
         vector = Actions.directionToVector( action, PacmanRules.PACMAN_SPEED ) #updating the pacman config
-        pacmanState.configuration = pacmanState.configuration.generateSuccessor( vector )
+        pacmanState.configuration = pacmanState.configuration.produce_successor( vector )
         #eating coin
         next = pacmanState.configuration.getPosition()
         nearest = nearestPoint( next )
@@ -239,7 +239,7 @@ class GhostRules:
         speed = GhostRules.GHOST_SPEED
         if ghostState.scaredTimer > 0: speed /= 2.0 #decreasing the speed of the ghost in scared state
         vector = Actions.directionToVector( action, speed )
-        ghostState.configuration = ghostState.configuration.generateSuccessor( vector ) #applying the action to the ghostState
+        ghostState.configuration = ghostState.configuration.produce_successor( vector ) #applying the action to the ghostState
     applyAction = staticmethod( applyAction )
 
     def decrementTimer( ghostState): #this will decrerement the timer for the ghost being scared
@@ -411,13 +411,13 @@ def runGames( layout, pacman, ghosts, display, numGames):
 
     if (numGames) > 0:
         scores = [game.state.getScore() for game in games]
-        wins = [game.state.isWin() for game in games]
+        wins = [game.state.pac_won() for game in games]
         winRate = wins.count(True)/ float(len(wins))
 
         AvgWin = []
         CapCount = 0
         for game in games:
-            if game.state.isWin():
+            if game.state.pac_won():
                 AvgWin.append(game.state.getScore())
             if len(game.state.getCapsules())==0:
                 CapCount += 1

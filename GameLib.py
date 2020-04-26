@@ -103,7 +103,7 @@ class Game:
 
             # Execute the action
             self.moveHistory.append( (agentIndex, action) )
-            self.state = self.state.generateSuccessor( agentIndex, action )
+            self.state = self.state.produce_successor( agentIndex, action )
 
             # Change the display
             self.display.update( self.state.data )

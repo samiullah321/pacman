@@ -52,7 +52,7 @@ class Configuration:
         return x == int(x) and y == int(y)
 
     #converts position to direction vector to implement position on the pacman graph
-    def generateSuccessor(self, vector):
+    def produce_successor(self, vector):
 
         x, y= self.pos
         dx, dy = vector
