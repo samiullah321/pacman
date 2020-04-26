@@ -164,14 +164,14 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         def remove_stop(List):
             return [x for x in List if x != 'Stop']
 
-        def expect_ninimax(s, iteration_count):
+        def expect_minimax(s, iteration_count):
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():
                 return self.evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
                 successor_score = []
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     successor_data = s.produce_successor(iteration_count % num_agent, a)
-                    result = expect_ninimax(successor_data, iteration_count + 1)
+                    result = expect_minimax(successor_data, iteration_count + 1)
                     successor_score.append(result)
                 avg_score = sum([float(x) / len(successor_score) for x in
                                     successor_score])  # maintaing the average of the scores instead of the max or min
@@ -180,10 +180,10 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
                 result = -1e10
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     successor_data = s.produce_successor(iteration_count % num_agent, a)
-                    result = max(result, expect_ninimax(successor_data, iteration_count + 1))
+                    result = max(result, expect_minimax(successor_data, iteration_count + 1))
                     if iteration_count == 0:
                         action_score.append(result)
                 return result
 
-        result = expect_ninimax(game_state, 0);
+        result = expect_minimax(game_state, 0);
         return remove_stop(game_state.get_legal_moves(0))[action_score.index(max(action_score))]

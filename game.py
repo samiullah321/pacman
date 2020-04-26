@@ -228,7 +228,7 @@ class game_state_data: #data pertaining to each state of the game
         if prevState != None:
             #MAINTAINING THE PREVIOUS STATE IN ORDER TO COMPARE
             self.coin = prevState.coin.shallowCopy()
-            self.capsules = prevState.capsules[:]
+            self.big_food = prevState.big_food[:]
             self.agentStates = self.copyAgentStates( prevState.agentStates )
             self.layout = prevState.layout #previous maze layout
             self._eaten = prevState._eaten
@@ -262,17 +262,17 @@ class game_state_data: #data pertaining to each state of the game
     def initialize( self, layout, numGhostAgents ):
         #creating the game_state from the layout (INITIAL STATE)
         self.coin = layout.coin.copy()
-        #self.capsules = []
-        self.capsules = layout.capsules[:]
+        #self.big_food = []
+        self.big_food = layout.big_food[:]
         self.layout = layout
         self.score = 0
         self.scoreChange = 0
 
         self.agentStates = []
-        numGhosts = 0
-        for isPacman, pos in layout.agentPositions:
+        ghosts_count = 0
+        for isPacman, pos in layout.agent_coord:
             if not isPacman:
-                if numGhosts == numGhostAgents: continue # Max ghosts reached already
-                else: numGhosts += 1
+                if ghosts_count == numGhostAgents: continue # Max ghosts reached already
+                else: ghosts_count += 1
             self.agentStates.append( AgentState( Configuration( pos, Directions.STOP), isPacman) )
         self._eaten = [False for a in self.agentStates] #Checking that agent is eaten or not (as pacman can eat the agents)

@@ -149,7 +149,7 @@ class PacmanGraphics: #general graphics for pacman
         layout = self.layout
         self.drawWalls(layout.walls)
         self.coin = self.drawcoin(layout.coin)
-        self.capsules = self.drawCapsules(layout.capsules)
+        self.big_food = self.drawbig_food(layout.big_food)
         refresh()
 
     #drawing the pacman, ghost onto the screen
@@ -180,7 +180,7 @@ class PacmanGraphics: #general graphics for pacman
         if newState._coinEaten != None:
             self.removecoin(newState._coinEaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState._capsuleEaten != None:
-            self.removeCapsule(newState._capsuleEaten, self.capsules) #same as coin
+            self.removeCapsule(newState._capsuleEaten, self.big_food) #same as coin
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
@@ -444,9 +444,9 @@ class PacmanGraphics: #general graphics for pacman
         return coinImages
 
     #drawing bcoin on the layout
-    def drawCapsules(self, capsules ):
+    def drawbig_food(self, big_food ):
         capsuleImages = {}
-        for capsule in capsules:
+        for capsule in big_food:
             ( screen_x, screen_y ) = self.to_screen(capsule)
             dot = circle( (screen_x, screen_y),
                               CAPSULE_SIZE * self.gridSize,

@@ -10,7 +10,7 @@ from datetime import datetime
 
 class game_state: #has accessor methods for accessing variables of game_state_data object
 
-    #specifies the full game state, including the coin, capsules, agent configurations and score changes.
+    #specifies the full game state, including the coin, big_food, agent configurations and score changes.
     #used by the Game object to capture the actual state of the game and can be used by agents to reason about the game.
 
     # Accessor methods
@@ -90,8 +90,8 @@ class game_state: #has accessor methods for accessing variables of game_state_da
     def getScore( self ):
         return float(self.data.score)
 
-    def getCapsules(self):
-        return self.data.capsules #returning the remaining capsule positions
+    def getbig_food(self):
+        return self.data.big_food #returning the remaining capsule positions
 
     def getNumcoin( self ):
         return self.data.coin.count() #getting the remaining coin on the maze
@@ -139,7 +139,7 @@ class ClassicGameRules:
 
     def newGame( self, layout, pacmanAgent, ghostAgents, display, quiet = False):
         #taking all the state values for the new game
-        agents = [pacmanAgent] + ghostAgents[:layout.getNumGhosts()]
+        agents = [pacmanAgent] + ghostAgents[:layout.getghosts_count()]
         initState = game_state()
         initState.initialize( layout, len(ghostAgents) )
         game = Game(agents, display, self)
@@ -207,8 +207,8 @@ class PacmanRules:
                 state.data.scoreChange += 500
                 state.data._win = True
         #eating the bcoin
-        if( position in state.getCapsules() ): #now all ghost agents are eatable
-            state.data.capsules.remove( position )
+        if( position in state.getbig_food() ): #now all ghost agents are eatable
+            state.data.big_food.remove( position )
             state.data._capsuleEaten = position
             #Reset all ghosts' scared timers
             for index in range( 1, len( state.data.agentStates ) ):
@@ -326,7 +326,7 @@ def readCommand( argv ):
     parser.add_option('-g', '--ghosts', dest='ghost',
                       help=default('the ghost agent TYPE in the ghostAgents module to use'),
                       metavar = 'TYPE', default='RandomGhost')
-    parser.add_option('-k', '--numghosts', type='int', dest='numGhosts',
+    parser.add_option('-k', '--ghosts_count', type='int', dest='ghosts_count',
                       help=default('The maximum number of ghosts to use'), default=4)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
@@ -352,7 +352,7 @@ def readCommand( argv ):
 
     # Choose a ghost agent
     ghostType = loadAgent(options.ghost, noKeyboard)
-    args['ghosts'] = [ghostType( i+1 ) for i in range( options.numGhosts )]
+    args['ghosts'] = [ghostType( i+1 ) for i in range( options.ghosts_count )]
 
     # Choose a display format
     if options.quietGraphics:
@@ -419,10 +419,10 @@ def runGames( layout, pacman, ghosts, display, numGames):
         for game in games:
             if game.state.pac_won():
                 AvgWin.append(game.state.getScore())
-            if len(game.state.getCapsules())==0:
+            if len(game.state.getbig_food())==0:
                 CapCount += 1
 
-        print('The game finished all capsules', float(CapCount)/float(numGames))
+        print('The game finished all big_food', float(CapCount)/float(numGames))
         print('Average Score:', sum(scores) / float(len(scores)))
         if(len(AvgWin) != 0):
             print('Average Win Score', float(sum(AvgWin))/float(len(AvgWin)))
