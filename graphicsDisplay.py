@@ -56,7 +56,7 @@ class InfoPane:
         self.height = info_height
         self.font_size = 24
         self.text_c = pac_c
-        self.drawPane()
+        self.draw_pane()
 
     def to_screen(self, coord, y = None): #Maps the positions from layout onto the screen
         if y == None:
@@ -68,11 +68,11 @@ class InfoPane:
         y = self.base + y
         return x,y
 
-    def drawPane(self):
-        self.scoreText = text( self.to_screen(0, 0  ), self.text_c, "SCORE:    0", "Times", self.font_size, "bold")
+    def draw_pane(self):
+        self.score_text = text( self.to_screen(0, 0  ), self.text_c, "SCORE:    0", "Times", self.font_size, "bold")
 
-    def initializeGhostDistances(self, distances): #initializing ghost onto the screen
-        self.ghostDistanceText = []
+    def initialize_ghost_dis(self, distances): #initializing ghost onto the screen
+        self.ghost_distance_text = []
 
         size = 20
         if self.width < 240:
@@ -82,17 +82,17 @@ class InfoPane:
 
         for i, d in enumerate(distances):
             t = text( self.to_screen(self.width/2 + self.width/8 * i, 0), ghost_c[i+1], d, "Times", size, "bold")
-            self.ghostDistanceText.append(t)
+            self.ghost_distance_text.append(t)
 
-    def updateScore(self, score):
-        changeText(self.scoreText, "SCORE: % 4d" % score)
+    def update_score(self, score):
+        change_text(self.score_text, "SCORE: % 4d" % score)
 
     def updateGhostDistances(self, distances):
         if len(distances) == 0: return
-        if 'ghostDistanceText' not in dir(self): self.initializeGhostDistances(distances)
+        if 'ghost_distance_text' not in dir(self): self.initialize_ghost_dis(distances)
         else:
             for i, d in enumerate(distances):
-                changeText(self.ghostDistanceText[i], d)
+                change_text(self.ghost_distance_text[i], d)
 
 class PacmanGraphics: #general graphics for pacman
     def __init__(self, frameTime=0.0):
@@ -177,7 +177,7 @@ class PacmanGraphics: #general graphics for pacman
             self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState.big_food_Eaten != None:
             self.removeCapsule(newState.big_food_Eaten, self.big_coin) #same as coin
-        self.infoPane.updateScore(newState.score)
+        self.infoPane.update_score(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
 

@@ -212,7 +212,7 @@ def text(coord, color, contents, font='Helvetica', size=12, style='normal', anch
     font = (font, str(size), style)
     return _canvas.create_text(x, y, fill=color, text=contents, font=font, anchor=anchor)
 
-def changeText(id, newText, font=None, size=12, style='normal'):
+def change_text(id, newText, font=None, size=12, style='normal'):
     _canvas.itemconfigure(id, text=newText)
     if font != None:
         _canvas.itemconfigure(id, font=(font, '-%d' % size, style))
