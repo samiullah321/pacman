@@ -68,12 +68,12 @@ class AgentState:
         self.start = startConfiguration
         self.configuration = startConfiguration
         self.isPacman = isPacman #is the agent Pacman or ghost?
-        self.scaredTimer = 0 #time until the ghost can be eaten
+        self.scared_timer = 0 #time until the ghost can be eaten
 
     def copy( self ):
         state = AgentState( self.start, self.isPacman )
         state.configuration = self.configuration
-        state.scaredTimer = self.scaredTimer #time until which the agent would be eatable
+        state.scared_timer = self.scared_timer #time until which the agent would be eatable
         return state
 
     #UTILITY FUNCTIONS
@@ -237,10 +237,10 @@ class game_state_data: #data pertaining to each state of the game
         #MAINTAINING STATES FOR THE AGENT
         self.coin_eaten = None
         self._coinAdded = None
-        self._capsuleEaten = None
+        self.big_food_Eaten = None
         self.agent_moved = None #checking if the agent has moved from previous position
         self._lose = False #game lost
-        self._win = False #game won
+        self.win = False #game won
         self.score_change = 0
 
     def deepCopy( self ): #DEEP COPYING
@@ -250,7 +250,7 @@ class game_state_data: #data pertaining to each state of the game
         state.agent_moved = self.agent_moved
         state.coin_eaten = self.coin_eaten
         state._coinAdded = self._coinAdded
-        state._capsuleEaten = self._capsuleEaten
+        state.big_food_Eaten = self.big_food_Eaten
         return state
 
     def copyagent_states( self, agent_states ):

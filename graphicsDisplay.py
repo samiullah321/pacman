@@ -179,8 +179,8 @@ class PacmanGraphics: #general graphics for pacman
 
         if newState.coin_eaten != None:
             self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
-        if newState._capsuleEaten != None:
-            self.removeCapsule(newState._capsuleEaten, self.big_coin) #same as coin
+        if newState.big_food_Eaten != None:
+            self.removeCapsule(newState.big_food_Eaten, self.big_coin) #same as coin
         self.infoPane.updateScore(newState.score)
         if 'ghostDistances' in dir(newState):
             self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
@@ -260,7 +260,7 @@ class PacmanGraphics: #general graphics for pacman
 
     #retreiving the ghost color
     def get_ghost_color(self, ghost, ghostIndex):
-        if ghost.scaredTimer > 0:
+        if ghost.scared_timer > 0:
             return SCARED_COLOR
         else:
             return GHOST_COLORS[ghostIndex]
@@ -306,7 +306,7 @@ class PacmanGraphics: #general graphics for pacman
             move_by(ghostImagePart, delta)
         refresh()
 
-        if ghost.scaredTimer > 0:
+        if ghost.scared_timer > 0:
             color = SCARED_COLOR #setting the color of scared state
         else:
             color = GHOST_COLORS[ghostIndex]

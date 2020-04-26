@@ -1,7 +1,7 @@
 from game import game_state_data
 from game import Directions
 from game import Actions
-from util import nearestPoint
+from util import nearest_cord
 from util import manhattan_dist
 import util, layout
 import sys, types, time, random, os
@@ -98,7 +98,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return self.data._lose
 
     def pac_won( self ):
-        return self.data._win
+        return self.data.win
 
     def __init__( self, prevState = None ):
         """
@@ -146,17 +146,14 @@ class ClassicGameRules:
         if not self.quiet: print("Pacman died! Score: %d" % state.data.score)
         game.gameOver = True
 
-    def getProgress(self, game): #returning how much coin eaten from the start
-        return float(game.state.remaining_coin()) / self.initialState.remaining_coin()
+    def get_progress(self, game): #returning how much coin eaten from the start
+        return float(game.state.getNumcoin()) / self.initialState.getNumcoin()
 
-    def agentCrash(self, game, agent_index):
+    def agent_crash(self, game, agent_index):
         if agent_index == 0:
             print("Pacman crashed")
         else:
             print("A ghost crashed")
-
-    def getMaxTimeWarnings(self, agent_index):
-        return 0
 
 class pac_rules:
     #functions for the pacman
@@ -170,12 +167,12 @@ class pac_rules:
         legal = pac_rules.get_legal_moves( state )
         if action not in legal:
             raise Exception("Illegal action " + str(action))
-        pacmanState = state.data.agent_states[0]
+        pacman_state = state.data.agent_states[0]
         vector = Actions.direction_from_vector( action, pac_rules.PACMAN_SPEED ) #updating the pacman config
-        pacmanState.configuration = pacmanState.configuration.produce_successor( vector )
+        pacman_state.configuration = pacman_state.configuration.produce_successor( vector )
         #eating coin
-        next = pacmanState.configuration.get_coord()
-        nearest = nearestPoint( next )
+        next = pacman_state.configuration.get_coord()
+        nearest = nearest_cord( next )
         if manhattan_dist( nearest, next ) <= 0.5 :#remove the coin when eaten
             pac_rules.consume( nearest, state )
     apply_action = staticmethod( apply_action )
@@ -191,14 +188,14 @@ class pac_rules:
             numcoin = state.remaining_coin()
             if numcoin == 0 and not state.data._lose:
                 state.data.score_change += 500
-                state.data._win = True
+                state.data.win = True
         #eating the bcoin
         if( position in state.get_big_coin() ): #now all ghost agents are eatable
             state.data.big_coin.remove( position )
-            state.data._capsuleEaten = position
+            state.data.big_food_Eaten = position
             #Reset all ghosts' scared timers
             for index in range( 1, len( state.data.agent_states ) ):
-                state.data.agent_states[index].scaredTimer = SCARED_TIME #all the ghosts are now in scared mode once the coin has been eaten
+                state.data.agent_states[index].scared_timer = SCARED_TIME #all the ghosts are now in scared mode once the coin has been eaten
     consume = staticmethod( consume )
 
 class ghost_rules:
@@ -223,16 +220,16 @@ class ghost_rules:
 
         ghost_state = state.data.agent_states[ghostIndex]
         speed = ghost_rules.GHOST_SPEED
-        if ghost_state.scaredTimer > 0: speed /= 2.0 #decreasing the speed of the ghost in scared state
+        if ghost_state.scared_timer > 0: speed /= 2.0 #decreasing the speed of the ghost in scared state
         vector = Actions.direction_from_vector( action, speed )
         ghost_state.configuration = ghost_state.configuration.produce_successor( vector ) #applying the action to the ghost_state
     apply_action = staticmethod( apply_action )
 
     def dec_timer( ghost_state): #this will decrerement the timer for the ghost being scared
-        timer = ghost_state.scaredTimer
+        timer = ghost_state.scared_timer
         if timer == 1:
-            ghost_state.configuration.coord = nearestPoint( ghost_state.configuration.coord )
-        ghost_state.scaredTimer = max( 0, timer - 1 ) #the timer cannot be below zero
+            ghost_state.configuration.coord = nearest_cord( ghost_state.configuration.coord )
+        ghost_state.scared_timer = max( 0, timer - 1 ) #the timer cannot be below zero
     dec_timer = staticmethod( dec_timer )
 
     def check_collid( state, agent_index): #checking whether the pacman and the ghost has collided or not
@@ -251,14 +248,14 @@ class ghost_rules:
     check_collid = staticmethod( check_collid )
 
     def collide( state, ghost_state, agent_index): #sets the state on collision of pacman and the ghost
-        if ghost_state.scaredTimer > 0: #if the ghost is scared and still collides
+        if ghost_state.scared_timer > 0: #if the ghost is scared and still collides
             state.data.score_change += 200
             ghost_rules.placeGhost(state, ghost_state)
-            ghost_state.scaredTimer = 0
+            ghost_state.scared_timer = 0
             # Added for first-person
             state.data._eaten[agent_index] = True # the agent is now eaten
         else:
-            if not state.data._win:
+            if not state.data.win:
                 state.data.score_change -= 500
                 state.data._lose = True #the game is lost as pacman is eaten
     collide = staticmethod( collide )

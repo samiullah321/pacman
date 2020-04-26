@@ -21,18 +21,18 @@ class Game:
         import io
         self.agentOutput = [io.StringIO() for agent in agents]
 
-    def getProgress(self): #Checking whether the game is over or not
+    def get_progress(self): #Checking whether the game is over or not
         if self.gameOver:
             return 1.0
         else:
-            return self.rules.getProgress(self)
+            return self.rules.get_progress(self)
 
     def _agentCrash( self, agent_index, quiet=False):
         "Helper method for handling agent crashes"
         if not quiet: traceback.print_exc()
         self.gameOver = True
         self.agentCrashed = True
-        self.rules.agentCrash(self, agent_index)
+        self.rules.agent_crash(self, agent_index)
 
     OLD_STDOUT = None
     OLD_STDERR = None
@@ -118,7 +118,7 @@ class Game:
             agent_index = ( agent_index + 1 ) % numAgents
 
             if _BOINC_ENABLED:
-                boinc.set_fraction_done(self.getProgress())
+                boinc.set_fraction_done(self.get_progress())
 
         # inform a learning agent of the game result
         for agent_index, agent in enumerate(self.agents):

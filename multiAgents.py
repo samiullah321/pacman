@@ -32,7 +32,7 @@ class ReflexAgent(Agent):
         new_coin = next_game_state.get_coin()  # taking the remaining coin
         # taking the remaining scaredtimes of the ghosts
         new_ghost_states = next_game_state.get_ghost_states()
-        new_ghost_scrared_timer = [ghost_state.scaredTimer for ghost_state in new_ghost_states]
+        new_ghost_scrared_timer = [ghost_state.scared_timer for ghost_state in new_ghost_states]
 
         # REFLEX AGENT CODE
         coin_cord = new_coin.asList()

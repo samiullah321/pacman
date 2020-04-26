@@ -37,7 +37,7 @@ class DirectionalGhost( GhostAgent ):
         ghost_state = state.get_ghost_state( self.index )
         legal_move = state.get_legal_moves( self.index )
         coord = state.get_ghost_coord( self.index )
-        is_scared = ghost_state.scaredTimer > 0
+        is_scared = ghost_state.scared_timer > 0
 
         speed = 1
         if is_scared: speed = 0.5
