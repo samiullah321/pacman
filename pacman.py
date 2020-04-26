@@ -68,7 +68,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
     def get_pacman_coord( self ):
         return self.data.agentStates[0].getPosition() #return the pacman's current position
 
-    def getGhostStates( self ):
+    def get_ghost_states( self ):
         return self.data.agentStates[1:] #getting the states for all the ghosts
 
     def getGhostState( self, agentIndex ):
@@ -82,7 +82,7 @@ class GameState: #has accessor methods for accessing variables of GameStateData 
         return self.data.agentStates[agentIndex].getPosition()
 
     def getGhostPositions(self):
-        return [s.getPosition() for s in self.getGhostStates()]
+        return [s.getPosition() for s in self.get_ghost_states()]
 
     def getNumAgents( self ):
         return len( self.data.agentStates )

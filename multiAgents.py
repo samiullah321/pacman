@@ -31,8 +31,8 @@ class ReflexAgent(Agent):
         new_coord = next_game_state.get_pacman_coord()  # taking the pacman position after moving
         new_coin = next_game_state.get_coin()  # taking the remaining coin
         # taking the remaining scaredtimes of the ghosts
-        newGhostStates = next_game_state.getGhostStates()
-        newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
+        new_ghost_states = next_game_state.get_ghost_states()
+        new_ghost_scrared_timer = [ghostState.scaredTimer for ghostState in new_ghost_states]
 
         # REFLEX AGENT CODE
         coinPos = new_coin.asList()
@@ -47,7 +47,7 @@ class ReflexAgent(Agent):
             nearest_distance = 0
         score = -nearest_distance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
 
-        for i in range(len(newGhostStates)):
+        for i in range(len(new_ghost_states)):
             # getting the positions of each ghost and checking whether it has eaten pacman or not
             ghostPos = next_game_state.getGhostPosition(i + 1)
             if manhattanDistance(new_coord, ghostPos) <= 1:  # if pacman dies
