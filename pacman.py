@@ -250,7 +250,7 @@ class ghost_rules:
     def collide( state, ghost_state, agent_index): #sets the state on collision of pacman and the ghost
         if ghost_state.scared_timer > 0: #if the ghost is scared and still collides
             state.data.score_change += 200
-            ghost_rules.placeGhost(state, ghost_state)
+            ghost_rules.put_ghost(state, ghost_state)
             ghost_state.scared_timer = 0
             # Added for first-person
             state.data._eaten[agent_index] = True # the agent is now eaten
@@ -265,9 +265,9 @@ class ghost_rules:
         return manhattan_dist( ghost_coordinates, pacman_position ) <= COLLISION_TOLERANCE
     can_kill = staticmethod( can_kill )
 
-    def placeGhost(state, ghost_state): #placing ghost agents at their proper positions
+    def put_ghost(state, ghost_state): #placing ghost agents at their proper positions
         ghost_state.configuration = ghost_state.start
-    placeGhost = staticmethod( placeGhost )
+    put_ghost = staticmethod( put_ghost )
 
 #STARTING THE GAME
 
@@ -328,13 +328,13 @@ def readCommand( argv ):
 
     # Choose a Pacman agent
     noKeyboard = False
-    pacmanType = loadAgent(options.pacman, noKeyboard)
+    pacmanType = load_agent(options.pacman, noKeyboard)
     agentOpts = parseAgentArgs(options.agentArgs)
     pacman = pacmanType(**agentOpts) # Instantiate Pacman with agentArgs
     args['pacman'] = pacman
 
     # Choose a ghost agent
-    ghostType = loadAgent(options.ghost, noKeyboard)
+    ghostType = load_agent(options.ghost, noKeyboard)
     args['ghosts'] = [ghostType( i+1 ) for i in range( options.ghosts_count )]
 
     # Choose a display format
@@ -348,7 +348,7 @@ def readCommand( argv ):
 
     return args
 
-def loadAgent(pacman, nographics):
+def load_agent(pacman, nographics):
     # Looks through all pythonPath Directories for the right module,
     pythonPathStr = os.path.expandvars("$PYTHONPATH")
     if pythonPathStr.find(';') == -1:

@@ -17,7 +17,7 @@ class NullGraphics:
     def checkNullDisplay(self):
         return True
 
-    def pause(self):
+    def end(self):
         time.sleep(SLEEP_TIME)
 
     def draw(self, state):

@@ -5,15 +5,15 @@ import random
 #Keys for the controlling the pacman by the user
 class KeyboardAgent(Agent):
     # NOTE: Arrow keys also work.
-    WEST_KEY  = 'a'
-    EAST_KEY  = 'd'
-    NORTH_KEY = 'w'
-    SOUTH_KEY = 's'
-    STOP_KEY = 'q'
+    left_key  = 'a'
+    right_key  = 'd'
+    up_key = 'w'
+    down_key = 's'
+    end = 'q'
 
     def __init__( self, index = 0 ):
 
-        self.lastMove = Directions.STOP
+        self.last_move = Directions.STOP
         self.index = index
         self.keys = []
 
@@ -29,21 +29,21 @@ class KeyboardAgent(Agent):
 
         if move == Directions.STOP:
             # Try to move in the same direction as before
-            if self.lastMove in legal:
-                move = self.lastMove
+            if self.last_move in legal:
+                move = self.last_move
 
-        if (self.STOP_KEY in self.keys) and Directions.STOP in legal: move = Directions.STOP
+        if (self.end in self.keys) and Directions.STOP in legal: move = Directions.STOP
 
         if move not in legal:
             move = random.choice(legal)
 
-        self.lastMove = move
+        self.last_move = move
         return move
 
     def getMove(self, legal):
         move = Directions.STOP
-        if   (self.WEST_KEY in self.keys or 'Left' in self.keys) and Directions.WEST in legal:  move = Directions.WEST
-        if   (self.EAST_KEY in self.keys or 'Right' in self.keys) and Directions.EAST in legal: move = Directions.EAST
-        if   (self.NORTH_KEY in self.keys or 'Up' in self.keys) and Directions.NORTH in legal:   move = Directions.NORTH
-        if   (self.SOUTH_KEY in self.keys or 'Down' in self.keys) and Directions.SOUTH in legal: move = Directions.SOUTH
+        if   (self.left_key in self.keys or 'Left' in self.keys) and Directions.WEST in legal:  move = Directions.WEST
+        if   (self.right_key in self.keys or 'Right' in self.keys) and Directions.EAST in legal: move = Directions.EAST
+        if   (self.up_key in self.keys or 'Up' in self.keys) and Directions.NORTH in legal:   move = Directions.NORTH
+        if   (self.down_key in self.keys or 'Down' in self.keys) and Directions.SOUTH in legal: move = Directions.SOUTH
         return move
