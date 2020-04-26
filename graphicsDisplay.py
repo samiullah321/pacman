@@ -47,7 +47,7 @@ big_coin_s = 0.20
 #wall config
 wall_r = 0.05
 
-class InfoPane:
+class info_p:
     def __init__(self, layout, grid_size):
         #Starting pane attributes
         self.grid_size = grid_size
@@ -87,27 +87,22 @@ class InfoPane:
     def update_score(self, score):
         change_text(self.score_text, "SCORE: % 4d" % score)
 
-    def updateGhostDistances(self, distances):
+    def update_ghost_distances(self, distances):
         if len(distances) == 0: return
         if 'ghost_distance_text' not in dir(self): self.initialize_ghost_dis(distances)
         else:
             for i, d in enumerate(distances):
                 change_text(self.ghost_distance_text[i], d)
 
-class PacmanGraphics: #general graphics for pacman
-    def __init__(self, frameTime=0.0):
+class pac_graphic: #general graphics for pacman
+    def __init__(self, frame_t=0.0):
         self.have_window = 0
-        self.currentGhostImages = {}
-        self.pacmanImage = None
         self.grid_size = grdi_size
-        self.frameTime = frameTime
-
-    def checkNullDisplay(self):
-        return False
+        self.frame_t = frame_t
 
     def initialize(self, state, isBlue = False):
         self.isBlue = isBlue
-        self.startGraphics(state)
+        self.start_graphic(state)
         self.distributionImages = None  # Initialized lazily
         self.drawStaticObjects(state)
         self.drawAgentObjects(state)
@@ -115,30 +110,16 @@ class PacmanGraphics: #general graphics for pacman
         # Information
         self.previousState = state
 
-    def startGraphics(self, state): #initializing the graphics onto the screen
+    def start_graphic(self, state): #initializing the graphics onto the screen
         self.layout = state.layout
         layout = self.layout
         self.width = layout.width
         self.height = layout.height
         self.make_window(self.width, self.height)
-        self.infoPane = InfoPane(layout, self.grid_size)
-        self.currentState = layout
+        self.info_p = info_p(layout, self.grid_size)
+        self.c_state = layout
 
-    #drawing the walls onto the screen
-    def drawDistributions(self, state):
-        walls = state.layout.walls
-        dist = []
-        for x in range(walls.width):
-            distx = []
-            dist.append(distx)
-            for y in range(walls.height):
-                ( screen_x, screen_y ) = self.to_screen( (x, y) )
-                block = square( (screen_x, screen_y),
-                                0.5 * self.grid_size,
-                                color = background_c,
-                                filled = 1, behind=2)
-                distx.append(block)
-        self.distributionImages = dist
+
 
     #drawing coin and bcoin onto the screen
     def drawStaticObjects(self, state):
@@ -160,7 +141,7 @@ class PacmanGraphics: #general graphics for pacman
                 self.agentImages.append( (agent, image) )
         refresh()
 
-    #updates currentState to the newState recieved
+    #updates c_state to the newState recieved
     def update(self, newState):
         #updating the agent moved
         agent_index = newState.agent_moved
@@ -177,9 +158,9 @@ class PacmanGraphics: #general graphics for pacman
             self.removecoin(newState.coin_eaten, self.coin) #if the coin is eaten, remove it from its position in new state
         if newState.big_food_Eaten != None:
             self.removeCapsule(newState.big_food_Eaten, self.big_coin) #same as coin
-        self.infoPane.update_score(newState.score)
+        self.info_p.update_score(newState.score)
         if 'ghostDistances' in dir(newState):
-            self.infoPane.updateGhostDistances(newState.ghostDistances) #updating the ghost distances here
+            self.info_p.update_ghost_distances(newState.ghostDistances) #updating the ghost distances here
 
     def make_window(self, width, height): #initializing the screen
         grid_width = (width-1) * self.grid_size
@@ -235,12 +216,12 @@ class PacmanGraphics: #general graphics for pacman
 
     #animation of pacman when moving from cell to cell
     def animate_pacman_movement(self, pacman, prevPacman, image):
-        if self.frameTime < 0:
+        if self.frame_t < 0:
             print('Press any key to step forward, "q" to play')
             keys = wait_for_keys()
             if 'q' in keys:
-                self.frameTime = 0.1
-        if self.frameTime > 0.01 or self.frameTime < 0:
+                self.frame_t = 0.1
+        if self.frame_t > 0.01 or self.frame_t < 0:
             start = time.time()
             fx, fy = self.get_coord(pacman)
             px, py = self.get_coord(pacman)
@@ -249,7 +230,7 @@ class PacmanGraphics: #general graphics for pacman
                 coord = px*i/frames + fx*(frames-i)/frames, py*i/frames + fy*(frames-i)/frames
                 self.move_pacman(coord, self.getDirection(pacman), image)
                 refresh()
-                sleep(abs(self.frameTime) / frames)
+                sleep(abs(self.frame_t) / frames)
         else:
             self.move_pacman(self.get_coord(pacman), self.getDirection(pacman), image)
         refresh()

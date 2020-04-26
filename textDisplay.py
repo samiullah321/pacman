@@ -14,9 +14,6 @@ class NullGraphics:
     def update(self, state):
         pass
 
-    def checkNullDisplay(self):
-        return True
-
     def end(self):
         time.sleep(SLEEP_TIME)
 

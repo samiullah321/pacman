@@ -313,7 +313,7 @@ def readCommand( argv ):
                       help=default('The maximum number of ghosts to use'), default=4)
     parser.add_option('-a','--agentArgs',dest='agentArgs',
                       help='Comma separated values sent to agent. e.g. "opt1=val1,opt2,opt3=val3"')
-    parser.add_option('--frameTime', dest='frameTime', type='float',
+    parser.add_option('--frame_t', dest='frame_t', type='float',
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
 
     options, otherjunk = parser.parse_args(argv)
@@ -343,7 +343,7 @@ def readCommand( argv ):
         args['display'] = textDisplay.NullGraphics()
     else:
         import graphicsDisplay
-        args['display'] = graphicsDisplay.PacmanGraphics(frameTime = options.frameTime)
+        args['display'] = graphicsDisplay.pac_graphic(frame_t = options.frame_t)
     args['numGames'] = options.numGames
 
     return args
