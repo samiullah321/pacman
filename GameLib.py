@@ -4,6 +4,20 @@ try:
 except:
     _BOINC_ENABLED = False
 
+#PACMAN AGENT TYPE
+REFLEX = "reflex_agent"
+MINIMAX = "minimax_agent"
+ALPHA = "alpha_beta_agent"
+EXPECTIMAX = "expecti_max_agent"
+
+#MAZE
+TEST = "testClassic"
+MINI = "minimaxClassic"
+SMALL = "smallClassic"
+TRAPPED = "trappedClassic"
+ORIGINAL = "originalClassic"
+
+
 class Game:
 
     # manages the control flow, requesting actions from agents.

@@ -30,7 +30,9 @@ class classic_rule:
         if state.pac_lost(): self.lose(state, game)
 
     def win( self, state, game ): #printing win
-        if not self.no_display: print("Game won.  Score: ", state.data.score)
+        string = ''
+        if not self.no_display:
+            print("Game won.  Score: ", state.data.score)
         game.game_finish = True
 
     def lose( self, state, game ): # printing loss
@@ -301,7 +303,7 @@ def parse_command( argv ):
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
     p.add_option('-l', '--layout', dest='layout',
                       help=default('the LAYOUT_FILE from which to load the map layout'),
-                      metavar='LAYOUT_FILE', default='mediumClassic')
+                      metavar='LAYOUT_FILE', default='originalClassic')
     p.add_option('-p', '--pacman', dest='pacman',
                       help=default('the agent TYPE in the pacmanAgents module to use'),
                       metavar='TYPE', default='keyboard_agent')

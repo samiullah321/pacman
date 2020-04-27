@@ -1,23 +1,139 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+import os
+
+#PACMAN AGENT TYPE
+REFLEX = "reflex_agent"
+MINIMAX = "minimax_agent"
+ALPHA = "alpha_beta_agent"
+EXPECTIMAX = "expecti_max_agent"
+
+#MAZE
+CAPSULE = "capsuleClassic"
+CONTEST = "contestClassic"
+MEDIUM = "mediumClassics"
+MINI = "minimaxClassic"
+OPEN = "openClassic"
+ORIGINAL = "originalClassic"
+SMALL = "smallClassic"
+TEST = "testClassic"
+TRAPPED = "trappedClassic"
+TRICKY = "trickyClassic"
+
+#Enemy
+SMART = "directional_ghost"
 
 class Ui_MainWindow(object):
 
+    def __init__(self):
+        self.agent_type = ''
+        self.ghost_type = ''
+        self.layout = ''
+        self.depth = ''
+        self.iteration = ''
+        self.ghost_num = ''
+        self.show_display = ''
+        self.arr = ['pacman.py']
+        self.process = None
+
     def clicked(self):
-        print(self.depthin.text())
-        print(self.NoGin.text())
-        print(self.iterationin.text())
-        print(self.comboBox.currentText())
-        print(self.comboBox_2.currentText())
-        print(self.comboBox_3.currentText())
-        if (self.Displaycheck.isChecked() == True):
-            CheckState = True
+        if(self.depthin.text() == '' or self.comboBox.currentText() == 'No Agent' or self.comboBox.currentText() == 'Reflex Agent'):
+            self.depth = ''
         else:
-            CheckState = False
+            self.depth = 'depth=' + self.depthin.text()
+        if(self.iterationin.text() == '' or self.comboBox.currentText() == 'No Agent'):
+            self.iteration = ''
+        else:
+            self.iteration = self.iterationin.text()
+        if(self.NoGin.text() == ''):
+            self.ghost_num = ''
+        else:
+            self.ghost_num = self.NoGin.text()
+
+        #PACMAN AGENT
+
+        if(self.comboBox.currentText() == "Reflex Agent"):
+            self.agent_type = REFLEX
+        elif(self.comboBox.currentText() == "Alpha Beta Agent"):
+            self.agent_type = ALPHA
+        elif(self.comboBox.currentText() == "ExpectiMax Agent"):
+            self.agent_type = EXPECTIMAX
+        elif(self.comboBox.currentText() == "MiniMax Agent"):
+            self.agent_type = MINIMAX
+
+        #GHOST agent_type
+
+        if(self.comboBox_2.currentText() == "Smart Agent"):
+            self.ghost_type = SMART
+
+        #LAYOUT
+        if(self.comboBox_3.currentText() == "Contest Classic"):
+            self.layout = CONTEST
+        elif(self.comboBox_3.currentText() == "Medium Classic"):
+            self.layout = MEDIUM
+        elif(self.comboBox_3.currentText() == "Minimax Classic"):
+            self.layout = MINI
+        elif(self.comboBox_3.currentText() == "Open Classic"):
+            self.layout = OPEN
+        elif(self.comboBox_3.currentText() == "Capsule Classic"):
+            self.layout = CAPSULE
+        elif(self.comboBox_3.currentText() == "Small Classic"):
+            self.layout = SMALL
+        elif(self.comboBox_3.currentText() == "Test Classic"):
+            self.layout = TEST
+        elif(self.comboBox_3.currentText() == "Trapped Classic"):
+            self.layout = TRAPPED
+        elif(self.comboBox_3.currentText() == "Tricky Classic"):
+            self.layout = TRICKY
+        else:
+            self.layout = ORIGINAL
+
+        if (self.Displaycheck.isChecked()):
+            self.show_display = ''
+        else:
+            self.show_display = '-q'
+
+        if(self.layout!=''):
+            self.arr.append('-l')
+            self.arr.append(self.layout)
+        if(self.agent_type!=''):
+            self.arr.append('-p')
+            self.arr.append(self.agent_type)
+        if(self.ghost_type!=''):
+            self.arr.append('-g')
+            self.arr.append(self.ghost_type)
+        if(self.depth!=''):
+            self.arr.append('-a')
+            self.arr.append(self.depth)
+        if(self.ghost_num!=''):
+            self.arr.append('-k')
+            self.arr.append(self.ghost_num)
+        if(self.show_display!=''):
+            self.arr.append(self.show_display)
+        if(self.iteration!=''):
+            self.arr.append('-n')
+            self.arr.append(self.iteration)
+
+        print('Starting process')
+        self.process.start('python', self.arr)
+
         self.plainTextEdit.show()
         self.label_2.show()
 
     def quitclicked(self):
          app.quit()
+
+    def append(self, text):
+        self.plainTextEdit.clear()
+        self.plainTextEdit.insertPlainText(text)
+
+    def stdoutReady(self):
+        text = bytearray(self.process.readAllStandardOutput())
+        text = text.decode('mbcs')
+        self.append(text)
+
+    def show_processing(self):
+        self.plainTextEdit.clear()
+        self.plainTextEdit.insertPlainText("Processing..................................")
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -58,7 +174,7 @@ class Ui_MainWindow(object):
 "color: white;")
         self.paclabel.setObjectName("paclabel")
         self.ghostlabel = QtWidgets.QLabel(self.centralwidget)
-        self.ghostlabel.setGeometry(QtCore.QRect(20, 220, 231, 31))
+        self.ghostlabel.setGeometry(QtCore.QRect(20, 220, 231, 41))
         self.ghostlabel.setStyleSheet("font: 87 18pt \"Source Sans Pro Black\";\n"
 "color: white;")
         self.ghostlabel.setObjectName("ghostlabel")
@@ -88,46 +204,52 @@ class Ui_MainWindow(object):
 "color: white;")
         self.Displaycheck.setObjectName("Displaycheck")
         self.line = QtWidgets.QFrame(self.centralwidget)
-        self.line.setGeometry(QtCore.QRect(20, 200, 191, 16))
+        self.line.setGeometry(QtCore.QRect(20, 200, 191, 31))
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
         self.comboBox = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBox.setGeometry(QtCore.QRect(20, 170, 191, 22))
+        self.comboBox.setGeometry(QtCore.QRect(20, 170, 191, 41))
         self.comboBox.setStyleSheet("background:transparent;\n"
 "color:#FFE400;\n"
-"font: 87 16pt \"Source Sans Pro Black\";")
+"font: 87 14pt \"Source Sans Pro Black\";")
         self.comboBox.setObjectName("comboBox")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
+        self.comboBox.addItem("")
         self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBox_2.setGeometry(QtCore.QRect(20, 260, 191, 22))
+        self.comboBox_2.setGeometry(QtCore.QRect(20, 260, 191, 41))
         self.comboBox_2.setStyleSheet("background:transparent;\n"
 "color:#FFE400;\n"
-"font: 87 16pt \"Source Sans Pro Black\";")
+"font: 87 14pt \"Source Sans Pro Black\";")
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
-        self.comboBox_2.addItem("")
         self.comboBox_3 = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBox_3.setGeometry(QtCore.QRect(20, 350, 191, 22))
+        self.comboBox_3.setGeometry(QtCore.QRect(20, 350, 191, 41))
         self.comboBox_3.setStyleSheet("background:transparent;\n"
 "color:#FFE400;\n"
-"font: 87 16pt \"Source Sans Pro Black\";")
+"font: 87 14pt \"Source Sans Pro Black\";")
         self.comboBox_3.setObjectName("comboBox_3")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
         self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
+        self.comboBox_3.addItem("")
         self.line_2 = QtWidgets.QFrame(self.centralwidget)
-        self.line_2.setGeometry(QtCore.QRect(20, 290, 191, 16))
+        self.line_2.setGeometry(QtCore.QRect(20, 290, 191, 31))
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.line_3 = QtWidgets.QFrame(self.centralwidget)
-        self.line_3.setGeometry(QtCore.QRect(20, 370, 191, 16))
+        self.line_3.setGeometry(QtCore.QRect(20, 370, 191, 41))
         self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_3.setObjectName("line_3")
@@ -175,22 +297,31 @@ class Ui_MainWindow(object):
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
+
+        # self.process = QtCore.QProcess(MainWindow)
+        self.process = QtCore.QProcess(self.plainTextEdit)
+        self.process.readyReadStandardOutput.connect(self.stdoutReady)
+        self.process.started.connect(self.show_processing)
+        self.process.finished.connect(lambda: print('Finished!'))
+        self.arr.clear()
+        self.arr.append('pacman.py')
+
         self.plainTextEdit.setGeometry(QtCore.QRect(320, 180, 521, 561))
         self.plainTextEdit.hide()
         self.plainTextEdit.setStyleSheet("background-color: rgba(34,36,38,230);\n"
 "border:2px solid #FFE400;\n"
 "color:white;\n"
-"font: 87 12pt \"Source Sans Pro Black\";\n"
+"font: 87 12pt \"Consolas\";\n"
 "")
         self.plainTextEdit.setDocumentTitle("")
-        self.plainTextEdit.setReadOnly(False)
+        self.plainTextEdit.setReadOnly(True)
         self.plainTextEdit.setBackgroundVisible(False)
         self.plainTextEdit.setCenterOnScroll(True)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(330, 150, 201, 21))
         self.label_2.hide()
-        self.label_2.setStyleSheet("font: 87 12pt \"Source Sans Pro Black\";\n"
+        self.label_2.setStyleSheet("font: 87 14pt \"Source Sans Pro Black\";\n"
 "color: white;")
         self.label_2.setObjectName("label_2")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -208,21 +339,26 @@ class Ui_MainWindow(object):
         self.maplabel.setText(_translate("MainWindow", "Maps"))
         self.DepthLabel.setText(_translate("MainWindow", "Depth"))
         self.IterationLabel.setText(_translate("MainWindow", "Iteration"))
-        self.NoOfGhostLabel.setText(_translate("MainWindow", "Number OF Ghost"))
+        self.NoOfGhostLabel.setText(_translate("MainWindow", "Number Of Ghost"))
         self.Displaycheck.setText(_translate("MainWindow", "Show Display"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Reflex Agent"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "Alpha Beta Agent"))
-        self.comboBox.setItemText(2, _translate("MainWindow", "ExpectiMax Agent"))
-        self.comboBox.setItemText(3, _translate("MainWindow", "MiniMax Agent"))
-        self.comboBox_2.setItemText(0, _translate("MainWindow", "Reflex Agent"))
-        self.comboBox_2.setItemText(1, _translate("MainWindow", "MiniMax Agent"))
-        self.comboBox_2.setItemText(2, _translate("MainWindow", "Expectimax Agent"))
-        self.comboBox_2.setItemText(3, _translate("MainWindow", "Alpha Beta Agent"))
-        self.comboBox_3.setItemText(0, _translate("MainWindow", "Box"))
-        self.comboBox_3.setItemText(1, _translate("MainWindow", "Classic"))
-        self.comboBox_3.setItemText(2, _translate("MainWindow", "Trapped"))
+        self.comboBox.setItemText(0, _translate("MainWindow", "No Agent"))
+        self.comboBox.setItemText(1, _translate("MainWindow", "Reflex Agent"))
+        self.comboBox.setItemText(2, _translate("MainWindow", "Alpha Beta Agent"))
+        self.comboBox.setItemText(3, _translate("MainWindow", "ExpectiMax Agent"))
+        self.comboBox.setItemText(4, _translate("MainWindow", "MiniMax Agent"))
+        self.comboBox_2.setItemText(0, _translate("MainWindow", "Random Agent"))
+        self.comboBox_2.setItemText(1, _translate("MainWindow", "Smart Agent"))
+        self.comboBox_3.setItemText(0, _translate("MainWindow", "Original Classic"))
+        self.comboBox_3.setItemText(1, _translate("MainWindow", "Contest Classic"))
+        self.comboBox_3.setItemText(2, _translate("MainWindow", "Medium Classic"))
+        self.comboBox_3.setItemText(3, _translate("MainWindow", "Minimax Classic"))
+        self.comboBox_3.setItemText(4, _translate("MainWindow", "Open Classic"))
+        self.comboBox_3.setItemText(5, _translate("MainWindow", "Capsule Classic"))
+        self.comboBox_3.setItemText(6, _translate("MainWindow", "Small Classic"))
+        self.comboBox_3.setItemText(7, _translate("MainWindow", "Test Classic"))
+        self.comboBox_3.setItemText(8, _translate("MainWindow", "Trapped Classic"))
+        self.comboBox_3.setItemText(9, _translate("MainWindow", "Tricky Classic"))
         self.label_2.setText(_translate("MainWindow", "Terminal Output"))
-
 
 if __name__ == "__main__":
     import sys
