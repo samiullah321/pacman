@@ -1,6 +1,6 @@
-from game import game_state_data
-from game import movement
-from game import Actions
+from state import game_state_data
+from state import movement
+from state import Actions
 from util import nearest_cord
 from util import coords_distance
 import util, layout
@@ -132,6 +132,9 @@ class game_state: #has accessor methods for accessing variables of game_state_da
 
     def get_big_coin(self):
         return self.data.big_coin #returning the remaining bigcoin positions
+
+    def get_walls(self):
+        return self.data.layout.walls
 
     def get_num_agents( self ):
         return len( self.data.agent_states )
@@ -273,7 +276,6 @@ class ghost_rules:
     put_ghost = staticmethod( put_ghost )
 
 #STARTING THE GAME
-
 def default(str):
     return str + ' [Default: %default]'
 

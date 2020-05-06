@@ -29,6 +29,20 @@ class Counter(dict):
         #returns a copy of the counter
         return Counter(dict.copy(self))
 
+class Queue:
+
+  def __init__(self):
+    self.list = []
+
+  def push(self,item):
+    self.list.insert(0,item)
+
+  def pop(self):
+    return self.list.pop()
+
+  def isEmpty(self):
+    return len(self.list) == 0
+
 def normalize(vectorOrCounter):
     #normalize a vector or counter by dividing each value by the sum of all values
     normalizedCounter = Counter()

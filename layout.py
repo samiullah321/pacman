@@ -1,5 +1,5 @@
 from util import coords_distance
-from game import Grid
+from state import Grid
 import os
 import random
 from functools import reduce

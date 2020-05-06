@@ -1,6 +1,6 @@
 from graphicsUtils import *
 import math, time
-from game import movement
+from state import movement
 
 #Settings for the display
 grdi_size = 30.0

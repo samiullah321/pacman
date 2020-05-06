@@ -1,5 +1,5 @@
-from game import Agent
-from game import movement
+from state import Agent
+from state import movement
 import random
 
 #Keys for the controlling the pacman by the user

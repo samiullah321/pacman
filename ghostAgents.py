@@ -1,6 +1,6 @@
-from game import Agent
-from game import Actions
-from game import movement
+from state import Agent
+from state import Actions
+from state import movement
 import random
 from util import coords_distance
 import util
