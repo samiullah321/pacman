@@ -32,11 +32,11 @@ class classic_rule:
     def win( self, state, game ): #printing win
         string = ''
         if not self.no_display:
-            print("Score: ", state.data.score, " Game Won!.")
+            print("Score: ", state.data.score, " Game Won!")
         game.game_finish = True
 
     def lose( self, state, game ): # printing loss
-        if not self.no_display: print("Score:", state.data.score, "Game Lost.")
+        if not self.no_display: print("Score:", state.data.score, "Game Lost")
         game.game_finish = True
 
     def get_progress(self, game): #returning how much coin eaten from the start

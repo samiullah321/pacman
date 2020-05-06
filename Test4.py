@@ -147,7 +147,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(837, 848)
-        MainWindow.setStyleSheet("#MainWindow { border-image: url(dasdasdascx.jpg) 0 0 0 0 stretch stretch; }")
+        MainWindow.setStyleSheet("#MainWindow { border-image: url(pacman_frontpage.jpg) 0 0 0 0 stretch stretch; }")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.picture1 = QtWidgets.QLabel(self.centralwidget)
@@ -302,7 +302,7 @@ class Ui_MainWindow(object):
         self.label = QtWidgets.QLabel(self.centralwidget)
         self.label.setGeometry(QtCore.QRect(20, 30, 131, 71))
         self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap("580b57fcd9996e24bc43c313.png"))
+        self.label.setPixmap(QtGui.QPixmap("pacman_icon.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.plainTextEdit = QtWidgets.QPlainTextEdit(self.centralwidget)
