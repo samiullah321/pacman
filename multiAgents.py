@@ -63,18 +63,18 @@ def mutiAgent_evalutor(current_game_state):
         return 10000
     elif current_game_state.pac_lost():
         return -10000
-    pos = current_game_state.get_pacman_coord()
-    food = current_game_state.get_coin()
+    loc = current_game_state.get_pacman_coord()
+    coin = current_game_state.get_coin()
     walls = current_game_state.get_walls()
     dmap = walls.copy()
     stk = util.Queue()
-    stk.push(pos)
-    dmap[pos[0]][pos[1]] = 0
+    stk.push(loc)
+    dmap[loc[0]][loc[1]] = 0
     dis = 0
-    while not stk.isEmpty():  # use BFS to aim at the closest food if not disturbed
+    while not stk.isEmpty():  # use BFS to aim at the closest coin if not disturbed
         x , y = stk.pop()
         dis = dmap[x][y] + 1
-        if food[x][y]:
+        if coin[x][y]:
             break;
         for v in [(0, 1) , (1, 0) , (0 , -1) , (-1 , 0)]:
             xn = x + v[0]
@@ -86,10 +86,10 @@ def mutiAgent_evalutor(current_game_state):
     ghosts = current_game_state.get_ghost_states()
     for ghost in ghosts:
         if ghost.scared_timer == 0:  # active ghost poses danger to the pacman
-            score -= 100 ** (1.6 - coords_distance(ghost.get_coord(), pos))
+            score -= 100 ** (1.6 - coords_distance(ghost.get_coord(), loc))
         else:  # bonus points for having a scared ghost
             score += 25
-    score -= 30 * food.count()  # bonus points for eating a food
+    score -= 30 * coin.count()  # bonus points for eating a coin
     return score
 
 class mutli_agent_search(Agent):
