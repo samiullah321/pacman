@@ -32,11 +32,11 @@ class classic_rule:
     def win( self, state, game ): #printing win
         string = ''
         if not self.no_display:
-            print("Game won.  Score: ", state.data.score)
+            print("Score: ", state.data.score, " Game Won!.")
         game.game_finish = True
 
     def lose( self, state, game ): # printing loss
-        if not self.no_display: print("Game Lost. Score:", state.data.score)
+        if not self.no_display: print("Score:", state.data.score, "Game Lost.")
         game.game_finish = True
 
     def get_progress(self, game): #returning how much coin eaten from the start
@@ -400,8 +400,6 @@ def initiate_pacman( layout, pacman, ghosts, display, numGames):
             if len(game.state.get_big_coin())==0:
                 CapCount += 1
         print('%d games won out of %d ---> Win Rate: %.2f' % (wins.count(True), len(wins), winRate*100))
-        print('Average Score:', sum(scores) / float(len(scores)))
-
     return games
 
 if __name__ == '__main__':

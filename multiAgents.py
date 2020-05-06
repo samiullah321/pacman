@@ -60,14 +60,14 @@ class reflex_agent(Agent):
         return score  # next_game_state.get_score()
 
 
-def score_evaluator(current_game_state):
+def get_game_score(current_game_state):
     # returns the score of the current game_state
     return current_game_state.get_score()
 
 
 class mutli_agent_search(Agent):
     # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
-    def __init__(self, evalFn='score_evaluator', depth='2'):
+    def __init__(self, evalFn='get_game_score', depth='2'):
         self.index = 0  # Pacman is always agent index 0
         self.evaluator = util.lookup(evalFn, globals())
         self.depth = int(
