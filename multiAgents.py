@@ -58,7 +58,7 @@ class reflex_agent(Agent):
 
         return score  # next_game_state.get_score()
 
-def mutiAgent_evalutor(current_game_state):
+def mutiAgent_evaluator(current_game_state):
 
     # The implementation involves a simple breath-first-search that terminates at the closest food near pacman
 
@@ -99,7 +99,7 @@ def mutiAgent_evalutor(current_game_state):
 
 class mutli_agent_search(Agent):
     # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
-    def __init__(self, evalFn='mutiAgent_evalutor', depth='2'):
+    def __init__(self, evalFn='mutiAgent_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
         self.relfex_evaluator = util.lookup(evalFn, globals())
         self.depth = int(
