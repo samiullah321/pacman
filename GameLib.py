@@ -17,7 +17,6 @@ SMALL = "smallClassic"
 TRAPPED = "trappedClassic"
 ORIGINAL = "originalClassic"
 
-
 class Game:
 
     # manages the control flow, requesting actions from agents.

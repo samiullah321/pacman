@@ -19,7 +19,7 @@ class movement:
 
     #In case, pacman is going in a certain direction, its poles relative to it are defined below:
     left_dir = {up: left, down: right, right:  up, left:  down, STOP:  STOP}
-    right_dir =      dict([(y,x) for x, y in list(left_dir.items())]) #right is the reverse of left
+    right_dir = dict([(y,x) for x, y in list(left_dir.items())]) #right is the reverse of left
     reverse_dir = {up: down, down: up, right: left, left: right, STOP: STOP}
 
 class location:
@@ -136,11 +136,6 @@ class Grid:
             else:
                 flag.append(False)
         return flag
-
-
-####################################
-# Parts you shouldn't have to read #
-####################################
 
 class Actions:
     # movement
