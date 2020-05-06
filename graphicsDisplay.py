@@ -36,15 +36,15 @@ pac_c = format_color(255.0/255.0,255.0/255.0,61.0/255)
 pac_s = 0.5
 #pacman_speed = 0.25
 
-#coin config
+#coin location
 coin_c = format_color(0.81,0.7,0.22)
 coin_s = 0.1
 
-#bcoin config
+#bcoin location
 big_coin_c = format_color(0.9,0,0)
 big_coin_s = 0.20
 
-#wall config
+#wall location
 wall_r = 0.05
 
 class info_p:
@@ -291,13 +291,13 @@ class pac_graphic: #general graphics for pacman
 
     #get coords on the screen
     def get_coord(self, agentState):
-        if agentState.config == None: return (-1000, -1000)
+        if agentState.location == None: return (-1000, -1000)
         return agentState.get_coord()
 
     #get action
     def get_dir(self, agentState):
-        if agentState.config == None: return Directions.STOP
-        return agentState.config.get_dir()
+        if agentState.location == None: return Directions.STOP
+        return agentState.location.get_dir()
 
     def finish(self):
         end_graphics() #utility function for ending the display

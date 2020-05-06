@@ -22,7 +22,7 @@ class Directions:
     right_dir =      dict([(y,x) for x, y in list(left_dir.items())]) #right is the reverse of left
     reverse_dir = {up: down, down: up, right: left, left: right, STOP: STOP}
 
-class config:
+class location:
 
 #takes in the initial position of the Pacman and its initial direction as the argument
     def __init__(self, coord, direction):
@@ -48,30 +48,30 @@ class config:
         direction = Actions.vec_to_dir(vector)
         if direction == Directions.STOP:
             direction = self.direction # There is no stop direction
-        return config((x + dx, y+dy), direction)
+        return location((x + dx, y+dy), direction)
 
 class AgentState:
 
-    #agent_states hold the state of an agent (config, speed, scared, etc).
-    def __init__( self, startconfig, is_pac ):
-        self.start = startconfig
-        self.config = startconfig
+    #agent_states hold the state of an agent (location, speed, scared, etc).
+    def __init__( self, startLocation, is_pac ):
+        self.start = startLocation
+        self.location = startLocation
         self.is_pac = is_pac #is the agent Pacman or ghost?
         self.scared_timer = 0 #time until the ghost can be eaten
 
     def copy( self ):
         state = AgentState( self.start, self.is_pac )
-        state.config = self.config
+        state.location = self.location
         state.scared_timer = self.scared_timer #time until which the agent would be eatable
         return state
 
     #UTILITY FUNCTIONS
     def get_coord(self):
-        if self.config == None: return None
-        return self.config.get_coord()
+        if self.location == None: return None
+        return self.location.get_coord()
 
     def get_dir(self):
-        return self.config.get_dir()
+        return self.location.get_dir()
 
 class Grid:
 
@@ -185,15 +185,15 @@ class Actions:
         return (dx * speed, dy * speed)
     direction_from_vector = staticmethod(direction_from_vector)
 
-    #config is the current game_state of an agent
-    def get_possible_moves(config, walls):
+    #location is the current game_state of an agent
+    def get_possible_moves(location, walls):
         possible = [] #initialized empty
-        x, y = config.coord #gets the current coord of Pacman
+        x, y = location.coord #gets the current coord of Pacman
         x_int, y_int = int(x + 0.5), int(y + 0.5)
 
         # In between grid points, all agents must continue straight
         if (abs(x - x_int) + abs(y - y_int)  > Actions.TOLERANCE):
-            return [config.get_dir()]
+            return [location.get_dir()]
 
         for dir, vec in Actions.directions_as_list:
             dx, dy = vec
@@ -258,5 +258,5 @@ class game_state_data: #data pertaining to each state of the game
             if not is_pac:
                 if ghosts_count == numghost_agents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agent_states.append( AgentState( config( coord, Directions.STOP), is_pac) )
+            self.agent_states.append( AgentState( location( coord, Directions.STOP), is_pac) )
         self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)
