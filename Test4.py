@@ -27,6 +27,7 @@ class Ui_MainWindow(object):
     def __init__(self):
         self.agent_type = ''
         self.ghost_type = ''
+        self.title = "Pacman"
         self.layout = ''
         self.depth = ''
         self.iteration = ''
@@ -148,6 +149,7 @@ class Ui_MainWindow(object):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(837, 848)
         MainWindow.setStyleSheet("#MainWindow { border-image: url(pacman_frontpage.jpg) 0 0 0 0 stretch stretch; }")
+        MainWindow.setWindowIcon(QtGui.QIcon('1.png'))
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.picture1 = QtWidgets.QLabel(self.centralwidget)
@@ -168,6 +170,16 @@ class Ui_MainWindow(object):
         self.playbutton.setDefault(False)
         self.playbutton.setFlat(False)
         self.playbutton.setObjectName("playbutton")
+        self.closebutton = QtWidgets.QPushButton(self.centralwidget)
+        self.closebutton.setGeometry(QtCore.QRect(500, 770, 151, 61))
+        self.closebutton.setStyleSheet("background:#FDE402;\n"
+"font: 87 18pt \"Source Sans Pro Black\";\n"
+"color: #0C1735;")
+        self.closebutton.setAutoDefault(False)
+        self.closebutton.setDefault(False)
+        self.closebutton.setFlat(False)
+        self.closebutton.setObjectName("closebutton")
+        
         self.QUIT = QtWidgets.QPushButton(self.centralwidget)
         self.QUIT.setGeometry(QtCore.QRect(20, 770, 151, 61))
         self.QUIT.setStyleSheet("background:#FDE402;\n"
@@ -338,9 +350,10 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Pacman"))
         self.playbutton.setText(_translate("MainWindow", "P L A Y"))
-        self.QUIT.setText(_translate("MainWindow", "QUIT"))
+        self.closebutton.setText(_translate("MainWindow", "S T O P"))
+        self.QUIT.setText(_translate("MainWindow", "Q U I T"))
         self.paclabel.setText(_translate("MainWindow", "Choose Pacman Agent"))
         self.ghostlabel.setText(_translate("MainWindow", "Choose Ghost Agent"))
         self.maplabel.setText(_translate("MainWindow", "Maps"))
