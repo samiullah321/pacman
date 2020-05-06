@@ -59,19 +59,24 @@ class reflex_agent(Agent):
         return score  # next_game_state.get_score()
 
 def mutiAgent_evalutor(current_game_state):
+
+    # The implementation involves a simple breath-first-search that terminates at the closest food near pacman
+
+    # checking if the game is won or lost
     if current_game_state.pac_won():
         return 10000
     elif current_game_state.pac_lost():
         return -10000
-    loc = current_game_state.get_pacman_coord()
-    coin = current_game_state.get_coin()
-    walls = current_game_state.get_walls()
+
+    loc = current_game_state.get_pacman_coord() # getting current location
+    coin = current_game_state.get_coin() # getting the coin locations
+    walls = current_game_state.get_walls() # getting the wall locations
     dmap = walls.copy()
     stk = util.Queue()
     stk.push(loc)
     dmap[loc[0]][loc[1]] = 0
     dis = 0
-    while not stk.isEmpty():  # use BFS to aim at the closest coin if not disturbed
+    while not stk.isEmpty():  # Using BFS inorder to find the closest coin available
         x , y = stk.pop()
         dis = dmap[x][y] + 1
         if coin[x][y]:
@@ -83,7 +88,7 @@ def mutiAgent_evalutor(current_game_state):
                 dmap[xn][yn] = dis
                 stk.push((xn, yn))
     score = 1 - dis
-    ghosts = current_game_state.get_ghost_states()
+    ghosts = current_game_state.get_ghost_states() # getting ghost states
     for ghost in ghosts:
         if ghost.scared_timer == 0:  # active ghost poses danger to the pacman
             score -= 100 ** (1.6 - coords_distance(ghost.get_coord(), loc))
