@@ -10,7 +10,7 @@ EXPECTIMAX = "expecti_max_agent"
 #MAZE
 CAPSULE = "capsuleClassic"
 CONTEST = "contestClassic"
-MEDIUM = "mediumClassics"
+MEDIUM = "mediumClassic"
 MINI = "minimaxClassic"
 OPEN = "openClassic"
 ORIGINAL = "originalClassic"
@@ -113,6 +113,8 @@ class Ui_MainWindow(object):
             self.arr.append('-n')
             self.arr.append(self.iteration)
 
+        print(self.arr)
+
         print('Starting process')
         self.process.start('python', self.arr)
 
@@ -135,6 +137,13 @@ class Ui_MainWindow(object):
         self.plainTextEdit.clear()
         self.plainTextEdit.insertPlainText("Processing..................................")
 
+    def finished(self):
+        print('Finished!')
+        self.arr.clear()
+        self.arr.append('pacman.py')
+        if(self.plainTextEdit.toPlainText() == "Processing.................................."):
+            self.plainTextEdit.clear()
+
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(837, 848)
@@ -144,8 +153,8 @@ class Ui_MainWindow(object):
         self.picture1 = QtWidgets.QLabel(self.centralwidget)
         self.picture1.setGeometry(QtCore.QRect(-330, -170, 1531, 1021))
         self.picture1.setStyleSheet(".playbutton{\n"
-"background:#FDE402;\n"
-"}")
+                                    "background:#FDE402;\n"
+                                    "}")
         self.picture1.setText("")
         self.picture1.setScaledContents(False)
         self.picture1.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
@@ -302,9 +311,7 @@ class Ui_MainWindow(object):
         self.process = QtCore.QProcess(self.plainTextEdit)
         self.process.readyReadStandardOutput.connect(self.stdoutReady)
         self.process.started.connect(self.show_processing)
-        self.process.finished.connect(lambda: print('Finished!'))
-        self.arr.clear()
-        self.arr.append('pacman.py')
+        self.process.finished.connect(self.finished)
 
         self.plainTextEdit.setGeometry(QtCore.QRect(320, 180, 521, 561))
         self.plainTextEdit.hide()
