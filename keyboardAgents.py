@@ -1,5 +1,5 @@
 from game import Agent
-from game import Directions
+from game import movement
 import random
 
 #Keys for the controlling the pacman by the user
@@ -13,7 +13,7 @@ class keyboard_agent(Agent):
 
     def __init__( self, index = 0 ):
 
-        self.last_move = Directions.STOP
+        self.last_move = movement.STOP
         self.index = index
         self.keys = []
 
@@ -27,12 +27,12 @@ class keyboard_agent(Agent):
         legal = state.get_legal_moves(self.index)
         move = self.getMove(legal)
 
-        if move == Directions.STOP:
+        if move == movement.STOP:
             # Try to move in the same direction as before
             if self.last_move in legal:
                 move = self.last_move
 
-        if (self.end in self.keys) and Directions.STOP in legal: move = Directions.STOP
+        if (self.end in self.keys) and movement.STOP in legal: move = movement.STOP
 
         if move not in legal:
             move = random.choice(legal)
@@ -41,9 +41,9 @@ class keyboard_agent(Agent):
         return move
 
     def getMove(self, legal):
-        move = Directions.STOP
-        if   (self.left_key in self.keys or 'Left' in self.keys) and Directions.left in legal:  move = Directions.left
-        if   (self.right_key in self.keys or 'Right' in self.keys) and Directions.right in legal: move = Directions.right
-        if   (self.up_key in self.keys or 'Up' in self.keys) and Directions.up in legal:   move = Directions.up
-        if   (self.down_key in self.keys or 'Down' in self.keys) and Directions.down in legal: move = Directions.down
+        move = movement.STOP
+        if   (self.left_key in self.keys or 'Left' in self.keys) and movement.left in legal:  move = movement.left
+        if   (self.right_key in self.keys or 'Right' in self.keys) and movement.right in legal: move = movement.right
+        if   (self.up_key in self.keys or 'Up' in self.keys) and movement.up in legal:   move = movement.up
+        if   (self.down_key in self.keys or 'Down' in self.keys) and movement.down in legal: move = movement.down
         return move

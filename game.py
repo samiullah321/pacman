@@ -9,7 +9,7 @@ class Agent:
     def __init__(self, index=0):
         self.index = index
 
-class Directions:
+class movement:
     #Strings defined for the direction (POLES)
     up = 'up'
     down = 'down'
@@ -46,7 +46,7 @@ class location:
         x, y= self.coord
         dx, dy = vector
         direction = Actions.vec_to_dir(vector)
-        if direction == Directions.STOP:
+        if direction == movement.STOP:
             direction = self.direction # There is no stop direction
         return location((x + dx, y+dy), direction)
 
@@ -143,40 +143,40 @@ class Grid:
 ####################################
 
 class Actions:
-    # Directions
-    _directions = {Directions.up: (0, 1),
-                   Directions.down: (0, -1),
-                   Directions.right:  (1, 0),
-                   Directions.left:  (-1, 0),
-                   Directions.STOP:  (0, 0)}
+    # movement
+    _directions = {movement.up: (0, 1),
+                   movement.down: (0, -1),
+                   movement.right:  (1, 0),
+                   movement.left:  (-1, 0),
+                   movement.STOP:  (0, 0)}
 
     directions_as_list = list(_directions.items())
 
     TOLERANCE = .001 #for transition of pacman between the grids
 
     def reverse_dir(action):
-        if action == Directions.up:
-            return Directions.down
-        if action == Directions.down:
-            return Directions.up
-        if action == Directions.right:
-            return Directions.left
-        if action == Directions.left:
-            return Directions.right
+        if action == movement.up:
+            return movement.down
+        if action == movement.down:
+            return movement.up
+        if action == movement.right:
+            return movement.left
+        if action == movement.left:
+            return movement.right
         return action
     reverse_dir = staticmethod(reverse_dir)
 
     def vec_to_dir(vector):
         dx, dy = vector
         if dy > 0:
-            return Directions.up
+            return movement.up
         if dy < 0:
-            return Directions.down
+            return movement.down
         if dx < 0:
-            return Directions.left
+            return movement.left
         if dx > 0:
-            return Directions.right
-        return Directions.STOP
+            return movement.right
+        return movement.STOP
     vec_to_dir = staticmethod(vec_to_dir)
 
    #returning the direction as a vector, incorporated with the speed
@@ -258,5 +258,5 @@ class game_state_data: #data pertaining to each state of the game
             if not is_pac:
                 if ghosts_count == numghost_agents: continue # Max ghosts reached already
                 else: ghosts_count += 1
-            self.agent_states.append( AgentState( location( coord, Directions.STOP), is_pac) )
+            self.agent_states.append( AgentState( location( coord, movement.STOP), is_pac) )
         self._eaten = [False for a in self.agent_states] #Checking that agent is eaten or not (as pacman can eat the agents)

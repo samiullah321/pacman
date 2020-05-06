@@ -1,5 +1,5 @@
 from game import game_state_data
-from game import Directions
+from game import movement
 from game import Actions
 from util import nearest_cord
 from util import coords_distance
@@ -163,7 +163,7 @@ class pac_rules:
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
     def get_legal_moves( state ):
-        return Actions.get_possible_moves( state.get_pac_state().location, state.data.layout.walls ) #returns the possible directions for pacman to move
+        return Actions.get_possible_moves( state.get_pac_state().location, state.data.layout.walls ) #returns the possible movement for pacman to move
     get_legal_moves = staticmethod( get_legal_moves )
 
     def apply_action( state, action ): # applying the action received on the pacman
@@ -208,8 +208,8 @@ class ghost_rules:
         conf = state.get_ghost_state( ghostIndex ).location
         possible_moves = Actions.get_possible_moves( conf, state.data.layout.walls )
         reverse = Actions.reverse_dir( conf.direction )
-        if Directions.STOP in possible_moves:
-            possible_moves.remove( Directions.STOP ) #the ghost should not stop
+        if movement.STOP in possible_moves:
+            possible_moves.remove( movement.STOP ) #the ghost should not stop
         if reverse in possible_moves and len( possible_moves ) > 1: #if there is any other legal action except reversing the direction then remove reverse (cannot remove until dead end)
             possible_moves.remove( reverse )
         return possible_moves

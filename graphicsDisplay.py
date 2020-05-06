@@ -1,6 +1,6 @@
 from graphicsUtils import *
 import math, time
-from game import Directions
+from game import movement
 
 #Settings for the display
 grdi_size = 30.0
@@ -296,7 +296,7 @@ class pac_graphic: #general graphics for pacman
 
     #get action
     def get_dir(self, agentState):
-        if agentState.location == None: return Directions.STOP
+        if agentState.location == None: return movement.STOP
         return agentState.location.get_dir()
 
     def finish(self):

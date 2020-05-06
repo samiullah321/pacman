@@ -1,5 +1,5 @@
 from util import coords_distance
-from game import Directions
+from game import movement
 import random, util
 
 from game import Agent

@@ -1,6 +1,6 @@
 from game import Agent
 from game import Actions
-from game import Directions
+from game import movement
 import random
 from util import coords_distance
 import util
@@ -12,7 +12,7 @@ class ghost_agent( Agent ):
     def get_move( self, state ): #return an action
         dist = self.get_probability_distribution (state) #evaluating the probabilities of attacking or fleeing using factors as distance from pacman etc.
         if len(dist) == 0:
-            return Directions.STOP
+            return movement.STOP
         else:
             return util.select_from_probability_distribution( dist )
 
