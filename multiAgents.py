@@ -9,8 +9,12 @@ class reflex_agent(Agent):
 
     # A reflex agent chooses action at each phase by using the evaluation function given below
     def get_move(self, game_state):
+
+        def remove_stop(List):  # shows the legal moves
+            return [x for x in List if x != 'Stop']  # removing the stop action, as the pacman is not allowed to stop
+
         # Collect legal moves and successor states
-        legal_moves = game_state.get_legal_moves()
+        legal_moves = remove_stop(game_state.get_legal_moves())
 
         scores = [self.evaluator(game_state, action) for action in
                   legal_moves]  # Choose the best action amongs the list of possible moves
