@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import QBasicTimer
 import os
 
 #PACMAN AGENT TYPE
@@ -35,6 +36,9 @@ class Ui_MainWindow(object):
         self.show_display = ''
         self.arr = ['pacman.py']
         self.process = None
+
+    def stopped(self):
+        self.process.kill() #stopping the process manually
 
     def clicked(self):
         if(self.depthin.text() == '' or self.comboBox.currentText() == 'No Agent' or self.comboBox.currentText() == 'Reflex Agent'):
@@ -179,7 +183,7 @@ class Ui_MainWindow(object):
         self.closebutton.setDefault(False)
         self.closebutton.setFlat(False)
         self.closebutton.setObjectName("closebutton")
-        
+
         self.QUIT = QtWidgets.QPushButton(self.centralwidget)
         self.QUIT.setGeometry(QtCore.QRect(20, 770, 151, 61))
         self.QUIT.setStyleSheet("background:#FDE402;\n"
@@ -224,6 +228,7 @@ class Ui_MainWindow(object):
         self.Displaycheck.setStyleSheet("font: 87 18pt \"Source Sans Pro Black\";\n"
 "color: white;")
         self.Displaycheck.setObjectName("Displaycheck")
+        self.Displaycheck.setChecked(True)
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setGeometry(QtCore.QRect(20, 200, 191, 31))
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
@@ -325,7 +330,7 @@ class Ui_MainWindow(object):
         self.process.started.connect(self.show_processing)
         self.process.finished.connect(self.finished)
 
-        self.plainTextEdit.setGeometry(QtCore.QRect(320, 180, 521, 561))
+        self.plainTextEdit.setGeometry(QtCore.QRect(320, 180, 521, 530))
         self.plainTextEdit.hide()
         self.plainTextEdit.setStyleSheet("background-color: rgba(34,36,38,230);\n"
 "border:2px solid #FFE400;\n"
@@ -338,7 +343,7 @@ class Ui_MainWindow(object):
         self.plainTextEdit.setCenterOnScroll(True)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(330, 150, 201, 21))
+        self.label_2.setGeometry(QtCore.QRect(320, 150, 201, 21))
         self.label_2.hide()
         self.label_2.setStyleSheet("font: 87 14pt \"Source Sans Pro Black\";\n"
 "color: white;")
@@ -387,6 +392,7 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     ui.playbutton.clicked.connect(ui.clicked)
+    ui.closebutton.clicked.connect(ui.stopped)
     ui.QUIT.clicked.connect(ui.quitclicked)
     MainWindow.show()
     sys.exit(app.exec_())
