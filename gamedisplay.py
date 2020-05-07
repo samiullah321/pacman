@@ -1,4 +1,4 @@
-from graphicsUtils import *
+from gamegraphics import *
 import math, time
 from state import movement
 

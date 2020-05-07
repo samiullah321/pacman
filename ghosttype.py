@@ -2,8 +2,8 @@ from state import Agent
 from state import Actions
 from state import movement
 import random
-from util import coords_distance
-import util
+from utilityFunctions import coords_distance
+import utilityFunctions
 
 class ghost_agent( Agent ):
     def __init__( self, index ):
@@ -14,12 +14,12 @@ class ghost_agent( Agent ):
         if len(dist) == 0:
             return movement.STOP
         else:
-            return util.select_from_probability_distribution( dist )
+            return utilityFunctions.select_from_probability_distribution( dist )
 
 #GHOST THAT CHOOSES AN ACTION RANDOMLY
 class random_ghost( ghost_agent ):
     def get_probability_distribution ( self, state ):
-        dist = util.Counter()
+        dist = utilityFunctions.Counter()
         for a in state.get_legal_moves( self.index ): dist[a] = 1.0
         dist.normalize()
         return dist
@@ -57,7 +57,7 @@ class directional_ghost( ghost_agent ):
         best_actions = [action for action, distance in zip( legal_move, distances_from_pacman ) if distance == max_score]
 
         # Construct distribution
-        dist = util.Counter()
+        dist = utilityFunctions.Counter()
         for a in best_actions: dist[a] = best_probablilty / len(best_actions)
         for a in legal_move: dist[a] += ( 1-best_probablilty ) / len(legal_move)
         dist.normalize()

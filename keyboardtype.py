@@ -18,8 +18,8 @@ class keyboard_agent(Agent):
         self.keys = []
 
     def get_move( self, state):
-        from graphicsUtils import keys_waiting
-        from graphicsUtils import keys_pressed
+        from gamegraphics import keys_waiting
+        from gamegraphics import keys_pressed
         keys = keys_waiting() + keys_pressed()
         if keys != []:
             self.keys = keys

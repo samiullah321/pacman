@@ -1,13 +1,13 @@
 from state import game_state_data
 from state import movement
 from state import Actions
-from util import nearest_cord
-from util import coords_distance
-import util, layout
+from utilityFunctions import nearest_cord
+from utilityFunctions import coords_distance
+import utilityFunctions, layout
 import sys, types, time, random, os
-import textDisplay
-import graphicsDisplay
-from GameLib import *
+import removegraphics
+import gamedisplay
+from gameflow import *
 from datetime import datetime
 from optparse import OptionParser
 import __main__
@@ -140,7 +140,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return len( self.data.agent_states )
 
     def remaining_coin( self ):
-        return self.data.coin.count() #getting the remaining coin on the maze
+        return self.data.coin.count() #getting the remaining coin on the layout
 
     def __init__( self, prevState = None ):
         if prevState != None: # Initial state
@@ -154,7 +154,7 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return state
 
     def initialize( self, layout, numghost_agents=1000 ):
-        self.data.initialize(layout, numghost_agents) #used to create the initial layout of the maze
+        self.data.initialize(layout, numghost_agents) #used to create the initial layout of the layout
 
 SCARED = 40    # time till which ghosts are scared
 KILL_DISTANCE = 0.7 # How close ghosts must be to Pacman to kill
@@ -340,9 +340,9 @@ def parse_command( argv ):
 
     # Choose a display format
     if options.no_displayGraphics:
-        arguments['display'] = textDisplay.null_graphic()
+        arguments['display'] = removegraphics.null_graphic()
     else:
-        arguments['display'] = graphicsDisplay.pac_graphic(frame_t = options.frame_t)
+        arguments['display'] = gamedisplay.pac_graphic(frame_t = options.frame_t)
     arguments['numGames'] = options.numGames
 
     return arguments
@@ -358,14 +358,14 @@ def load_agent(pacman, nographics):
 
     for moduleDir in pythonPathDirs:
         if not os.path.isdir(moduleDir): continue
-        moduleNames = [f for f in os.listdir(moduleDir) if f.endswith('gents.py')]
+        moduleNames = [f for f in os.listdir(moduleDir) if f.endswith('type.py')]
         for modulename in moduleNames:
             try:
                 module = __import__(modulename[:-3])
             except ImportError:
                 continue
             if pacman in dir(module):
-                if nographics and modulename == 'keyboardAgents.py':
+                if nographics and modulename == 'keyboardtype.py':
                     raise Exception('Using the keyboard requires graphics (not text display)')
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
@@ -380,7 +380,7 @@ def initiate_pacman( layout, pacman, ghosts, display, numGames):
         beQuiet = i < 0
         if beQuiet:
                 # Suppress output and graphics
-            gameDisplay = textDisplay.null_graphic()
+            gameDisplay = removegraphics.null_graphic()
             rules.no_display = True
         else:
             gameDisplay = display

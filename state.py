@@ -1,8 +1,8 @@
-from util import *
+from utilityFunctions import *
 import time, os
 import traceback
 import sys
-from GameLib import *
+from gameflow import *
 
 class Agent:
     #returns the index of the agent if any.
@@ -78,10 +78,10 @@ class Grid:
     def __init__(self, width, height, initialValue=False, bitRepresentation=None):
         if initialValue not in [False, True]: raise Exception('Grids can only contain booleans')
         self.CELLS_PER_INT = 30 #cells per pixel
-        #dimensions of the maze
+        #dimensions of the layout
         self.width = width
         self.height = height
-        self.data = [[initialValue for y in range(height)] for x in range(width)] #initializing array for the maze
+        self.data = [[initialValue for y in range(height)] for x in range(width)] #initializing array for the layout
         if bitRepresentation:
             self.unpack_bits(bitRepresentation)
 
@@ -209,7 +209,7 @@ class game_state_data: #data pertaining to each state of the game
             self.coin = prevState.coin.shallow_copy()
             self.big_coin = prevState.big_coin[:]
             self.agent_states = self.copy_agent_states( prevState.agent_states )
-            self.layout = prevState.layout #previous maze layout
+            self.layout = prevState.layout #previous layout layout
             self._eaten = prevState._eaten
             self.score = prevState.score
 

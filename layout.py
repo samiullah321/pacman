@@ -1,10 +1,10 @@
-from util import coords_distance
+from utilityFunctions import coords_distance
 from state import Grid
 import os
 import random
 from functools import reduce
 
-class Layout: #maintains the information regarding the layout
+class layout: #maintains the information regarding the layout
     def __init__(self, layout_text):
         self.width = len(layout_text[0])
         self.height= len(layout_text)
@@ -25,7 +25,7 @@ class Layout: #maintains the information regarding the layout
         return self.walls[x][col]
 
     def deep_copy(self):
-        return Layout(self.layout_text[:])
+        return layout(self.layout_text[:])
 
     def process_layout_text(self, layout_text):
          # % - Wall
@@ -58,7 +58,7 @@ class Layout: #maintains the information regarding the layout
             self.agent_coord.append( (int(layout_char), (x,y)))
             self.ghosts_count += 1
 
-#RETREIVING THE LAYOUT
+#RETREIVING THE layout
 def get_layout(name, back = 2): #retrieving the layout from the directory
     if name.endswith('.lay'):
         layout = load_layout('layouts/' + name)
@@ -76,5 +76,5 @@ def get_layout(name, back = 2): #retrieving the layout from the directory
 def load_layout(layout_name):
     if(not os.path.exists(layout_name)): return None
     f = open(layout_name)
-    try: return Layout([line.strip() for line in f])
+    try: return layout([line.strip() for line in f])
     finally: f.close()

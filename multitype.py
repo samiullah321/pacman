@@ -1,6 +1,6 @@
-from util import coords_distance
+from utilityFunctions import coords_distance
 from state import movement
-import random, util
+import random, utilityFunctions
 
 from state import Agent
 
@@ -72,7 +72,7 @@ def mutiAgent_evaluator(current_game_state):
     coin = current_game_state.get_coin() # getting the coin locations
     walls = current_game_state.get_walls() # getting the wall locations
     dmap = walls.copy()
-    stk = util.Queue()
+    stk = utilityFunctions.Queue()
     stk.push(loc)
     dmap[loc[0]][loc[1]] = 0
     dis = 0
@@ -101,7 +101,7 @@ class mutli_agent_search(Agent):
     # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
     def __init__(self, evalFn='mutiAgent_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
-        self.relfex_evaluator = util.lookup(evalFn, globals())
+        self.relfex_evaluator = utilityFunctions.lookup(evalFn, globals())
         self.depth = int(
             depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
 
