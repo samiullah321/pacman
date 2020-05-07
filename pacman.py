@@ -1,9 +1,9 @@
 from state import game_state_data
 from state import movement
 from state import Actions
-from utilityFunctions import nearest_cord
-from utilityFunctions import coords_distance
-import utilityFunctions, maze
+from utility_functions import nearest_cord
+from utility_functions import coords_distance
+import utility_functions, maze
 import sys, types, time, random, os
 import removegraphics
 import gamedisplay

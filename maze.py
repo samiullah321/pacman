@@ -1,4 +1,4 @@
-from utilityFunctions import coords_distance
+from utility_functions import coords_distance
 from state import Grid
 import os
 import random

@@ -1,6 +1,5 @@
 import sys
-import inspect
-import heapq, random
+import random
 import io
 
 def coords_distance( xy1, xy2 ):
