@@ -48,17 +48,17 @@ big_coin_s = 0.20
 wall_r = 0.05
 
 class info_p:
-    def __init__(self, layout, grid_size):
+    def __init__(self, maze, grid_size):
         #Starting pane attributes
         self.grid_size = grid_size
-        self.width = (layout.width) * grid_size
-        self.base = (layout.height + 1) * grid_size
+        self.width = (maze.width) * grid_size
+        self.base = (maze.height + 1) * grid_size
         self.height = info_height
         self.font_size = 24
         self.text_c = pac_c
         self.draw_pane()
 
-    def to_screen(self, coord, y = None): #Maps the positions from layout onto the screen
+    def to_screen(self, coord, y = None): #Maps the positions from maze onto the screen
         if y == None:
             x,y = coord
         else:
@@ -111,21 +111,21 @@ class pac_graphic: #general graphics for pacman
         self.previousState = state
 
     def start_graphic(self, state): #initializing the graphics onto the screen
-        self.layout = state.layout
-        layout = self.layout
-        self.width = layout.width
-        self.height = layout.height
+        self.maze = state.maze
+        maze = self.maze
+        self.width = maze.width
+        self.height = maze.height
         self.make_window(self.width, self.height)
-        self.info_p = info_p(layout, self.grid_size)
-        self.c_state = layout
+        self.info_p = info_p(maze, self.grid_size)
+        self.c_state = maze
 
 
     #drawing coin and bcoin onto the screen
     def make_static_obj(self, state):
-        layout = self.layout
-        self.make_wall(layout.walls)
-        self.coin = self.make_coin(layout.coin)
-        self.big_coin = self.make_big_coin(layout.big_coin)
+        maze = self.maze
+        self.make_wall(maze.walls)
+        self.coin = self.make_coin(maze.coin)
+        self.big_coin = self.make_big_coin(maze.big_coin)
         refresh()
 
     #drawing the pacman, ghost onto the screen
@@ -400,7 +400,7 @@ class pac_graphic: #general graphics for pacman
             return False
         return walls[x][y]
 
-    #drawing the coin on the layout
+    #drawing the coin on the maze
     def make_coin(self, coin_grid ):
         coin_img = []
         color = coin_c
@@ -419,7 +419,7 @@ class pac_graphic: #general graphics for pacman
                     img_row.append(None)
         return coin_img
 
-    #drawing bcoin on the layout
+    #drawing bcoin on the maze
     def make_big_coin(self, big_coin ):
         big_food_img = {}
         for bigcoin in big_coin:
@@ -432,12 +432,12 @@ class pac_graphic: #general graphics for pacman
             big_food_img[bigcoin] = dot
         return big_food_img
 
-    #removing the coin from the layout
+    #removing the coin from the maze
     def rem_coin(self, cell, coin_img ):
         x, y = cell
         remove_from_screen(coin_img[x][y])
 
-    #removing the bcoin from the layout
+    #removing the bcoin from the maze
     def remove_big_food(self, cell, big_food_img ):
         x, y = cell
         remove_from_screen(big_food_img[(x, y)])

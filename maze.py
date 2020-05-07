@@ -4,7 +4,7 @@ import os
 import random
 from functools import reduce
 
-class layout: #maintains the information regarding the layout
+class maze: #maintains the information regarding the maze
     def __init__(self, layout_text):
         self.width = len(layout_text[0])
         self.height= len(layout_text)
@@ -25,7 +25,7 @@ class layout: #maintains the information regarding the layout
         return self.walls[x][col]
 
     def deep_copy(self):
-        return layout(self.layout_text[:])
+        return maze(self.layout_text[:])
 
     def process_layout_text(self, layout_text):
          # % - Wall
@@ -41,7 +41,7 @@ class layout: #maintains the information regarding the layout
         self.agent_coord.sort()
         self.agent_coord = [ ( i == 0, coord) for i, coord in self.agent_coord]
 
-    #Processing the charactter from the layout
+    #Processing the charactter from the maze
     def process_layout_char(self, x, y, layout_char):
         if layout_char == '%':
             self.walls[x][y] = True
@@ -58,23 +58,23 @@ class layout: #maintains the information regarding the layout
             self.agent_coord.append( (int(layout_char), (x,y)))
             self.ghosts_count += 1
 
-#RETREIVING THE layout
-def get_layout(name, back = 2): #retrieving the layout from the directory
+#RETREIVING THE maze
+def get_layout(name, back = 2): #retrieving the maze from the directory
     if name.endswith('.lay'):
-        layout = load_layout('layouts/' + name)
-        if layout == None: layout = load_layout(name)
+        maze = load_layout('layouts/' + name)
+        if maze == None: maze = load_layout(name)
     else:
-        layout = load_layout('layouts/' + name + '.lay')
-        if layout == None: layout = load_layout(name + '.lay')
-    if layout == None and back >= 0:
+        maze = load_layout('layouts/' + name + '.lay')
+        if maze == None: maze = load_layout(name + '.lay')
+    if maze == None and back >= 0:
         curdir = os.path.abspath('.')
         os.chdir('..')
-        layout = get_layout(name, back -1)
+        maze = get_layout(name, back -1)
         os.chdir(curdir)
-    return layout
+    return maze
 
 def load_layout(layout_name):
     if(not os.path.exists(layout_name)): return None
     f = open(layout_name)
-    try: return layout([line.strip() for line in f])
+    try: return maze([line.strip() for line in f])
     finally: f.close()

@@ -3,7 +3,7 @@ from state import movement
 from state import Actions
 from utilityFunctions import nearest_cord
 from utilityFunctions import coords_distance
-import utilityFunctions, layout
+import utilityFunctions, maze
 import sys, types, time, random, os
 import removegraphics
 import gamedisplay
@@ -14,11 +14,11 @@ import __main__
 
 class classic_rule:
 
-    def newGame( self, layout, pacmanAgent, ghostAgents, display, no_display = False):
+    def newGame( self, maze, pacmanAgent, ghostAgents, display, no_display = False):
         #taking all the state values for the new game
-        agents = [pacmanAgent] + ghostAgents[:layout.get_ghosts_count()]
+        agents = [pacmanAgent] + ghostAgents[:maze.get_ghosts_count()]
         initState = game_state()
-        initState.initialize( layout, len(ghostAgents) )
+        initState.initialize( maze, len(ghostAgents) )
         game = Game(agents, display, self)
         game.state = initState
         self.initialState = initState.deep_copy()
@@ -134,13 +134,13 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         return self.data.big_coin #returning the remaining bigcoin positions
 
     def get_walls(self):
-        return self.data.layout.walls
+        return self.data.maze.walls
 
     def get_num_agents( self ):
         return len( self.data.agent_states )
 
     def remaining_coin( self ):
-        return self.data.coin.count() #getting the remaining coin on the layout
+        return self.data.coin.count() #getting the remaining coin on the maze
 
     def __init__( self, prevState = None ):
         if prevState != None: # Initial state
@@ -153,8 +153,8 @@ class game_state: #has accessor methods for accessing variables of game_state_da
         state.data = self.data.deep_copy()
         return state
 
-    def initialize( self, layout, numghost_agents=1000 ):
-        self.data.initialize(layout, numghost_agents) #used to create the initial layout of the layout
+    def initialize( self, maze, numghost_agents=1000 ):
+        self.data.initialize(maze, numghost_agents) #used to create the initial maze of the maze
 
 SCARED = 40    # time till which ghosts are scared
 KILL_DISTANCE = 0.7 # How close ghosts must be to Pacman to kill
@@ -166,7 +166,7 @@ class pac_rules:
     PACMAN_SPEED=1 #speed of the pacman has been set to one (same as that for the ghosts)
 
     def get_legal_moves( state ):
-        return Actions.get_possible_moves( state.get_pac_state().location, state.data.layout.walls ) #returns the possible movement for pacman to move
+        return Actions.get_possible_moves( state.get_pac_state().location, state.data.maze.walls ) #returns the possible movement for pacman to move
     get_legal_moves = staticmethod( get_legal_moves )
 
     def apply_action( state, action ): # applying the action received on the pacman
@@ -209,7 +209,7 @@ class ghost_rules:
     GHOST_SPEED=1.0 # speed of ghost and pacman is same
     def get_legal_moves( state, ghostIndex ): #getting the legal_move for the ghost
         conf = state.get_ghost_state( ghostIndex ).location
-        possible_moves = Actions.get_possible_moves( conf, state.data.layout.walls )
+        possible_moves = Actions.get_possible_moves( conf, state.data.maze.walls )
         reverse = Actions.reverse_dir( conf.direction )
         if movement.STOP in possible_moves:
             possible_moves.remove( movement.STOP ) #the ghost should not stop
@@ -303,8 +303,8 @@ def parse_command( argv ):
                       help=default('The maximum number of ghosts to use'), default=4)
     p.add_option('--frame_t', dest='frame_t', type='float',
                       help=default('Time to delay between frames; <0 means keyboard'), default=0.1)
-    p.add_option('-l', '--layout', dest='layout',
-                      help=default('the LAYOUT_FILE from which to load the map layout'),
+    p.add_option('-l', '--maze', dest='maze',
+                      help=default('the LAYOUT_FILE from which to load the map maze'),
                       metavar='LAYOUT_FILE', default='originalClassic')
     p.add_option('-p', '--pacman', dest='pacman',
                       help=default('the agent TYPE in the pacmanAgents module to use'),
@@ -323,9 +323,9 @@ def parse_command( argv ):
         raise Exception('Command line input not understood: ' + str(otherjunk))
     arguments = dict()
 
-    #setting the layout
-    arguments['layout'] = layout.get_layout( options.layout )
-    if arguments['layout'] == None: raise Exception("The layout " + options.layout + " cannot be found") #in case of the layout not being found
+    #setting the maze
+    arguments['maze'] = maze.get_layout( options.maze )
+    if arguments['maze'] == None: raise Exception("The maze " + options.maze + " cannot be found") #in case of the maze not being found
 
     # Choose a Pacman agent
     noKeyboard = False
@@ -358,7 +358,7 @@ def load_agent(pacman, nographics):
 
     for moduleDir in pythonPathDirs:
         if not os.path.isdir(moduleDir): continue
-        moduleNames = [f for f in os.listdir(moduleDir) if f.endswith('type.py')]
+        moduleNames = [f for f in os.listdir(moduleDir) if (f.endswith('ypes.py') | f.endswith('user.py'))]
         for modulename in moduleNames:
             try:
                 module = __import__(modulename[:-3])
@@ -370,7 +370,7 @@ def load_agent(pacman, nographics):
                 return getattr(module, pacman)
     raise Exception('The agent ' + pacman + ' is not specified in any *Agents.py.')
 
-def initiate_pacman( layout, pacman, ghosts, display, numGames):
+def initiate_pacman( maze, pacman, ghosts, display, numGames):
     __main__.__dict__['_display'] = display
 
     rules = classic_rule()
@@ -385,7 +385,7 @@ def initiate_pacman( layout, pacman, ghosts, display, numGames):
         else:
             gameDisplay = display
             rules.no_display = False
-        game = rules.newGame( layout, pacman, ghosts, gameDisplay, beQuiet)
+        game = rules.newGame( maze, pacman, ghosts, gameDisplay, beQuiet)
         game.run()
         if not beQuiet: games.append(game)
 

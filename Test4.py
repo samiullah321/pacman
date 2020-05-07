@@ -28,7 +28,7 @@ class Ui_MainWindow(object):
         self.agent_type = ''
         self.ghost_type = ''
         self.title = "Pacman"
-        self.layout = ''
+        self.maze = ''
         self.depth = ''
         self.iteration = ''
         self.ghost_num = ''
@@ -66,36 +66,36 @@ class Ui_MainWindow(object):
         if(self.comboBox_2.currentText() == "Smart Agent"):
             self.ghost_type = SMART
 
-        #LAYOUT
+        #maze
         if(self.comboBox_3.currentText() == "Contest Classic"):
-            self.layout = CONTEST
+            self.maze = CONTEST
         elif(self.comboBox_3.currentText() == "Medium Classic"):
-            self.layout = MEDIUM
+            self.maze = MEDIUM
         elif(self.comboBox_3.currentText() == "Minimax Classic"):
-            self.layout = MINI
+            self.maze = MINI
         elif(self.comboBox_3.currentText() == "Open Classic"):
-            self.layout = OPEN
+            self.maze = OPEN
         elif(self.comboBox_3.currentText() == "Capsule Classic"):
-            self.layout = CAPSULE
+            self.maze = CAPSULE
         elif(self.comboBox_3.currentText() == "Small Classic"):
-            self.layout = SMALL
+            self.maze = SMALL
         elif(self.comboBox_3.currentText() == "Test Classic"):
-            self.layout = TEST
+            self.maze = TEST
         elif(self.comboBox_3.currentText() == "Trapped Classic"):
-            self.layout = TRAPPED
+            self.maze = TRAPPED
         elif(self.comboBox_3.currentText() == "Tricky Classic"):
-            self.layout = TRICKY
+            self.maze = TRICKY
         else:
-            self.layout = ORIGINAL
+            self.maze = ORIGINAL
 
         if (self.Displaycheck.isChecked()):
             self.show_display = ''
         else:
             self.show_display = '-q'
 
-        if(self.layout!=''):
+        if(self.maze!=''):
             self.arr.append('-l')
-            self.arr.append(self.layout)
+            self.arr.append(self.maze)
         if(self.agent_type!=''):
             self.arr.append('-p')
             self.arr.append(self.agent_type)

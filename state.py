@@ -78,10 +78,10 @@ class Grid:
     def __init__(self, width, height, initialValue=False, bitRepresentation=None):
         if initialValue not in [False, True]: raise Exception('Grids can only contain booleans')
         self.CELLS_PER_INT = 30 #cells per pixel
-        #dimensions of the layout
+        #dimensions of the maze
         self.width = width
         self.height = height
-        self.data = [[initialValue for y in range(height)] for x in range(width)] #initializing array for the layout
+        self.data = [[initialValue for y in range(height)] for x in range(width)] #initializing array for the maze
         if bitRepresentation:
             self.unpack_bits(bitRepresentation)
 
@@ -209,7 +209,7 @@ class game_state_data: #data pertaining to each state of the game
             self.coin = prevState.coin.shallow_copy()
             self.big_coin = prevState.big_coin[:]
             self.agent_states = self.copy_agent_states( prevState.agent_states )
-            self.layout = prevState.layout #previous layout layout
+            self.maze = prevState.maze #previous maze maze
             self._eaten = prevState._eaten
             self.score = prevState.score
 
@@ -225,7 +225,7 @@ class game_state_data: #data pertaining to each state of the game
     def deep_copy( self ): #DEEP COPYING
         state = game_state_data( self )
         state.coin = self.coin.deep_copy()
-        state.layout = self.layout.deep_copy()
+        state.maze = self.maze.deep_copy()
         state.agent_moved = self.agent_moved
         state.coin_eaten = self.coin_eaten
         state._coinAdded = self._coinAdded
@@ -238,18 +238,18 @@ class game_state_data: #data pertaining to each state of the game
             copied_states.append( agentState.copy() )
         return copied_states
 
-    def initialize( self, layout, numghost_agents ):
-        #creating the game_state from the layout (INITIAL STATE)
-        self.coin = layout.coin.copy()
+    def initialize( self, maze, numghost_agents ):
+        #creating the game_state from the maze (INITIAL STATE)
+        self.coin = maze.coin.copy()
         #self.big_coin = []
-        self.big_coin = layout.big_coin[:]
-        self.layout = layout
+        self.big_coin = maze.big_coin[:]
+        self.maze = maze
         self.score = 0
         self.score_change = 0
 
         self.agent_states = []
         ghosts_count = 0
-        for is_pac, coord in layout.agent_coord:
+        for is_pac, coord in maze.agent_coord:
             if not is_pac:
                 if ghosts_count == numghost_agents: continue # Max ghosts reached already
                 else: ghosts_count += 1

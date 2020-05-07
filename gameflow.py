@@ -4,7 +4,7 @@ MINIMAX = "minimax_agent"
 ALPHA = "alpha_beta_agent"
 EXPECTIMAX = "expecti_max_agent"
 
-#layout
+#maze
 TEST = "testClassic"
 MINI = "minimaxClassic"
 SMALL = "smallClassic"
