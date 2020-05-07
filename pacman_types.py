@@ -15,7 +15,7 @@ class reflex_agent(Agent):
         # Collect legal moves and successor states
         legal_moves = remove_stop(game_state.get_legal_moves())
 
-        scores = [self.relfex_evaluator(game_state, action) for action in
+        scores = [self.reflex_evaluator(game_state, action) for action in
                   legal_moves]  # Choose the best action amongs the list of possible moves
         max_score = max(scores)  # max of the scores array is extracted
         max_score_indexs = [index for index in range(len(scores)) if
@@ -25,9 +25,9 @@ class reflex_agent(Agent):
 
         return legal_moves[random_index]
 
-    def relfex_evaluator(self, current_game_state, action):  # This evaluation function is only for the Reflex agent
+    def reflex_evaluator(self, current_game_state, action):  # This evaluation function is only for the Reflex agent
 
-        # returns a score,the higher the score from relfex_evaluator the better
+        # returns a score,the higher the score from reflex_evaluator the better
         # information taken into consideration from current state: remaining coin(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
         next_game_state = current_game_state.produce_pac_successor(action)
@@ -101,7 +101,7 @@ class mutli_agent_search(Agent):
     # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
     def __init__(self, evalFn='mutiAgent_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
-        self.relfex_evaluator = utility_functions.lookup(evalFn, globals())
+        self.reflex_evaluator = utility_functions.lookup(evalFn, globals())
         self.depth = int(
             depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
 
@@ -122,7 +122,7 @@ class minimax_agent(mutli_agent_search):
         def miniMax(s, iteration_count):  # default depth is '2'
             # print(iteration_count)
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():  # returning the score in case of agent count exceeding the depth for which the evaluation has to be done.
-                return self.relfex_evaluator(s)  # using the evaluationFunnction to return the score
+                return self.reflex_evaluator(s)  # using the evaluationFunnction to return the score
             if iteration_count % num_agent != 0:  # Ghost min (e.g 0,5,10 % 5 would be 0 which the index for the Pacman)
                 result = 1e10  # +ve infinity
 
@@ -162,7 +162,7 @@ class alpha_beta_agent(mutli_agent_search):
         # introduced two factor, alpha and beta here, in order to prune and not traverse all gamestates
         def alpha_beta(s, iteration_count, alpha, beta):
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():
-                return self.relfex_evaluator(s)
+                return self.reflex_evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
                 result = 1e10
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
@@ -199,7 +199,7 @@ class expecti_max_agent(mutli_agent_search):
 
         def expect_minimax(s, iteration_count):
             if iteration_count >= self.depth * num_agent or s.pac_won() or s.pac_lost():
-                return self.relfex_evaluator(s)
+                return self.reflex_evaluator(s)
             if iteration_count % num_agent != 0:  # Ghost min
                 successor_score = []
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):

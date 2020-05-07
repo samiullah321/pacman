@@ -60,12 +60,12 @@ class maze: #maintains the information regarding the maze
 
 #RETREIVING THE maze
 def get_layout(name, back = 2): #retrieving the maze from the directory
-    if name.endswith('.lay'):
-        maze = load_layout('layouts/' + name)
+    if name.endswith('.txt'):
+        maze = load_layout('maze/' + name)
         if maze == None: maze = load_layout(name)
     else:
-        maze = load_layout('layouts/' + name + '.lay')
-        if maze == None: maze = load_layout(name + '.lay')
+        maze = load_layout('maze/' + name + '.txt')
+        if maze == None: maze = load_layout(name + '.txt')
     if maze == None and back >= 0:
         curdir = os.path.abspath('.')
         os.chdir('..')
