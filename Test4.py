@@ -36,8 +36,15 @@ class Ui_MainWindow(object):
         self.show_display = ''
         self.arr = ['pacman.py']
         self.process = None
+        self.click = 0
 
     def stopped(self):
+        if(self.click == 1):
+            self.plainTextEdit.hide()
+            self.label_2.hide()
+            self.click = 0
+        else:
+            self.click += 1
         self.process.kill() #stopping the process manually
 
     def clicked(self):
@@ -118,9 +125,9 @@ class Ui_MainWindow(object):
             self.arr.append('-n')
             self.arr.append(self.iteration)
 
-        print(self.arr)
-
-        print('Starting process')
+        # print(self.arr)
+        #
+        # print('Starting process')
         self.process.start('python', self.arr)
 
         self.plainTextEdit.show()
@@ -143,7 +150,7 @@ class Ui_MainWindow(object):
         self.plainTextEdit.insertPlainText("Processing..................................")
 
     def finished(self):
-        print('Finished!')
+        # print('Finished!')
         self.arr.clear()
         self.arr.append('pacman.py')
         if(self.plainTextEdit.toPlainText() == "Processing.................................."):
