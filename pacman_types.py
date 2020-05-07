@@ -31,30 +31,40 @@ class reflex_agent(Agent):
         # information taken into consideration from current state: remaining coin(new_coin), Pacman position after moving (new_coord), ScaredTimes of the ghosts
 
         next_game_state = current_game_state.produce_pac_successor(action)
-        new_coord = next_game_state.get_pacman_coord()  # taking the pacman position after moving
-        new_coin = next_game_state.get_coin()  # taking the remaining coin
-        # taking the remaining scaredtimes of the ghosts
-        new_ghost_states = next_game_state.get_ghost_states()
-        new_ghost_scrared_timer = [ghost_state.scared_timer for ghost_state in new_ghost_states]
+        loc = next_game_state.get_pacman_coord()  # taking the pacman position after moving
+        coin = next_game_state.get_coin()  # taking the remaining coin
+        ghosts = next_game_state.get_ghost_states() # taking the ghost states
+        walls = next_game_state.get_walls()
 
-        # REFLEX AGENT CODE
-        coin_cord = new_coin.as_list()
-        coinCount = len(coin_cord)  # number of coin available
-        nearest_distance = 1e6  # initially set to infinite
-        for i in range(coinCount):
-            distance = coords_distance(coin_cord[i], new_coord) + coinCount * 100
-            if distance < nearest_distance:  # find the closest available coin
-                nearest_distance = distance
-                closestcoin = coin_cord
-        if coinCount == 0:
-            nearest_distance = 0
-        score = -nearest_distance  # the step needed to reach the coin are subtracted from the score, predicting the score after pacman tries to eat that coin
+        dmap = walls.copy()
+        stk = utility_functions.Queue()
+        stk.push(loc)
+        dmap[loc[0]][loc[1]] = 0
+        dis = 0
+        while not stk.isEmpty():  # Using BFS inorder to find the closest coin available
+            x , y = stk.pop()
+            dis = dmap[x][y] + 1
+            if coin[x][y]:
+                break;
+            for v in [(0, 1) , (1, 0) , (0 , -1) , (-1 , 0)]:
+                xn = x + v[0]
+                yn = y + v[1]
+                if dmap[xn][yn] == False:
+                    dmap[xn][yn] = dis
+                    stk.push((xn, yn))
+        score = 1 - dis
+        for ghost in ghosts:
+            if ghost.scared_timer == 0:  # active ghost poses danger to the pacman
+                score -= 100 ** (1.6 - coords_distance(ghost.get_coord(), loc))
+            else:  # bonus points for having a scared ghost
+                score += 25
+        score -= 30 * coin.count()  # bonus points for eating a coin
 
-        for i in range(len(new_ghost_states)):
-            # getting the positions of each ghost and checking whether it has eaten pacman or not
-            ghost_coord = next_game_state.get_ghost_coord(i + 1)
-            if coords_distance(new_coord, ghost_coord) <= 1:  # if pacman dies
-                score -= 1e6  # the score when the pacman dies
+        # for i in range(len(ghosts)):
+        #     # getting the positions of each ghost and checking whether it has eaten pacman or not
+        #     ghost_coord = next_game_state.get_ghost_coord(i + 1)
+        #     if coords_distance(loc, ghost_coord) <= 1:  # if pacman dies
+        #         score -= 1e6  # the score when the pacman dies
 
         return score  # next_game_state.get_score()
 
@@ -102,8 +112,7 @@ class mutli_agent_search(Agent):
     def __init__(self, evalFn='mutiAgent_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
         self.reflex_evaluator = utility_functions.lookup(evalFn, globals())
-        self.depth = int(
-            depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
+        self.depth = int(depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
 
 class minimax_agent(mutli_agent_search):
     # MINIMAX AGENT
