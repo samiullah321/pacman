@@ -1,6 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QBasicTimer
 import os
+import time
+import sys
+
+# TIMER
+timer = QtCore.QTime()
 
 #PACMAN AGENT TYPE
 REFLEX = "reflex_agent"
@@ -37,6 +42,7 @@ class Ui_MainWindow(object):
         self.arr = ['pacman.py']
         self.process = None
         self.click = 0
+        self.procTime = 0
 
     def stopped(self):
         if(self.click == 1):
@@ -48,6 +54,7 @@ class Ui_MainWindow(object):
         self.process.kill() #stopping the process manually
 
     def clicked(self):
+        timer.start()
         if(self.depthin.text() == '' or self.comboBox.currentText() == 'No Agent' or self.comboBox.currentText() == 'Reflex Agent'):
             self.depth = ''
         else:
@@ -76,6 +83,8 @@ class Ui_MainWindow(object):
 
         if(self.comboBox_2.currentText() == "Smart Agent"):
             self.ghost_type = SMART
+        else:
+            self.ghost_type = ''
 
         #maze
         if(self.comboBox_3.currentText() == "Contest Classic"):
@@ -134,7 +143,7 @@ class Ui_MainWindow(object):
         self.label_2.show()
 
     def quitclicked(self):
-         app.quit()
+        app.quit()
 
     def append(self, text):
         self.plainTextEdit.clear()
@@ -143,6 +152,9 @@ class Ui_MainWindow(object):
     def stdoutReady(self):
         text = bytearray(self.process.readAllStandardOutput())
         text = text.decode('mbcs')
+        self.procTime = timer.elapsed() / 1000
+        str = "\nProcess took {} seconds".format(self.procTime)
+        text += str
         self.append(text)
 
     def show_processing(self):
@@ -155,6 +167,7 @@ class Ui_MainWindow(object):
         self.arr.append('pacman.py')
         if(self.plainTextEdit.toPlainText() == "Processing.................................."):
             self.plainTextEdit.clear()
+
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -393,7 +406,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(_translate("MainWindow", "Terminal Output"))
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()

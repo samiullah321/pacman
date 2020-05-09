@@ -402,6 +402,8 @@ def initiate_pacman( maze, pacman, ghosts, display, numGames):
             if len(game.state.get_big_coin())==0:
                 CapCount += 1
         print('%d games won out of %d ---> Win Rate: %.2f' % (wins.count(True), len(wins), winRate*100))
+        print('Average Score: ', sum(scores) / float(len(scores)))
+
     return games
 
 if __name__ == '__main__':

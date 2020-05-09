@@ -48,7 +48,7 @@ class directional_ghost( ghost_agent ):
 
         # Select best actions given the state
         distances_from_pacman = [coords_distance( coord, pacman_position ) for coord in new_coords]
-        if is_scared: #chooose the position with the max distance from pacman and start to flee there
+        if is_scared: #choose the position with the max distance from pacman and start to flee there
             max_score = max( distances_from_pacman )
             best_probablilty = self.prob_scared
         else: #choose the positions with the min distance from pacman and start to attack there

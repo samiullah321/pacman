@@ -22,7 +22,6 @@ class reflex_agent(Agent):
                        scores[index] == max_score]  # get indexes of the max_score in the score array
         random_index = random.choice(
             max_score_indexs)  # as there can be multiple max_scores that are the same, hence we chose any one randomly
-
         return legal_moves[random_index]
 
     def reflex_evaluator(self, current_game_state, action):  # This evaluation function is only for the Reflex agent
@@ -52,23 +51,18 @@ class reflex_agent(Agent):
                 if dmap[xn][yn] == False:
                     dmap[xn][yn] = dis
                     stk.push((xn, yn))
+        if(coin.count() == 0):
+            dis = 1
         score = 1 - dis
         for ghost in ghosts:
             if ghost.scared_timer == 0:  # active ghost poses danger to the pacman
                 score -= 100 ** (1.6 - coords_distance(ghost.get_coord(), loc))
             else:  # bonus points for having a scared ghost
                 score += 25
-        score -= 30 * coin.count()  # bonus points for eating a coin
-
-        # for i in range(len(ghosts)):
-        #     # getting the positions of each ghost and checking whether it has eaten pacman or not
-        #     ghost_coord = next_game_state.get_ghost_coord(i + 1)
-        #     if coords_distance(loc, ghost_coord) <= 1:  # if pacman dies
-        #         score -= 1e6  # the score when the pacman dies
-
+        score -= 30 * coin.count() # bonus points for eating a coin
         return score  # next_game_state.get_score()
 
-def mutiAgent_evaluator(current_game_state):
+def multiAgent_evaluator(current_game_state):
 
     # The implementation involves a simple breath-first-search that terminates at the closest food near pacman
 
@@ -97,6 +91,8 @@ def mutiAgent_evaluator(current_game_state):
             if dmap[xn][yn] == False:
                 dmap[xn][yn] = dis
                 stk.push((xn, yn))
+    if(coin.count() == 0):
+        dis = 1
     score = 1 - dis
     ghosts = current_game_state.get_ghost_states() # getting ghost states
     for ghost in ghosts:
@@ -109,7 +105,7 @@ def mutiAgent_evaluator(current_game_state):
 
 class mutli_agent_search(Agent):
     # Some variables and methods that are publically available to all Minimax, alpha_beta_agent, and expecti_max_agent
-    def __init__(self, evalFn='mutiAgent_evaluator', depth='2'):
+    def __init__(self, evalFn='multiAgent_evaluator', depth='2'):
         self.index = 0  # Pacman is always agent index 0
         self.reflex_evaluator = utility_functions.lookup(evalFn, globals())
         self.depth = int(depth)  # the depth till which the game_state will be evaluated. The more the depth, the more accurate the result, however, time taken would be greater as more branches would be traversed
@@ -122,7 +118,6 @@ class minimax_agent(mutli_agent_search):
 
         # MAIN CODE
         num_agent = game_state.get_num_agents()  # pacman + ghosts
-        # print(num_agent)
         action_score = []  # stores the legal move and their scores
 
         def remove_stop(List):  # shows the legal moves
@@ -136,7 +131,6 @@ class minimax_agent(mutli_agent_search):
                 result = 1e10  # +ve infinity
 
                 # get_legal_moves is returning the legal actions for the agent specified. Index 0 represents Pacman and Index 1 onwards represents Ghosts
-
                 for a in remove_stop(s.get_legal_moves(iteration_count % num_agent)):
                     successor_data = s.produce_successor(iteration_count % num_agent,
                                                a)  # generating the successor  game_state for the action specified
